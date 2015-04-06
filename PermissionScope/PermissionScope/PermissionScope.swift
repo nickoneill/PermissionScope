@@ -58,6 +58,8 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
 
     // internal state and resolution
     var configuredPermissions: [PermissionConfig] = []
+    var permissionButtons: [UIButton] = []
+    var permissionLabels: [UILabel] = []
     var authChangeClosure: (([PermissionResult]) -> Void)? = nil
     var cancelClosure: (() -> Void)? = nil
 
@@ -129,18 +131,37 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
 
         let baseOffset = 95
         var index = 0
-        for config in configuredPermissions {
-            let button = permissionStyledButton(config.type)
+        for button in permissionButtons {
             button.center = contentView.center
             button.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
             button.frame.offset(dx: 0, dy: -30 + CGFloat(index * baseOffset))
-            contentView.addSubview(button)
 
-            let label = permissionStyledLabel(config.message)
+            let type = configuredPermissions[index].type
+            switch type {
+            case .LocationAlways:
+                switch statusLocationAlways() {
+                case .Authorized:
+                    setButtonAuthorizedStyle(button)
+                    button.setTitle("Got Location".uppercaseString, forState: UIControlState.Normal)
+                default:
+                    break
+                }
+            case .LocationInUse:
+                switch statusLocationInUse() {
+                case .Authorized:
+                    setButtonAuthorizedStyle(button)
+                    button.setTitle("Got Location".uppercaseString, forState: UIControlState.Normal)
+                default:
+                    break
+                }
+            default:
+                break
+            }
+
+            let label = permissionLabels[index]
             label.center = contentView.center
             label.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
             label.frame.offset(dx: 0, dy: 15 + CGFloat(index * baseOffset))
-            contentView.addSubview(label)
 
             index++
         }
@@ -169,14 +190,8 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
         case .Contacts:
             button.setTitle("Allow Contacts".uppercaseString, forState: UIControlState.Normal)
         case .LocationAlways:
-            switch statusLocationAlways() {
-            case .Authorized:
-                setButtonAuthorizedStyle(button)
-                button.setTitle("Got Location".uppercaseString, forState: UIControlState.Normal)
-            default:
-                button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
-                button.addTarget(self, action: Selector("requestLocationAlways"), forControlEvents: UIControlEvents.TouchUpInside)
-            }
+            button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
+            button.addTarget(self, action: Selector("requestLocationAlways"), forControlEvents: UIControlEvents.TouchUpInside)
         case .LocationInUse:
             switch statusLocationInUse() {
             case .Authorized:
@@ -255,13 +270,25 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
         authChangeClosure = authChange
         cancelClosure = cancelled
 
-        view.alpha = 0
+        // add the backing views in correctly
+//        view.alpha = 0
         let rv = UIApplication.sharedApplication().keyWindow!
         rv.addSubview(view)
         view.frame = rv.bounds
         baseView.frame = rv.bounds
 
-        // Animate in the alert view
+        // create the buttons
+        for config in configuredPermissions {
+            let button = permissionStyledButton(config.type)
+            permissionButtons.append(button)
+            contentView.addSubview(button)
+
+            let label = permissionStyledLabel(config.message)
+            permissionLabels.append(label)
+            contentView.addSubview(label)
+        }
+
+        // slide in the view
         self.baseView.frame.origin.y = -400
         UIView.animateWithDuration(0.2, animations: {
             self.baseView.center.y = rv.center.y + 15
@@ -285,7 +312,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
     }
 
     func detectAndCallback() {
-
+        self.view.setNeedsLayout()
 
         if let authChangeClosure = authChangeClosure {
             var resultStatuses: [PermissionResult] = []
