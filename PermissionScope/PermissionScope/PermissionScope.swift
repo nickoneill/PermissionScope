@@ -35,12 +35,16 @@ public struct PermissionConfig {
     }
 }
 
-public struct PermissionResult {
+public struct PermissionResult: Printable {
     let type: PermissionType
     let status: PermissionStatus
+
+    public var description: String {
+        return "\(type) \(status)"
+    }
 }
 
-public class PermissionScope: UIViewController, CLLocationManagerDelegate {
+public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate {
     // constants
     let ContentWidth: CGFloat = 280.0
     let ContentHeight: CGFloat = 480.0
@@ -75,6 +79,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
         // Base View
         baseView.frame = view.frame
         baseView.addSubview(contentView)
+        let tap = UITapGestureRecognizer(target: self, action: Selector("cancel"))
+        tap.delegate = self
+        baseView.addGestureRecognizer(tap)
         // Content View
         contentView.backgroundColor = UIColor.whiteColor()
         contentView.layer.cornerRadius = 10
@@ -319,7 +326,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
 
     // MARK: finally, displaying the panel
 
-    public func show(authChange: (([PermissionResult]) -> Void)?, cancelled: (() -> Void)?) {
+    public func show(authChange: (([PermissionResult]) -> Void)? = nil, cancelled: (() -> Void)? = nil) {
         authChangeClosure = authChange
         cancelClosure = cancelled
 
@@ -375,6 +382,14 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
         })
     }
 
+    func cancel() {
+        if let cancelClosure = cancelClosure {
+            cancelClosure()
+        }
+
+        self.hide()
+    }
+
     func detectAndCallback() {
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.view.setNeedsLayout()
@@ -421,6 +436,18 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
         }
 
         return results
+    }
+
+    // MARK: gesture delegate
+
+    public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+
+        // this prevents our tap gesture from firing for subviews of baseview
+        if touch.view == baseView {
+            return true
+        }
+
+        return false
     }
 
     // MARK: location delegate
