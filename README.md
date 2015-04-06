@@ -21,5 +21,10 @@ The simplest implementation displays a list of permissions and is removed when a
 
 If you're attempting to block access to a screen in your app without permissions (like, say, the broadcast screen in Periscope), you should watch for the cancel closure and 
 
+### PermissionScope registers user notification settings, not remote notifications
+Users will get the prompt to enable notifications when using PermissionScope but it's up to you to watch for results in your app delegate's `didRegisterUserNotificationSettings` and then register for remote notifications independently. This won't alert the user again. You're still responsible for handling the shipment of user notification settings off to your push server.
+
 ### You must set these Info.plist keys for location to work!
-NSLocationAlwaysUsageDescription or NSLocationWhenInUseUsageDescription
+Trickiest part of implementing location permissions? You must implement the proper key in your Info.plist file with a short description of how your app uses location info (shown in the system permissions dialog). Without this, trying to get location  permissions will just silently fail. Software!
+
+Use NSLocationAlwaysUsageDescription or NSLocationWhenInUseUsageDescription where appropriate for your app usage. You can specify which of these location permissions you wish to request with `.LocationAlways` or `.LocationInUse` while configuring PermissionScope.

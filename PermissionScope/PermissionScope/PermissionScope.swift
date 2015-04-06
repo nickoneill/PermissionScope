@@ -112,12 +112,12 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
 
     public override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        var sz = UIScreen.mainScreen().bounds.size
+        var screenSize = UIScreen.mainScreen().bounds.size
         // Set background frame
-        view.frame.size = sz
+        view.frame.size = screenSize
         // Set frames
-        var x = (sz.width - ContentWidth) / 2
-        var y = (sz.height - ContentHeight) / 2
+        var x = (screenSize.width - ContentWidth) / 2
+        var y = (screenSize.height - ContentHeight) / 2
         contentView.frame = CGRect(x:x, y:y, width:ContentWidth, height:ContentHeight)
 
         // offset the header from the content center, compensate for the content's offset
@@ -283,14 +283,37 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
 
     public func statusNotifications() -> PermissionStatus {
         let settings = UIApplication.sharedApplication().currentUserNotificationSettings()
-        println("settings \(settings)")
+        if settings.types != UIUserNotificationType.None {
+            return .Authorized
+        }
 
         return .Unknown
     }
 
     func requestNotifications() {
         if statusNotifications() != .Authorized {
+            UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Sound | .Badge, categories: nil))
+            self.pollForNotificationChanges()
+        }
+    }
 
+    func pollForNotificationChanges() {
+        // yuck
+        // the alternative is telling developers to call detectAndCallback() in their app delegate
+
+        // poll every second, try for a minute
+        let pollMax = 60
+        var pollCount = 0
+        while pollCount <= pollMax {
+            println("polling")
+
+            let settings = UIApplication.sharedApplication().currentUserNotificationSettings()
+            if settings.types != UIUserNotificationType.None {
+                self.detectAndCallback()
+                break
+            } else {
+                sleep(1)
+            }
         }
     }
 
@@ -300,12 +323,23 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
         authChangeClosure = authChange
         cancelClosure = cancelled
 
-        // add the backing views in correctly
-//        view.alpha = 0
-        let rv = UIApplication.sharedApplication().keyWindow!
-        rv.addSubview(view)
-        view.frame = rv.bounds
-        baseView.frame = rv.bounds
+        var permissionMissing = false
+        for result in getResultsForConfig() {
+            if result.status != .Authorized {
+                permissionMissing = true
+            }
+        }
+
+        // no missing perms? do nothing
+        if !permissionMissing {
+            return
+        }
+
+        // add the backing views
+        let window = UIApplication.sharedApplication().keyWindow!
+        window.addSubview(view)
+        view.frame = window.bounds
+        baseView.frame = window.bounds
 
         // create the buttons
         for config in configuredPermissions {
@@ -321,20 +355,20 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
         // slide in the view
         self.baseView.frame.origin.y = -400
         UIView.animateWithDuration(0.2, animations: {
-            self.baseView.center.y = rv.center.y + 15
+            self.baseView.center.y = window.center.y + 15
             self.view.alpha = 1
         }, completion: { finished in
             UIView.animateWithDuration(0.2, animations: {
-                self.baseView.center = rv.center
+                self.baseView.center = window.center
             })
         })
     }
 
     public func hide() {
-        let rv = UIApplication.sharedApplication().keyWindow!
+        let window = UIApplication.sharedApplication().keyWindow!
 
         UIView.animateWithDuration(0.2, animations: {
-            self.baseView.frame.origin.y = rv.center.y + 400
+            self.baseView.frame.origin.y = window.center.y + 400
             self.view.alpha = 0
         }, completion: { finished in
             self.view.removeFromSuperview()
@@ -345,34 +379,42 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
         self.view.setNeedsLayout()
 
         // compile the results and pass them back if necessary
+        let results = getResultsForConfig()
         if let authChangeClosure = authChangeClosure {
-            var resultStatuses: [PermissionResult] = []
-            for config in configuredPermissions {
-                var status: PermissionStatus
+            authChangeClosure(results)
+        }
 
-                switch config.type {
-                case .LocationAlways:
-                    status = statusLocationAlways()
-                case .LocationInUse:
-                    status = statusLocationInUse()
-                case .Contacts:
-                    status = statusContacts()
-                case .Notifications:
-                    status = statusNotifications()
-                }
+        // and hide if we've sucessfully got all permissions
+        self.hide()
+    }
 
-                let result = PermissionResult(type: config.type, status: status)
-                resultStatuses.append(result)
+    func getResultsForConfig() -> [PermissionResult] {
+        var results: [PermissionResult] = []
+
+        for config in configuredPermissions {
+            var status: PermissionStatus
+
+            switch config.type {
+            case .LocationAlways:
+                status = statusLocationAlways()
+            case .LocationInUse:
+                status = statusLocationInUse()
+            case .Contacts:
+                status = statusContacts()
+            case .Notifications:
+                status = statusNotifications()
             }
 
-            authChangeClosure(resultStatuses)
+            let result = PermissionResult(type: config.type, status: status)
+            results.append(result)
         }
+
+        return results
     }
 
     // MARK: location delegate
 
     public func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-        println("change loc auth \(status.rawValue)")
 
         detectAndCallback()
     }
