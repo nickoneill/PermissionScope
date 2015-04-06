@@ -34,13 +34,9 @@
 		D05F10471AD1EBF6000F8267 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D05F10491AD1EBF6000F8267 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D05F104C1AD1EBF6000F8267 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		D05F10571AD1EBF6000F8267 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D05F10581AD1EBF6000F8267 /* PermissionScope_exampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionScope_exampleTests.swift; sourceTree = "<group>"; };
 		D092BA331AD1E5A300BFC163 /* PermissionScope.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PermissionScope.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D092BA371AD1E5A300BFC163 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D092BA381AD1E5A300BFC163 /* PermissionScope.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PermissionScope.h; sourceTree = "<group>"; };
-		D092BA441AD1E5A300BFC163 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D092BA451AD1E5A300BFC163 /* PermissionScopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionScopeTests.swift; sourceTree = "<group>"; };
 		D092BA4F1AD1E67300BFC163 /* PermissionScope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermissionScope.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -84,31 +80,11 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		D05F10551AD1EBF6000F8267 /* PermissionScope-exampleTests */ = {
-			isa = PBXGroup;
-			children = (
-				D05F10581AD1EBF6000F8267 /* PermissionScope_exampleTests.swift */,
-				D05F10561AD1EBF6000F8267 /* Supporting Files */,
-			);
-			name = "PermissionScope-exampleTests";
-			path = "modalperms-exampleTests";
-			sourceTree = "<group>";
-		};
-		D05F10561AD1EBF6000F8267 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				D05F10571AD1EBF6000F8267 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		D092BA291AD1E5A200BFC163 = {
 			isa = PBXGroup;
 			children = (
 				D092BA351AD1E5A300BFC163 /* PermissionScope */,
-				D092BA421AD1E5A300BFC163 /* PermissionScopeTests */,
 				D05F103F1AD1EBF6000F8267 /* PermissionScope-example */,
-				D05F10551AD1EBF6000F8267 /* PermissionScope-exampleTests */,
 				D092BA341AD1E5A300BFC163 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -137,24 +113,6 @@
 			isa = PBXGroup;
 			children = (
 				D092BA371AD1E5A300BFC163 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		D092BA421AD1E5A300BFC163 /* PermissionScopeTests */ = {
-			isa = PBXGroup;
-			children = (
-				D092BA451AD1E5A300BFC163 /* PermissionScopeTests.swift */,
-				D092BA431AD1E5A300BFC163 /* Supporting Files */,
-			);
-			name = PermissionScopeTests;
-			path = modalpermsTests;
-			sourceTree = "<group>";
-		};
-		D092BA431AD1E5A300BFC163 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				D092BA441AD1E5A300BFC163 /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
