@@ -27,13 +27,16 @@ public enum PermissionStatus {
 public struct PermissionConfig {
     let type: PermissionType
     let message: String
-    var status: PermissionStatus
 
     public init(type: PermissionType, message: String) {
         self.type = type
         self.message = message
-        self.status = .Unknown
     }
+}
+
+public struct PermissionResult {
+    let type: PermissionType
+    let status: PermissionStatus
 }
 
 public class PermissionScope: UIViewController, CLLocationManagerDelegate {
@@ -55,7 +58,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
 
     // internal state and resolution
     var configuredPermissions: [PermissionConfig] = []
-    var authChangeClosure: (([PermissionConfig]) -> Void)? = nil
+    var authChangeClosure: (([PermissionResult]) -> Void)? = nil
     var cancelClosure: (() -> Void)? = nil
 
     public override init() {
@@ -161,15 +164,28 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
         button.layer.borderColor = tintColor.CGColor
         button.layer.cornerRadius = 6
 
+        // this is a bit of a mess, eh?
         switch type {
         case .Contacts:
             button.setTitle("Allow Contacts".uppercaseString, forState: UIControlState.Normal)
         case .LocationAlways:
-            button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
-            button.addTarget(self, action: Selector("requestLocationAlways"), forControlEvents: UIControlEvents.TouchUpInside)
+            switch statusLocationAlways() {
+            case .Authorized:
+                setButtonAuthorizedStyle(button)
+                button.setTitle("Got Location".uppercaseString, forState: UIControlState.Normal)
+            default:
+                button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
+                button.addTarget(self, action: Selector("requestLocationAlways"), forControlEvents: UIControlEvents.TouchUpInside)
+            }
         case .LocationInUse:
-            button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
-            button.addTarget(self, action: Selector("requestLocationInUse"), forControlEvents: UIControlEvents.TouchUpInside)
+            switch statusLocationInUse() {
+            case .Authorized:
+                setButtonAuthorizedStyle(button)
+                button.setTitle("Got Location".uppercaseString, forState: UIControlState.Normal)
+            default:
+                button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
+                button.addTarget(self, action: Selector("requestLocationInUse"), forControlEvents: UIControlEvents.TouchUpInside)
+            }
         case .Notifications:
             button.setTitle("Enable Notifications".uppercaseString, forState: UIControlState.Normal)
 //        case .Microphone:
@@ -179,6 +195,12 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
         }
 
         return button
+    }
+
+    func setButtonAuthorizedStyle(button: UIButton) {
+        button.layer.borderWidth = 0
+        button.backgroundColor = tintColor
+        button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
     }
 
     func permissionStyledLabel(message: String) -> UILabel {
@@ -195,36 +217,33 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
 
     // MARK: dealing with system permissions
 
-    func statusLocationAlways() -> Bool {
+    func statusLocationAlways() -> PermissionStatus {
         let status = CLLocationManager.authorizationStatus()
         if status == CLAuthorizationStatus.AuthorizedAlways {
-            println("always")
-            return true
+            return .Authorized
         }
-        println("not always")
 
-        return false
+        return .Unknown
     }
 
-    func statusLocationInUse() -> Bool {
+    func statusLocationInUse() -> PermissionStatus {
         let status = CLLocationManager.authorizationStatus()
         if status == CLAuthorizationStatus.AuthorizedWhenInUse {
-            return true
+            return .Authorized
         }
 
-        return false
+        return .Unknown
     }
 
     func requestLocationAlways() {
-        println("always")
-        if !statusLocationAlways() {
+        if statusLocationAlways() != .Authorized {
             locationManager.delegate = self
             locationManager.requestAlwaysAuthorization()
         }
     }
 
     func requestLocationInUse() {
-        if !statusLocationInUse() {
+        if statusLocationInUse() != .Authorized {
             locationManager.delegate = self
             locationManager.requestWhenInUseAuthorization()
         }
@@ -232,7 +251,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
 
     // MARK: finally, displaying the panel
 
-    public func show(authChange: (([PermissionConfig]) -> Void)?, cancelled: (() -> Void)?) {
+    public func show(authChange: (([PermissionResult]) -> Void)?, cancelled: (() -> Void)?) {
         authChangeClosure = authChange
         cancelClosure = cancelled
 
@@ -265,9 +284,36 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
         })
     }
 
+    func detectAndCallback() {
+
+
+        if let authChangeClosure = authChangeClosure {
+            var resultStatuses: [PermissionResult] = []
+            for config in configuredPermissions {
+                var status: PermissionStatus
+
+                switch config.type {
+                case .LocationAlways:
+                    status = statusLocationAlways()
+                case .LocationInUse:
+                    status = statusLocationInUse()
+                default:
+                    status = .Unknown
+                }
+
+                let result = PermissionResult(type: config.type, status: status)
+                resultStatuses.append(result)
+            }
+
+            authChangeClosure(resultStatuses)
+        }
+    }
+
     // MARK: location delegate
 
     public func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         println("change loc auth \(status.rawValue)")
+
+        detectAndCallback()
     }
 }

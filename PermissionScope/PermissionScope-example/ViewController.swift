@@ -27,7 +27,11 @@ class ViewController: UIViewController {
         pscope.addPermission(PermissionConfig(type: .Notifications, message: "We use this to send you\r\nspam and love notes"))
         pscope.addPermission(PermissionConfig(type: .LocationAlways, message: "We use this to send you\r\nspam and love notes"))
 
-        pscope.show(nil, cancelled: nil)
+        pscope.show({ (results) -> Void in
+            println("got results \(results)")
+        }, cancelled: { () -> Void in
+            println("thing was cancelled")
+        })
     }
 }
 
