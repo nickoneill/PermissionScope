@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import AddressBook
 
 public enum PermissionType {
     case Contacts
@@ -139,20 +140,18 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
             let type = configuredPermissions[index].type
             switch type {
             case .LocationAlways:
-                switch statusLocationAlways() {
-                case .Authorized:
+                if statusLocationAlways() == .Authorized {
                     setButtonAuthorizedStyle(button)
                     button.setTitle("Got Location".uppercaseString, forState: UIControlState.Normal)
-                default:
-                    break
                 }
             case .LocationInUse:
-                switch statusLocationInUse() {
-                case .Authorized:
+                if statusLocationInUse() == .Authorized {
                     setButtonAuthorizedStyle(button)
                     button.setTitle("Got Location".uppercaseString, forState: UIControlState.Normal)
-                default:
-                    break
+                }
+            case .Contacts:
+                if statusContacts() == .Authorized {
+
                 }
             default:
                 break
@@ -189,6 +188,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
         switch type {
         case .Contacts:
             button.setTitle("Allow Contacts".uppercaseString, forState: UIControlState.Normal)
+            button.addTarget(self, action: Selector("requestContacts"), forControlEvents: UIControlEvents.TouchUpInside)
         case .LocationAlways:
             button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
             button.addTarget(self, action: Selector("requestLocationAlways"), forControlEvents: UIControlEvents.TouchUpInside)
@@ -203,6 +203,8 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
             }
         case .Notifications:
             button.setTitle("Enable Notifications".uppercaseString, forState: UIControlState.Normal)
+            button.addTarget(self, action: Selector("requestNotifications"), forControlEvents: UIControlEvents.TouchUpInside)
+
 //        case .Microphone:
 //            button.setTitle("Allow Microphone".uppercaseString, forState: UIControlState.Normal)
 //        case .Camera:
@@ -232,18 +234,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
 
     // MARK: dealing with system permissions
 
-    func statusLocationAlways() -> PermissionStatus {
+    public func statusLocationAlways() -> PermissionStatus {
         let status = CLLocationManager.authorizationStatus()
         if status == CLAuthorizationStatus.AuthorizedAlways {
-            return .Authorized
-        }
-
-        return .Unknown
-    }
-
-    func statusLocationInUse() -> PermissionStatus {
-        let status = CLLocationManager.authorizationStatus()
-        if status == CLAuthorizationStatus.AuthorizedWhenInUse {
             return .Authorized
         }
 
@@ -257,10 +250,49 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
         }
     }
 
+    public func statusLocationInUse() -> PermissionStatus {
+        let status = CLLocationManager.authorizationStatus()
+        if status == CLAuthorizationStatus.AuthorizedWhenInUse {
+            return .Authorized
+        }
+
+        return .Unknown
+    }
+
     func requestLocationInUse() {
         if statusLocationInUse() != .Authorized {
             locationManager.delegate = self
             locationManager.requestWhenInUseAuthorization()
+        }
+    }
+
+    public func statusContacts() -> PermissionStatus {
+        let status = ABAddressBookGetAuthorizationStatus()
+        if status == ABAuthorizationStatus.Authorized {
+            return .Authorized
+        }
+
+        return .Unknown
+    }
+
+    func requestContacts() {
+        if statusContacts() != .Authorized {
+            ABAddressBookRequestAccessWithCompletion(nil) { (success, error) -> Void in
+                self.detectAndCallback()
+            }
+        }
+    }
+
+    public func statusNotifications() -> PermissionStatus {
+        let settings = UIApplication.sharedApplication().currentUserNotificationSettings()
+        println("settings \(settings)")
+
+        return .Unknown
+    }
+
+    func requestNotifications() {
+        if statusNotifications() != .Authorized {
+
         }
     }
 
