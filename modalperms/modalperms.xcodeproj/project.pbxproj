@@ -646,6 +646,7 @@
 				D05F105B1AD1EBF6000F8267 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D05F105F1AD1EBF6000F8267 /* Build configuration list for PBXNativeTarget "modalperms-exampleTests" */ = {
 			isa = XCConfigurationList;
@@ -654,6 +655,7 @@
 				D05F105D1AD1EBF6000F8267 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D092BA2D1AD1E5A200BFC163 /* Build configuration list for PBXProject "modalperms" */ = {
 			isa = XCConfigurationList;

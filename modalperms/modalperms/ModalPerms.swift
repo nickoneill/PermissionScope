@@ -7,41 +7,60 @@
 //
 
 import Foundation
+import CoreLocation
 
 public enum PermissionType {
     case Contacts
-    case Location
-    case Microphone
-    case Camera
+    case LocationAlways
+    case LocationInUse
     case Notifications
+//    case Microphone
+//    case Camera
+}
+
+public enum PermissionStatus {
+    case Authorized
+    case Unauthorized
+    case Unknown
 }
 
 public struct PermissionConfig {
     let type: PermissionType
     let message: String
+    var status: PermissionStatus
 
     public init(type: PermissionType, message: String) {
         self.type = type
         self.message = message
+        self.status = .Unknown
     }
 }
 
-public class ModalPerms: UIViewController {
+public class ModalPerms: UIViewController, CLLocationManagerDelegate {
     // constants
     let ContentWidth: CGFloat = 280.0
     let ContentHeight: CGFloat = 480.0
 
+    // configurable things
     public let headerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
     public let bodyLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 240, height: 80))
     public var tintColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
 
+    // some view hierarchy
     let baseView = UIView()
     let contentView = UIView()
 
+    // various managers
+    let locationManager = CLLocationManager()
+
+    // internal state and resolution
     var configuredPermissions: [PermissionConfig] = []
+    var authChangeClosure: (([PermissionConfig]) -> Void)? = nil
+    var cancelClosure: (() -> Void)? = nil
 
     public override init() {
         super.init()
+
         // Set up main view
         view.frame = UIScreen.mainScreen().bounds
         view.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
@@ -124,11 +143,10 @@ public class ModalPerms: UIViewController {
         }
     }
 
-
     // MARK: customizing the permissions
 
     public func addPermission(config: PermissionConfig) {
-        assert(!config.message.isEmpty, "Including a message about your permission is helpful")
+        assert(!config.message.isEmpty, "Including a message about your permission usage is helpful")
         assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
 
         configuredPermissions.append(config)
@@ -146,14 +164,18 @@ public class ModalPerms: UIViewController {
         switch type {
         case .Contacts:
             button.setTitle("Allow Contacts".uppercaseString, forState: UIControlState.Normal)
-        case .Location:
+        case .LocationAlways:
             button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
+            button.addTarget(self, action: Selector("requestLocationAlways"), forControlEvents: UIControlEvents.TouchUpInside)
+        case .LocationInUse:
+            button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
+            button.addTarget(self, action: Selector("requestLocationInUse"), forControlEvents: UIControlEvents.TouchUpInside)
         case .Notifications:
             button.setTitle("Enable Notifications".uppercaseString, forState: UIControlState.Normal)
-        case .Microphone:
-            button.setTitle("Allow Microphone".uppercaseString, forState: UIControlState.Normal)
-        case .Camera:
-            button.setTitle("Allow Camera".uppercaseString, forState: UIControlState.Normal)
+//        case .Microphone:
+//            button.setTitle("Allow Microphone".uppercaseString, forState: UIControlState.Normal)
+//        case .Camera:
+//            button.setTitle("Allow Camera".uppercaseString, forState: UIControlState.Normal)
         }
 
         return button
@@ -171,9 +193,49 @@ public class ModalPerms: UIViewController {
         return label
     }
 
+    // MARK: dealing with system permissions
+
+    func statusLocationAlways() -> Bool {
+        let status = CLLocationManager.authorizationStatus()
+        if status == CLAuthorizationStatus.AuthorizedAlways {
+            println("always")
+            return true
+        }
+        println("not always")
+
+        return false
+    }
+
+    func statusLocationInUse() -> Bool {
+        let status = CLLocationManager.authorizationStatus()
+        if status == CLAuthorizationStatus.AuthorizedWhenInUse {
+            return true
+        }
+
+        return false
+    }
+
+    func requestLocationAlways() {
+        println("always")
+        if !statusLocationAlways() {
+            locationManager.delegate = self
+            locationManager.requestAlwaysAuthorization()
+        }
+    }
+
+    func requestLocationInUse() {
+        if !statusLocationInUse() {
+            locationManager.delegate = self
+            locationManager.requestWhenInUseAuthorization()
+        }
+    }
+
     // MARK: finally, displaying the panel
 
-    public func show() {
+    public func show(authChange: (([PermissionConfig]) -> Void)?, cancelled: (() -> Void)?) {
+        authChangeClosure = authChange
+        cancelClosure = cancelled
+
         view.alpha = 0
         let rv = UIApplication.sharedApplication().keyWindow!
         rv.addSubview(view)
@@ -203,11 +265,9 @@ public class ModalPerms: UIViewController {
         })
     }
 
-    public func somethingElse() {
-        println("ok")
-    }
+    // MARK: location delegate
 
-    public func doSomething() {
-        println("Yeah, it works")
+    public func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        println("change loc auth \(status.rawValue)")
     }
 }

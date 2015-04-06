@@ -25,9 +25,9 @@ class ViewController: UIViewController {
     @IBAction func doAThing() {
         modal.addPermission(PermissionConfig(type: .Contacts, message: "We use this to show you\r\n a list of your contacts"))
         modal.addPermission(PermissionConfig(type: .Notifications, message: "We use this to send you\r\nspam and love notes"))
-        modal.addPermission(PermissionConfig(type: .Location, message: "We use this to send you\r\nspam and love notes"))
+        modal.addPermission(PermissionConfig(type: .LocationAlways, message: "We use this to send you\r\nspam and love notes"))
 
-        modal.show()
+        modal.show(nil, cancelled: nil)
     }
 }
 
