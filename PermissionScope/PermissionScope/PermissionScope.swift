@@ -151,10 +151,14 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
                 }
             case .Contacts:
                 if statusContacts() == .Authorized {
-
+                    setButtonAuthorizedStyle(button)
+                    button.setTitle("Allowed Contacts".uppercaseString, forState: UIControlState.Normal)
                 }
-            default:
-                break
+            case .Notifications:
+                if statusNotifications() == .Authorized {
+                    setButtonAuthorizedStyle(button)
+                    button.setTitle("Allowed Notifications".uppercaseString, forState: UIControlState.Normal)
+                }
             }
 
             let label = permissionLabels[index]
@@ -193,14 +197,8 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
             button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
             button.addTarget(self, action: Selector("requestLocationAlways"), forControlEvents: UIControlEvents.TouchUpInside)
         case .LocationInUse:
-            switch statusLocationInUse() {
-            case .Authorized:
-                setButtonAuthorizedStyle(button)
-                button.setTitle("Got Location".uppercaseString, forState: UIControlState.Normal)
-            default:
-                button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
-                button.addTarget(self, action: Selector("requestLocationInUse"), forControlEvents: UIControlEvents.TouchUpInside)
-            }
+            button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
+            button.addTarget(self, action: Selector("requestLocationInUse"), forControlEvents: UIControlEvents.TouchUpInside)
         case .Notifications:
             button.setTitle("Enable Notifications".uppercaseString, forState: UIControlState.Normal)
             button.addTarget(self, action: Selector("requestNotifications"), forControlEvents: UIControlEvents.TouchUpInside)
@@ -359,8 +357,8 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
                     status = statusLocationInUse()
                 case .Contacts:
                     status = statusContacts()
-                default:
-                    status = .Unknown
+                case .Notifications:
+                    status = statusNotifications()
                 }
 
                 let result = PermissionResult(type: config.type, status: status)
