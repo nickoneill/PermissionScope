@@ -1,16 +1,16 @@
 //
 //  ViewController.swift
-//  modalperms-example
+//  PermissionScope-example
 //
 //  Created by Nick O'Neill on 4/5/15.
 //  Copyright (c) 2015 That Thing in Swift. All rights reserved.
 //
 
 import UIKit
-import modalperms
+import PermissionScope
 
 class ViewController: UIViewController {
-    let modal = ModalPerms()
+    let pscope = PermissionScope()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,11 +23,11 @@ class ViewController: UIViewController {
     }
 
     @IBAction func doAThing() {
-        modal.addPermission(PermissionConfig(type: .Contacts, message: "We use this to show you\r\n a list of your contacts"))
-        modal.addPermission(PermissionConfig(type: .Notifications, message: "We use this to send you\r\nspam and love notes"))
-        modal.addPermission(PermissionConfig(type: .LocationAlways, message: "We use this to send you\r\nspam and love notes"))
+        pscope.addPermission(PermissionConfig(type: .Contacts, message: "We use this to show you\r\n a list of your contacts"))
+        pscope.addPermission(PermissionConfig(type: .Notifications, message: "We use this to send you\r\nspam and love notes"))
+        pscope.addPermission(PermissionConfig(type: .LocationAlways, message: "We use this to send you\r\nspam and love notes"))
 
-        modal.show(nil, cancelled: nil)
+        pscope.show(nil, cancelled: nil)
     }
 }
 

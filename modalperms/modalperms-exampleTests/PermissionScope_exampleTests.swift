@@ -1,6 +1,6 @@
 //
-//  modalperms_exampleTests.swift
-//  modalperms-exampleTests
+//  PermissionScope_exampleTests.swift
+//  PermissionScope-exampleTests
 //
 //  Created by Nick O'Neill on 4/5/15.
 //  Copyright (c) 2015 That Thing in Swift. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import XCTest
 
-class modalperms_exampleTests: XCTestCase {
+class PermissionScope_exampleTests: XCTestCase {
     
     override func setUp() {
         super.setUp()

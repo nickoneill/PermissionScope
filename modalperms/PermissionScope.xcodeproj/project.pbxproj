@@ -12,29 +12,12 @@
 		D05F10481AD1EBF6000F8267 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D05F10461AD1EBF6000F8267 /* Main.storyboard */; };
 		D05F104A1AD1EBF6000F8267 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D05F10491AD1EBF6000F8267 /* Images.xcassets */; };
 		D05F104D1AD1EBF6000F8267 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D05F104B1AD1EBF6000F8267 /* LaunchScreen.xib */; };
-		D05F10591AD1EBF6000F8267 /* modalperms_exampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05F10581AD1EBF6000F8267 /* modalperms_exampleTests.swift */; };
-		D092BA391AD1E5A300BFC163 /* modalperms.h in Headers */ = {isa = PBXBuildFile; fileRef = D092BA381AD1E5A300BFC163 /* modalperms.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D092BA3F1AD1E5A300BFC163 /* modalperms.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D092BA331AD1E5A300BFC163 /* modalperms.framework */; };
-		D092BA461AD1E5A300BFC163 /* modalpermsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D092BA451AD1E5A300BFC163 /* modalpermsTests.swift */; };
-		D092BA501AD1E67300BFC163 /* ModalPerms.swift in Sources */ = {isa = PBXBuildFile; fileRef = D092BA4F1AD1E67300BFC163 /* ModalPerms.swift */; };
+		D092BA391AD1E5A300BFC163 /* PermissionScope.h in Headers */ = {isa = PBXBuildFile; fileRef = D092BA381AD1E5A300BFC163 /* PermissionScope.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D092BA501AD1E67300BFC163 /* PermissionScope.swift in Sources */ = {isa = PBXBuildFile; fileRef = D092BA4F1AD1E67300BFC163 /* PermissionScope.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		D05F10531AD1EBF6000F8267 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D092BA2A1AD1E5A200BFC163 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = D05F103D1AD1EBF6000F8267;
-			remoteInfo = "modalperms-example";
-		};
 		D05F10641AD1F3D8000F8267 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D092BA2A1AD1E5A200BFC163 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = D092BA321AD1E5A300BFC163;
-			remoteInfo = modalperms;
-		};
-		D092BA401AD1E5A300BFC163 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D092BA2A1AD1E5A200BFC163 /* Project object */;
 			proxyType = 1;
@@ -44,34 +27,25 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		D05F103E1AD1EBF6000F8267 /* modalperms-example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "modalperms-example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D05F103E1AD1EBF6000F8267 /* PermissionScope-example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PermissionScope-example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D05F10411AD1EBF6000F8267 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D05F10421AD1EBF6000F8267 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D05F10441AD1EBF6000F8267 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		D05F10471AD1EBF6000F8267 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D05F10491AD1EBF6000F8267 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D05F104C1AD1EBF6000F8267 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		D05F10521AD1EBF6000F8267 /* modalperms-exampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "modalperms-exampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D05F10571AD1EBF6000F8267 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D05F10581AD1EBF6000F8267 /* modalperms_exampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = modalperms_exampleTests.swift; sourceTree = "<group>"; };
-		D092BA331AD1E5A300BFC163 /* modalperms.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = modalperms.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D05F10581AD1EBF6000F8267 /* PermissionScope_exampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionScope_exampleTests.swift; sourceTree = "<group>"; };
+		D092BA331AD1E5A300BFC163 /* PermissionScope.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PermissionScope.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D092BA371AD1E5A300BFC163 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D092BA381AD1E5A300BFC163 /* modalperms.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = modalperms.h; sourceTree = "<group>"; };
-		D092BA3E1AD1E5A300BFC163 /* modalpermsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = modalpermsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D092BA381AD1E5A300BFC163 /* PermissionScope.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PermissionScope.h; sourceTree = "<group>"; };
 		D092BA441AD1E5A300BFC163 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D092BA451AD1E5A300BFC163 /* modalpermsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = modalpermsTests.swift; sourceTree = "<group>"; };
-		D092BA4F1AD1E67300BFC163 /* ModalPerms.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalPerms.swift; sourceTree = "<group>"; };
+		D092BA451AD1E5A300BFC163 /* PermissionScopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionScopeTests.swift; sourceTree = "<group>"; };
+		D092BA4F1AD1E67300BFC163 /* PermissionScope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermissionScope.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		D05F103B1AD1EBF6000F8267 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D05F104F1AD1EBF6000F8267 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -85,18 +59,10 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D092BA3B1AD1E5A300BFC163 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D092BA3F1AD1E5A300BFC163 /* modalperms.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D05F103F1AD1EBF6000F8267 /* modalperms-example */ = {
+		D05F103F1AD1EBF6000F8267 /* PermissionScope-example */ = {
 			isa = PBXGroup;
 			children = (
 				D05F10421AD1EBF6000F8267 /* AppDelegate.swift */,
@@ -106,6 +72,7 @@
 				D05F104B1AD1EBF6000F8267 /* LaunchScreen.xib */,
 				D05F10401AD1EBF6000F8267 /* Supporting Files */,
 			);
+			name = "PermissionScope-example";
 			path = "modalperms-example";
 			sourceTree = "<group>";
 		};
@@ -117,12 +84,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		D05F10551AD1EBF6000F8267 /* modalperms-exampleTests */ = {
+		D05F10551AD1EBF6000F8267 /* PermissionScope-exampleTests */ = {
 			isa = PBXGroup;
 			children = (
-				D05F10581AD1EBF6000F8267 /* modalperms_exampleTests.swift */,
+				D05F10581AD1EBF6000F8267 /* PermissionScope_exampleTests.swift */,
 				D05F10561AD1EBF6000F8267 /* Supporting Files */,
 			);
+			name = "PermissionScope-exampleTests";
 			path = "modalperms-exampleTests";
 			sourceTree = "<group>";
 		};
@@ -137,10 +105,10 @@
 		D092BA291AD1E5A200BFC163 = {
 			isa = PBXGroup;
 			children = (
-				D092BA351AD1E5A300BFC163 /* modalperms */,
-				D092BA421AD1E5A300BFC163 /* modalpermsTests */,
-				D05F103F1AD1EBF6000F8267 /* modalperms-example */,
-				D05F10551AD1EBF6000F8267 /* modalperms-exampleTests */,
+				D092BA351AD1E5A300BFC163 /* PermissionScope */,
+				D092BA421AD1E5A300BFC163 /* PermissionScopeTests */,
+				D05F103F1AD1EBF6000F8267 /* PermissionScope-example */,
+				D05F10551AD1EBF6000F8267 /* PermissionScope-exampleTests */,
 				D092BA341AD1E5A300BFC163 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -148,21 +116,20 @@
 		D092BA341AD1E5A300BFC163 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D092BA331AD1E5A300BFC163 /* modalperms.framework */,
-				D092BA3E1AD1E5A300BFC163 /* modalpermsTests.xctest */,
-				D05F103E1AD1EBF6000F8267 /* modalperms-example.app */,
-				D05F10521AD1EBF6000F8267 /* modalperms-exampleTests.xctest */,
+				D092BA331AD1E5A300BFC163 /* PermissionScope.framework */,
+				D05F103E1AD1EBF6000F8267 /* PermissionScope-example.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		D092BA351AD1E5A300BFC163 /* modalperms */ = {
+		D092BA351AD1E5A300BFC163 /* PermissionScope */ = {
 			isa = PBXGroup;
 			children = (
-				D092BA381AD1E5A300BFC163 /* modalperms.h */,
-				D092BA4F1AD1E67300BFC163 /* ModalPerms.swift */,
+				D092BA381AD1E5A300BFC163 /* PermissionScope.h */,
+				D092BA4F1AD1E67300BFC163 /* PermissionScope.swift */,
 				D092BA361AD1E5A300BFC163 /* Supporting Files */,
 			);
+			name = PermissionScope;
 			path = modalperms;
 			sourceTree = "<group>";
 		};
@@ -174,12 +141,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		D092BA421AD1E5A300BFC163 /* modalpermsTests */ = {
+		D092BA421AD1E5A300BFC163 /* PermissionScopeTests */ = {
 			isa = PBXGroup;
 			children = (
-				D092BA451AD1E5A300BFC163 /* modalpermsTests.swift */,
+				D092BA451AD1E5A300BFC163 /* PermissionScopeTests.swift */,
 				D092BA431AD1E5A300BFC163 /* Supporting Files */,
 			);
+			name = PermissionScopeTests;
 			path = modalpermsTests;
 			sourceTree = "<group>";
 		};
@@ -198,16 +166,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D092BA391AD1E5A300BFC163 /* modalperms.h in Headers */,
+				D092BA391AD1E5A300BFC163 /* PermissionScope.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		D05F103D1AD1EBF6000F8267 /* modalperms-example */ = {
+		D05F103D1AD1EBF6000F8267 /* PermissionScope-example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D05F105E1AD1EBF6000F8267 /* Build configuration list for PBXNativeTarget "modalperms-example" */;
+			buildConfigurationList = D05F105E1AD1EBF6000F8267 /* Build configuration list for PBXNativeTarget "PermissionScope-example" */;
 			buildPhases = (
 				D05F103A1AD1EBF6000F8267 /* Sources */,
 				D05F103B1AD1EBF6000F8267 /* Frameworks */,
@@ -218,32 +186,14 @@
 			dependencies = (
 				D05F10651AD1F3D8000F8267 /* PBXTargetDependency */,
 			);
-			name = "modalperms-example";
+			name = "PermissionScope-example";
 			productName = "modalperms-example";
-			productReference = D05F103E1AD1EBF6000F8267 /* modalperms-example.app */;
+			productReference = D05F103E1AD1EBF6000F8267 /* PermissionScope-example.app */;
 			productType = "com.apple.product-type.application";
 		};
-		D05F10511AD1EBF6000F8267 /* modalperms-exampleTests */ = {
+		D092BA321AD1E5A300BFC163 /* PermissionScope */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D05F105F1AD1EBF6000F8267 /* Build configuration list for PBXNativeTarget "modalperms-exampleTests" */;
-			buildPhases = (
-				D05F104E1AD1EBF6000F8267 /* Sources */,
-				D05F104F1AD1EBF6000F8267 /* Frameworks */,
-				D05F10501AD1EBF6000F8267 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				D05F10541AD1EBF6000F8267 /* PBXTargetDependency */,
-			);
-			name = "modalperms-exampleTests";
-			productName = "modalperms-exampleTests";
-			productReference = D05F10521AD1EBF6000F8267 /* modalperms-exampleTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		D092BA321AD1E5A300BFC163 /* modalperms */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = D092BA491AD1E5A300BFC163 /* Build configuration list for PBXNativeTarget "modalperms" */;
+			buildConfigurationList = D092BA491AD1E5A300BFC163 /* Build configuration list for PBXNativeTarget "PermissionScope" */;
 			buildPhases = (
 				D092BA2E1AD1E5A300BFC163 /* Sources */,
 				D092BA2F1AD1E5A300BFC163 /* Frameworks */,
@@ -254,28 +204,10 @@
 			);
 			dependencies = (
 			);
-			name = modalperms;
+			name = PermissionScope;
 			productName = modalperms;
-			productReference = D092BA331AD1E5A300BFC163 /* modalperms.framework */;
+			productReference = D092BA331AD1E5A300BFC163 /* PermissionScope.framework */;
 			productType = "com.apple.product-type.framework";
-		};
-		D092BA3D1AD1E5A300BFC163 /* modalpermsTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = D092BA4C1AD1E5A300BFC163 /* Build configuration list for PBXNativeTarget "modalpermsTests" */;
-			buildPhases = (
-				D092BA3A1AD1E5A300BFC163 /* Sources */,
-				D092BA3B1AD1E5A300BFC163 /* Frameworks */,
-				D092BA3C1AD1E5A300BFC163 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				D092BA411AD1E5A300BFC163 /* PBXTargetDependency */,
-			);
-			name = modalpermsTests;
-			productName = modalpermsTests;
-			productReference = D092BA3E1AD1E5A300BFC163 /* modalpermsTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -289,19 +221,12 @@
 					D05F103D1AD1EBF6000F8267 = {
 						CreatedOnToolsVersion = 6.2;
 					};
-					D05F10511AD1EBF6000F8267 = {
-						CreatedOnToolsVersion = 6.2;
-						TestTargetID = D05F103D1AD1EBF6000F8267;
-					};
 					D092BA321AD1E5A300BFC163 = {
-						CreatedOnToolsVersion = 6.2;
-					};
-					D092BA3D1AD1E5A300BFC163 = {
 						CreatedOnToolsVersion = 6.2;
 					};
 				};
 			};
-			buildConfigurationList = D092BA2D1AD1E5A200BFC163 /* Build configuration list for PBXProject "modalperms" */;
+			buildConfigurationList = D092BA2D1AD1E5A200BFC163 /* Build configuration list for PBXProject "PermissionScope" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -314,10 +239,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D092BA321AD1E5A300BFC163 /* modalperms */,
-				D092BA3D1AD1E5A300BFC163 /* modalpermsTests */,
-				D05F103D1AD1EBF6000F8267 /* modalperms-example */,
-				D05F10511AD1EBF6000F8267 /* modalperms-exampleTests */,
+				D092BA321AD1E5A300BFC163 /* PermissionScope */,
+				D05F103D1AD1EBF6000F8267 /* PermissionScope-example */,
 			);
 		};
 /* End PBXProject section */
@@ -333,21 +256,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D05F10501AD1EBF6000F8267 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		D092BA311AD1E5A300BFC163 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D092BA3C1AD1E5A300BFC163 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -366,47 +275,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D05F104E1AD1EBF6000F8267 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D05F10591AD1EBF6000F8267 /* modalperms_exampleTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		D092BA2E1AD1E5A300BFC163 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D092BA501AD1E67300BFC163 /* ModalPerms.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D092BA3A1AD1E5A300BFC163 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D092BA461AD1E5A300BFC163 /* modalpermsTests.swift in Sources */,
+				D092BA501AD1E67300BFC163 /* PermissionScope.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		D05F10541AD1EBF6000F8267 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = D05F103D1AD1EBF6000F8267 /* modalperms-example */;
-			targetProxy = D05F10531AD1EBF6000F8267 /* PBXContainerItemProxy */;
-		};
 		D05F10651AD1F3D8000F8267 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D092BA321AD1E5A300BFC163 /* modalperms */;
+			target = D092BA321AD1E5A300BFC163 /* PermissionScope */;
 			targetProxy = D05F10641AD1F3D8000F8267 /* PBXContainerItemProxy */;
-		};
-		D092BA411AD1E5A300BFC163 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = D092BA321AD1E5A300BFC163 /* modalperms */;
-			targetProxy = D092BA401AD1E5A300BFC163 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -440,7 +323,7 @@
 				);
 				INFOPLIST_FILE = "modalperms-example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "PermissionScope-example";
 			};
 			name = Debug;
 		};
@@ -450,41 +333,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = "modalperms-example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
-		D05F105C1AD1EBF6000F8267 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "modalperms-exampleTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/modalperms-example.app/modalperms-example";
-			};
-			name = Debug;
-		};
-		D05F105D1AD1EBF6000F8267 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "modalperms-exampleTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/modalperms-example.app/modalperms-example";
+				PRODUCT_NAME = "PermissionScope-example";
 			};
 			name = Release;
 		};
@@ -584,7 +433,7 @@
 				INFOPLIST_FILE = modalperms/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = PermissionScope;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -601,45 +450,15 @@
 				INFOPLIST_FILE = modalperms/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = PermissionScope;
 				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
-		D092BA4D1AD1E5A300BFC163 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = modalpermsTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		D092BA4E1AD1E5A300BFC163 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = modalpermsTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D05F105E1AD1EBF6000F8267 /* Build configuration list for PBXNativeTarget "modalperms-example" */ = {
+		D05F105E1AD1EBF6000F8267 /* Build configuration list for PBXNativeTarget "PermissionScope-example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D05F105A1AD1EBF6000F8267 /* Debug */,
@@ -648,16 +467,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D05F105F1AD1EBF6000F8267 /* Build configuration list for PBXNativeTarget "modalperms-exampleTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				D05F105C1AD1EBF6000F8267 /* Debug */,
-				D05F105D1AD1EBF6000F8267 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		D092BA2D1AD1E5A200BFC163 /* Build configuration list for PBXProject "modalperms" */ = {
+		D092BA2D1AD1E5A200BFC163 /* Build configuration list for PBXProject "PermissionScope" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D092BA471AD1E5A300BFC163 /* Debug */,
@@ -666,20 +476,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D092BA491AD1E5A300BFC163 /* Build configuration list for PBXNativeTarget "modalperms" */ = {
+		D092BA491AD1E5A300BFC163 /* Build configuration list for PBXNativeTarget "PermissionScope" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D092BA4A1AD1E5A300BFC163 /* Debug */,
 				D092BA4B1AD1E5A300BFC163 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		D092BA4C1AD1E5A300BFC163 /* Build configuration list for PBXNativeTarget "modalpermsTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				D092BA4D1AD1E5A300BFC163 /* Debug */,
-				D092BA4E1AD1E5A300BFC163 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

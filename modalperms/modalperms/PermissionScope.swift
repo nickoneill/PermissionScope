@@ -1,6 +1,6 @@
 //
-//  ModalPerms.swift
-//  modalperms
+//  PermissionScope.swift
+//  PermissionScope
 //
 //  Created by Nick O'Neill on 4/5/15.
 //  Copyright (c) 2015 That Thing in Swift. All rights reserved.
@@ -36,7 +36,7 @@ public struct PermissionConfig {
     }
 }
 
-public class ModalPerms: UIViewController, CLLocationManagerDelegate {
+public class PermissionScope: UIViewController, CLLocationManagerDelegate {
     // constants
     let ContentWidth: CGFloat = 280.0
     let ContentHeight: CGFloat = 480.0
