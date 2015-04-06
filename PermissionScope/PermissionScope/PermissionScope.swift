@@ -346,6 +346,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
     func detectAndCallback() {
         self.view.setNeedsLayout()
 
+        // compile the results and pass them back if necessary
         if let authChangeClosure = authChangeClosure {
             var resultStatuses: [PermissionResult] = []
             for config in configuredPermissions {
@@ -356,6 +357,8 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
                     status = statusLocationAlways()
                 case .LocationInUse:
                     status = statusLocationInUse()
+                case .Contacts:
+                    status = statusContacts()
                 default:
                     status = .Unknown
                 }

@@ -23,9 +23,9 @@ class ViewController: UIViewController {
     }
 
     @IBAction func doAThing() {
-        pscope.addPermission(PermissionConfig(type: .Contacts, message: "We use this to show you\r\n a list of your contacts"))
+        pscope.addPermission(PermissionConfig(type: .Contacts, message: "We use this to steal\r\nyour friends"))
         pscope.addPermission(PermissionConfig(type: .Notifications, message: "We use this to send you\r\nspam and love notes"))
-        pscope.addPermission(PermissionConfig(type: .LocationAlways, message: "We use this to send you\r\nspam and love notes"))
+        pscope.addPermission(PermissionConfig(type: .LocationAlways, message: "We use this to track\r\nwhere you live"))
 
         pscope.show({ (results) -> Void in
             println("got results \(results)")
