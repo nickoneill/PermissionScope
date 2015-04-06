@@ -305,9 +305,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
         let pollMax = 60
         var pollCount = 0
         while pollCount <= pollMax {
-            println("polling")
 
             let settings = UIApplication.sharedApplication().currentUserNotificationSettings()
+            println("polling \(settings)")
             if settings.types != UIUserNotificationType.None {
                 self.detectAndCallback()
                 break
@@ -376,7 +376,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
     }
 
     func detectAndCallback() {
-        self.view.setNeedsLayout()
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.view.setNeedsLayout()
+        })
 
         // compile the results and pass them back if necessary
         let results = getResultsForConfig()
@@ -385,7 +387,16 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate {
         }
 
         // and hide if we've sucessfully got all permissions
-        self.hide()
+        var permissionMissing = false
+        for result in getResultsForConfig() {
+            if result.status != .Authorized {
+                permissionMissing = true
+            }
+        }
+
+        if !permissionMissing {
+            self.hide()
+        }
     }
 
     func getResultsForConfig() -> [PermissionResult] {
