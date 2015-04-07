@@ -16,6 +16,8 @@ PermissionScope gives you space to explain your reasons for requesting their pre
 
 ## installation
 
+*  requires iOS 8+
+
 something something framework carthage
 
 yada yada podspec not done yet
@@ -24,16 +26,29 @@ yada yada podspec not done yet
 
 The simplest implementation displays a list of permissions and is removed when all of them have satisfactory access.
 
+```swift
     let pscope = PermissionScope()
     pscope.addPermission(PermissionConfig(type: .Contacts, message: "We use this to steal\r\nyour friends"))
     pscope.addPermission(PermissionConfig(type: .Notifications, message: "We use this to send you\r\nspam and love notes"))
     pscope.addPermission(PermissionConfig(type: .LocationInUse, message: "We use this to track\r\nwhere you live"))
     
     pscope.show()
+```
 
 The permissions view will automatically show if there are permissions to approve and will take no action if permissions are already granted. It will automatically hide when all permissions have been approved.
 
 If you're attempting to block access to a screen in your app without permissions (like, say, the broadcast screen in Periscope), you should watch for the cancel closure and take an appropriate action for your app.
+
+```swift
+    pscope.show({ (results) -> Void in
+        println("results is a PermissionsResult for each config")
+    }, cancelled: { () -> Void in
+        println("cancelled")
+    })
+```
+
+### beta
+We're using PermissionScope in [treat](https://gettre.at) and fixing issues as they arise. Still, there's definitely some beta-ness around. Check out what we have planned in [issues](http://github.com/nickoneill/PermissionScope/issues) and contribute a suggestion or some code :)
 
 ### PermissionScope registers user notification settings, not remote notifications
 Users will get the prompt to enable notifications when using PermissionScope but it's up to you to watch for results in your app delegate's `didRegisterUserNotificationSettings` and then register for remote notifications independently. This won't alert the user again. You're still responsible for handling the shipment of user notification settings off to your push server.
