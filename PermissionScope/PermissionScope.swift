@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 That Thing in Swift. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import CoreLocation
 import AddressBook
 
