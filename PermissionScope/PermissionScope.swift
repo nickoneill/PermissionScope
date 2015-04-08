@@ -53,6 +53,8 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     public let headerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
     public let bodyLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 240, height: 80))
     public var tintColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
+    public var buttonFont = UIFont.boldSystemFontOfSize(14)
+    public var labelFont = UIFont.systemFontOfSize(14)
 
     // some view hierarchy
     let baseView = UIView()
@@ -189,7 +191,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     func permissionStyledButton(type: PermissionType) -> UIButton {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 220, height: 40))
         button.setTitleColor(tintColor, forState: UIControlState.Normal)
-        button.titleLabel?.font = UIFont.boldSystemFontOfSize(14)
+        button.titleLabel?.font = buttonFont
 
         button.layer.borderWidth = 1
         button.layer.borderColor = tintColor.CGColor
@@ -227,7 +229,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
     func permissionStyledLabel(message: String) -> UILabel {
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 260, height: 50))
-        label.font = UIFont.systemFontOfSize(14)
+        label.font = labelFont
         label.numberOfLines = 2
         label.textAlignment = NSTextAlignment.Center
 
