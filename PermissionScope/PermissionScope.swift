@@ -65,7 +65,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     var configuredPermissions: [PermissionConfig] = []
     var permissionButtons: [UIButton] = []
     var permissionLabels: [UILabel] = []
-    var authChangeClosure: (([PermissionResult]) -> Void)? = nil
+    var authChangeClosure: ((Bool, [PermissionResult]) -> Void)? = nil
     var cancelClosure: (() -> Void)? = nil
 
     public override init() {
@@ -326,19 +326,26 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
     // MARK: finally, displaying the panel
 
-    public func show(authChange: (([PermissionResult]) -> Void)? = nil, cancelled: (() -> Void)? = nil) {
+    public func show(authChange: ((success: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: (() -> Void)? = nil) {
+        assert(configuredPermissions.count > 0, "Please add at least one permission")
+
         authChangeClosure = authChange
         cancelClosure = cancelled
 
-        var permissionMissing = false
-        for result in getResultsForConfig() {
+        var success = true
+        let results = getResultsForConfig()
+        for result in results {
             if result.status != .Authorized {
-                permissionMissing = true
+                success = false
             }
         }
 
-        // no missing perms? do nothing
-        if !permissionMissing {
+        // no missing perms? callback and do nothing
+        if success {
+            if let authChangeClosure = authChangeClosure {
+                authChangeClosure(success, results)
+            }
+
             return
         }
 
@@ -395,21 +402,21 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             self.view.setNeedsLayout()
         })
 
-        // compile the results and pass them back if necessary
-        let results = getResultsForConfig()
-        if let authChangeClosure = authChangeClosure {
-            authChangeClosure(results)
-        }
-
-        // and hide if we've sucessfully got all permissions
-        var permissionMissing = false
+        var success = true
         for result in getResultsForConfig() {
             if result.status != .Authorized {
-                permissionMissing = true
+                success = false
             }
         }
 
-        if !permissionMissing {
+        // compile the results and pass them back if necessary
+        let results = getResultsForConfig()
+        if let authChangeClosure = authChangeClosure {
+            authChangeClosure(success, results)
+        }
+
+        // and hide if we've sucessfully got all permissions
+        if success {
             self.hide()
         }
     }
