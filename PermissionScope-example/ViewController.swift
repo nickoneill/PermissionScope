@@ -27,7 +27,7 @@ class ViewController: UIViewController {
         pscope.addPermission(PermissionConfig(type: .Notifications, message: "We use this to send you\r\nspam and love notes"))
         pscope.addPermission(PermissionConfig(type: .LocationInUse, message: "We use this to track\r\nwhere you live"))
 
-        pscope.show({ (results) -> Void in
+        pscope.show(authChange: { (results) -> Void in
             println("got results \(results)")
         }, cancelled: { () -> Void in
             println("thing was cancelled")

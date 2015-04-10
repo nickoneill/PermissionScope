@@ -70,8 +70,8 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     var authChangeClosure: ((Bool, [PermissionResult]) -> Void)? = nil
     var cancelClosure: (() -> Void)? = nil
 
-    public override init() {
-        super.init()
+    public init() {
+        super.init(nibName: nil, bundle: nil)
 
         // Set up main view
         view.frame = UIScreen.mainScreen().bounds
