@@ -25,12 +25,19 @@ public enum PermissionStatus {
     case Unknown
 }
 
+public enum PermissionRequired {
+    case Required
+    case Optional
+}
+
 public struct PermissionConfig {
     let type: PermissionType
+    let req: PermissionRequired
     let message: String
 
-    public init(type: PermissionType, message: String) {
+    public init(type: PermissionType, required: PermissionRequired, message: String) {
         self.type = type
+        self.req = required
         self.message = message
     }
 }
@@ -51,14 +58,16 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
     // configurable things
     public let headerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
-    public let bodyLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 240, height: 80))
+    public let bodyLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 240, height: 70))
     public var tintColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
     public var buttonFont = UIFont.boldSystemFontOfSize(14)
     public var labelFont = UIFont.systemFontOfSize(14)
+    public var finalizeFont = UIFont.systemFontOfSize(16)
 
     // some view hierarchy
     let baseView = UIView()
     let contentView = UIView()
+    let finalizeButton = UIButton(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
 
     // various managers
     let locationManager = CLLocationManager()
@@ -104,11 +113,16 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         bodyLabel.textColor = UIColor.blackColor()
         bodyLabel.textAlignment = NSTextAlignment.Center
         bodyLabel.text = "We need a couple things before you get started."
-        bodyLabel.numberOfLines = 4
-//        bodyLabel.text = "We need\r\na couple things\r\nbefore you\r\nget started."
+        bodyLabel.numberOfLines = 3
+//        bodyLabel.text = "We need\r\na couple things before you\r\nget started."
 //        bodyLabel.backgroundColor = UIColor.redColor()
 
         contentView.addSubview(bodyLabel)
+
+        finalizeButton.setTitle("OK, we're good", forState: UIControlState.Normal)
+        finalizeButton.setTitleColor(tintColor, forState: UIControlState.Normal)
+
+        contentView.addSubview(finalizeButton)
     }
 
     required public init(coder aDecoder: NSCoder) {
@@ -137,14 +151,18 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         // ... same with the body
         bodyLabel.center = contentView.center
         bodyLabel.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-        bodyLabel.frame.offset(dx: 0, dy: -120)
+        bodyLabel.frame.offset(dx: 0, dy: -140)
+
+        finalizeButton.center = contentView.center
+        finalizeButton.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
+        finalizeButton.frame.offset(dx: 0, dy: 210)
 
         let baseOffset = 95
         var index = 0
         for button in permissionButtons {
             button.center = contentView.center
             button.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-            button.frame.offset(dx: 0, dy: -30 + CGFloat(index * baseOffset))
+            button.frame.offset(dx: 0, dy: -70 + CGFloat(index * baseOffset))
 
             let type = configuredPermissions[index].type
             switch type {
@@ -173,10 +191,12 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             let label = permissionLabels[index]
             label.center = contentView.center
             label.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-            label.frame.offset(dx: 0, dy: 15 + CGFloat(index * baseOffset))
+            label.frame.offset(dx: 0, dy: -25 + CGFloat(index * baseOffset))
 
             index++
         }
+
+
     }
 
     // MARK: customizing the permissions
