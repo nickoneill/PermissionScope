@@ -8,10 +8,10 @@
 
 Inspired by (but unrelated to) [Periscope](https://www.periscope.tv)'s permission control, PermissionScope is a Swift framework for intelligently requesting permissions from users.
 
-![permissions screen](https://raw.githubusercontent.com/nickoneill/PermissionScope/master/permissions.png)
-The default permissions
-![customized permissions](https://raw.githubusercontent.com/nickoneill/PermissionScope/master/permissions-treat.png)
-Some customization for [treat](https://gettre.at)
+<img src="https://raw.githubusercontent.com/nickoneill/PermissionScope/master/permissions.png" width="345" height="614" alt="permissions screen" />
+<img src="https://raw.githubusercontent.com/nickoneill/PermissionScope/master/permissions-treat.png" width="345" height="614" alt="customized permissions" />
+
+The default view and an example of customization done for [treat](https://gettre.at)
 
 We should all be more careful about when we request permissions from users, opting to request them only when they're needed and definitely not all in one barrage when the user opens the app for the first time.
 
