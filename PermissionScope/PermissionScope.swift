@@ -120,7 +120,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
         contentView.addSubview(bodyLabel)
 
-        finalizeButton.setTitle("OK, we're good", forState: UIControlState.Normal)
+        finalizeButton.setTitle("Let's go!", forState: UIControlState.Normal)
         finalizeButton.setTitleColor(UIColor.grayColor(), forState: UIControlState.Disabled)
         finalizeButton.enabled = false
         finalizeButton.addTarget(self, action: Selector("finish"), forControlEvents: UIControlEvents.TouchUpInside)
