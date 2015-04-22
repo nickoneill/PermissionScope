@@ -15,6 +15,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+
+        pscope.addPermission(PermissionConfig(type: .Contacts, demands: .Required, message: "We use this to steal\r\nyour friends"))
+        pscope.addPermission(PermissionConfig(type: .Notifications, demands: .Optional, message: "We use this to send you\r\nspam and love notes"))
+        pscope.addPermission(PermissionConfig(type: .LocationInUse, demands: .Required, message: "We use this to track\r\nwhere you live"))
     }
 
     override func didReceiveMemoryWarning() {
@@ -23,13 +27,9 @@ class ViewController: UIViewController {
     }
 
     @IBAction func doAThing() {
-        pscope.addPermission(PermissionConfig(type: .Contacts, demands: .Required, message: "We use this to steal\r\nyour friends"))
-        pscope.addPermission(PermissionConfig(type: .Notifications, demands: .Optional, message: "We use this to send you\r\nspam and love notes"))
-        pscope.addPermission(PermissionConfig(type: .LocationInUse, demands: .Required, message: "We use this to track\r\nwhere you live"))
-
-        pscope.show(authChange: { (results) -> Void in
+        pscope.show(authChange: { (finished, results) -> Void in
             println("got results \(results)")
-        }, cancelled: { () -> Void in
+        }, cancelled: { (results) -> Void in
             println("thing was cancelled")
         })
     }
