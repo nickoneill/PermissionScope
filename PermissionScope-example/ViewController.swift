@@ -23,9 +23,9 @@ class ViewController: UIViewController {
     }
 
     @IBAction func doAThing() {
-        pscope.addPermission(PermissionConfig(type: .Contacts, required: .Required, message: "We use this to steal\r\nyour friends"))
-        pscope.addPermission(PermissionConfig(type: .Notifications, required: .Optional, message: "We use this to send you\r\nspam and love notes"))
-        pscope.addPermission(PermissionConfig(type: .LocationInUse, required: .Required, message: "We use this to track\r\nwhere you live"))
+        pscope.addPermission(PermissionConfig(type: .Contacts, demands: .Required, message: "We use this to steal\r\nyour friends"))
+        pscope.addPermission(PermissionConfig(type: .Notifications, demands: .Optional, message: "We use this to send you\r\nspam and love notes"))
+        pscope.addPermission(PermissionConfig(type: .LocationInUse, demands: .Required, message: "We use this to track\r\nwhere you live"))
 
         pscope.show(authChange: { (results) -> Void in
             println("got results \(results)")

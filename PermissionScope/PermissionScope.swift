@@ -25,19 +25,19 @@ public enum PermissionStatus {
     case Unknown
 }
 
-public enum PermissionRequired {
+public enum PermissionDemands {
     case Required
     case Optional
 }
 
 public struct PermissionConfig {
     let type: PermissionType
-    let req: PermissionRequired
+    let demands: PermissionDemands
     let message: String
 
-    public init(type: PermissionType, required: PermissionRequired, message: String) {
+    public init(type: PermissionType, demands: PermissionDemands, message: String) {
         self.type = type
-        self.req = required
+        self.demands = demands
         self.message = message
     }
 }
@@ -45,6 +45,7 @@ public struct PermissionConfig {
 public struct PermissionResult: Printable {
     let type: PermissionType
     let status: PermissionStatus
+    let demands: PermissionDemands
 
     public var description: String {
         return "\(type) \(status)"
@@ -112,7 +113,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         bodyLabel.font = UIFont.boldSystemFontOfSize(16)
         bodyLabel.textColor = UIColor.blackColor()
         bodyLabel.textAlignment = NSTextAlignment.Center
-        bodyLabel.text = "We need a couple things before you get started."
+        bodyLabel.text = "We need a couple things\r\nbefore you get started."
         bodyLabel.numberOfLines = 3
 //        bodyLabel.text = "We need\r\na couple things before you\r\nget started."
 //        bodyLabel.backgroundColor = UIColor.redColor()
@@ -120,7 +121,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         contentView.addSubview(bodyLabel)
 
         finalizeButton.setTitle("OK, we're good", forState: UIControlState.Normal)
-        finalizeButton.setTitleColor(tintColor, forState: UIControlState.Normal)
+        finalizeButton.setTitleColor(UIColor.grayColor(), forState: UIControlState.Disabled)
+        finalizeButton.enabled = false
+        finalizeButton.addTarget(self, action: Selector("finish"), forControlEvents: UIControlEvents.TouchUpInside)
 
         contentView.addSubview(finalizeButton)
     }
@@ -151,18 +154,19 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         // ... same with the body
         bodyLabel.center = contentView.center
         bodyLabel.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-        bodyLabel.frame.offset(dx: 0, dy: -140)
+        bodyLabel.frame.offset(dx: 0, dy: -150)
 
         finalizeButton.center = contentView.center
         finalizeButton.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
         finalizeButton.frame.offset(dx: 0, dy: 210)
+        finalizeButton.setTitleColor(tintColor, forState: UIControlState.Normal)
 
         let baseOffset = 95
         var index = 0
         for button in permissionButtons {
             button.center = contentView.center
             button.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-            button.frame.offset(dx: 0, dy: -70 + CGFloat(index * baseOffset))
+            button.frame.offset(dx: 0, dy: -80 + CGFloat(index * baseOffset))
 
             let type = configuredPermissions[index].type
             switch type {
@@ -191,7 +195,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             let label = permissionLabels[index]
             label.center = contentView.center
             label.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-            label.frame.offset(dx: 0, dy: -25 + CGFloat(index * baseOffset))
+            label.frame.offset(dx: 0, dy: -35 + CGFloat(index * baseOffset))
 
             index++
         }
@@ -279,7 +283,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
     public func statusLocationInUse() -> PermissionStatus {
         let status = CLLocationManager.authorizationStatus()
-        if status == CLAuthorizationStatus.AuthorizedWhenInUse {
+        // if you're already "always" authorized, then you don't need in use
+        // but the user can still demote you! So I still use them separately.
+        if status == CLAuthorizationStatus.AuthorizedWhenInUse || status == CLAuthorizationStatus.AuthorizedAlways {
             return .Authorized
         }
 
@@ -348,24 +354,28 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
     // MARK: finally, displaying the panel
 
-    public func show(authChange: ((success: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: (() -> Void)? = nil) {
+    public func show(authChange: ((canBeDismissed: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: (() -> Void)? = nil) {
         assert(configuredPermissions.count > 0, "Please add at least one permission")
 
         authChangeClosure = authChange
         cancelClosure = cancelled
 
-        var success = true
+        var allAuthorized = true
+        var requiredAuthorized = true
         let results = getResultsForConfig()
         for result in results {
             if result.status != .Authorized {
-                success = false
+                allAuthorized = false
+                if result.demands == .Required {
+                    requiredAuthorized = false
+                }
             }
         }
 
-        // no missing perms? callback and do nothing
-        if success {
+        // no missing required perms? callback and do nothing
+        if requiredAuthorized {
             if let authChangeClosure = authChangeClosure {
-                authChangeClosure(success, results)
+                authChangeClosure(requiredAuthorized, results)
             }
 
             return
@@ -419,26 +429,41 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         self.hide()
     }
 
+    func finish() {
+        self.hide()
+    }
+
     func detectAndCallback() {
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.view.setNeedsLayout()
         })
 
-        var success = true
+        var allAuthorized = true
+        var requiredAuthorized = true
         for result in getResultsForConfig() {
             if result.status != .Authorized {
-                success = false
+                allAuthorized = false
+                if result.demands == .Required {
+                    requiredAuthorized = false
+                }
             }
         }
 
         // compile the results and pass them back if necessary
         let results = getResultsForConfig()
         if let authChangeClosure = authChangeClosure {
-            authChangeClosure(success, results)
+            authChangeClosure(requiredAuthorized, results)
+        }
+
+        // enable the finalize button if we have all required perms
+        if requiredAuthorized {
+            finalizeButton.enabled = true
+        } else {
+            finalizeButton.enabled = false
         }
 
         // and hide if we've sucessfully got all permissions
-        if success {
+        if allAuthorized {
             self.hide()
         }
     }
@@ -460,7 +485,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                 status = statusNotifications()
             }
 
-            let result = PermissionResult(type: config.type, status: status)
+            let result = PermissionResult(type: config.type, status: status, demands: config.demands)
             results.append(result)
         }
 
