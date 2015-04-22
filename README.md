@@ -19,11 +19,19 @@ PermissionScope gives you space to explain your reasons for requesting their pre
 
 ## installation
 
-*  requires iOS 8+
+* requires iOS 8+
 
-something something framework carthage
+Installation for [Carthage](https://github.com/Carthage/Carthage) is simple enough:
 
-yada yada podspec not done yet
+`github "nickoneill/PermissionScope"`
+
+As for [Cocoapods](https://cocoapods.org), this should work:
+
+`pod 'PermissionScope', '~> 0.4'`
+
+And `import PermissionScope` in the files you'd like to use it.
+
+No promises that it works with Obj-C at the moment, I'm using it with a mostly-Swift codebase. Feedback on this would be great though.
 
 ## usage
 
