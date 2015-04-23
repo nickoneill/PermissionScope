@@ -647,11 +647,17 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
     func showDeniedAlert(permission: PermissionType) {
         var alert = UIAlertController(title: "Permission for \(permission.rawValue) was denied.",
-            message: "Go to Settings blah blah blah",
+            message: "Go to Settings and enable access to \(permission.rawValue)",
             preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "No",
+            style: .Destructive,
+            handler: nil))
         alert.addAction(UIAlertAction(title: "Ok",
             style: .Default,
-            handler: nil))
+            handler: { (action) -> Void in
+                let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
+                UIApplication.sharedApplication().openURL(settingsUrl!)
+        }))
         self.presentViewController(alert,
             animated: true, completion: nil)
     }
