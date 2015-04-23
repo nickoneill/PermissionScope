@@ -522,6 +522,17 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         return results
     }
 
+    func showDeniedAlert(permission: PermissionType) {
+        var alert = UIAlertController(title: "Permission for \(permission.rawValue) was denied.",
+            message: "Go to Settings blah blah blah",
+            preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "Ok",
+            style: .Default,
+            handler: nil))
+        self.presentViewController(alert,
+            animated: true, completion: nil)
+    }
+    
     // MARK: gesture delegate
 
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
