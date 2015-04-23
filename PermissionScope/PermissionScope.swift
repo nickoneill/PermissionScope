@@ -10,6 +10,7 @@ import UIKit
 import CoreLocation
 import AddressBook
 import AVFoundation
+import Photos
 
 public enum PermissionType: String {
     case Contacts = "Contacts"
@@ -18,6 +19,7 @@ public enum PermissionType: String {
     case Notifications = "Notifications"
     case Microphone = "Microphone"
     case Camera = "Camera"
+    case Photos = "Photos"
 }
 
 public enum PermissionStatus: String {
@@ -231,6 +233,14 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                     setButtonUnauthorizedStyle(button)
                     button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
                 }
+            case .Photos:
+                if statusPhotos() == .Authorized {
+                    setButtonAuthorizedStyle(button)
+                    button.setTitle("Allowed \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                } else if statusPhotos() == .Unauthorized {
+                    setButtonUnauthorizedStyle(button)
+                    button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                }
             }
 
             let label = permissionLabels[index]
@@ -269,7 +279,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
         
         button.addTarget(self, action: Selector("request\(type.rawValue)"), forControlEvents: UIControlEvents.TouchUpInside)
-
+        
         return button
     }
 
@@ -433,6 +443,28 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
 
+    public func statusPhotos() -> PermissionStatus {
+        let status = PHPhotoLibrary.authorizationStatus()
+        switch status {
+        case .Authorized:
+            return .Authorized
+        case .Denied, .Restricted:
+            return .Unauthorized
+        case .NotDetermined:
+            return .Unknown
+        }
+    }
+    
+    func requestPhotos() {
+        if statusPhotos() == .Unknown {
+            PHPhotoLibrary.requestAuthorization({ (status) -> Void in
+                self.detectAndCallback()
+            })
+        } else if statusPhotos() == .Unauthorized {
+            self.showDeniedAlert(.Photos)
+        }
+    }
+    
     func pollForNotificationChanges() {
         // yuck
         // the alternative is telling developers to call detectAndCallback() in their app delegate
@@ -602,6 +634,8 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                 status = statusMicrophone();
             case .Camera:
                 status = statusCamera()
+            case .Photos:
+                status = statusPhotos()
             }
 
             let result = PermissionResult(type: config.type, status: status, demands: config.demands)
