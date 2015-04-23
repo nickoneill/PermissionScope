@@ -381,7 +381,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         if statusNotifications() != .Authorized {
             UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Sound | .Badge, categories: nil))
             self.pollForNotificationChanges()
-        } else if statusContacts() == .Unauthorized {
+        } else if statusNotifications() == .Unauthorized {
             // TODO: Alert. User must go to Settings.
             self.showDeniedAlert(.Notifications)
         }
