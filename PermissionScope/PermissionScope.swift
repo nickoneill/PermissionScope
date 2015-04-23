@@ -262,25 +262,13 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
         // this is a bit of a mess, eh?
         switch type {
-        case .Contacts:
-            button.setTitle("Allow Contacts".uppercaseString, forState: UIControlState.Normal)
-            button.addTarget(self, action: Selector("requestContacts"), forControlEvents: UIControlEvents.TouchUpInside)
-        case .LocationAlways:
+        case .LocationAlways, .LocationInUse:
             button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
-            button.addTarget(self, action: Selector("requestLocationAlways"), forControlEvents: UIControlEvents.TouchUpInside)
-        case .LocationInUse:
-            button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
-            button.addTarget(self, action: Selector("requestLocationInUse"), forControlEvents: UIControlEvents.TouchUpInside)
-        case .Notifications:
-            button.setTitle("Enable Notifications".uppercaseString, forState: UIControlState.Normal)
-            button.addTarget(self, action: Selector("requestNotifications"), forControlEvents: UIControlEvents.TouchUpInside)
-        case .Microphone:
-            button.setTitle("Allow Microphone".uppercaseString, forState: UIControlState.Normal)
-            button.addTarget(self, action: Selector("requestMicrophone"), forControlEvents: UIControlEvents.TouchUpInside)
-        case .Camera:
-            button.setTitle("Allow Camera".uppercaseString, forState: UIControlState.Normal)
-            button.addTarget(self, action: Selector("requestCamera"), forControlEvents: UIControlEvents.TouchUpInside)
+        default:
+            button.setTitle("Allow \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
         }
+        
+        button.addTarget(self, action: Selector("request\(type.rawValue)"), forControlEvents: UIControlEvents.TouchUpInside)
 
         return button
     }
