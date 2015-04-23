@@ -9,8 +9,6 @@
 import UIKit
 import CoreLocation
 import AddressBook
-//    case Microphone
-//    case Camera
 import AVFoundation
 
 public enum PermissionType: String {
@@ -18,6 +16,8 @@ public enum PermissionType: String {
     case LocationAlways = "LocationAlways"
     case LocationInUse = "LocationInUse"
     case Notifications = "Notifications"
+    case Microphone = "Microphone"
+    case Camera = "Camera"
 }
 
 public enum PermissionStatus: String {
@@ -215,6 +215,21 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                     setButtonUnauthorizedStyle(button)
                     button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
                 }
+            case .Microphone:
+                if statusCamera() == .Authorized {
+                    setButtonAuthorizedStyle(button)
+                    button.setTitle("Allowed \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                } else if statusCamera() == .Unauthorized {
+                    setButtonUnauthorizedStyle(button)
+                    button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                }
+            case .Camera:
+                if statusCamera() == .Authorized {
+                    setButtonAuthorizedStyle(button)
+                    button.setTitle("Allowed \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                } else if statusCamera() == .Unauthorized {
+                    setButtonUnauthorizedStyle(button)
+                    button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
                 }
             }
 
@@ -259,11 +274,12 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         case .Notifications:
             button.setTitle("Enable Notifications".uppercaseString, forState: UIControlState.Normal)
             button.addTarget(self, action: Selector("requestNotifications"), forControlEvents: UIControlEvents.TouchUpInside)
-
-//        case .Microphone:
-//            button.setTitle("Allow Microphone".uppercaseString, forState: UIControlState.Normal)
-//        case .Camera:
-//            button.setTitle("Allow Camera".uppercaseString, forState: UIControlState.Normal)
+        case .Microphone:
+            button.setTitle("Allow Microphone".uppercaseString, forState: UIControlState.Normal)
+            button.addTarget(self, action: Selector("requestMicrophone"), forControlEvents: UIControlEvents.TouchUpInside)
+        case .Camera:
+            button.setTitle("Allow Camera".uppercaseString, forState: UIControlState.Normal)
+            button.addTarget(self, action: Selector("requestCamera"), forControlEvents: UIControlEvents.TouchUpInside)
         }
 
         return button
@@ -382,6 +398,50 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             self.showDeniedAlert(.Notifications)
         }
     }
+    
+    public func statusMicrophone() -> PermissionStatus {
+        let status = AVAudioSession.sharedInstance().recordPermission()
+        if status == .Granted {
+            return .Authorized
+        } else if status == .Denied {
+            return .Unauthorized
+        }
+        
+        return .Unknown
+    }
+    
+    func requestMicrophone() {
+        if statusMicrophone() == .Unknown {
+            AVAudioSession.sharedInstance().requestRecordPermission({ (granted) -> Void in
+                self.detectAndCallback()
+            })
+        } else if statusMicrophone() == .Unauthorized {
+            // TODO: Alert. User must go to Settings.
+            self.showDeniedAlert(.Microphone)
+        }
+    }
+    
+    public func statusCamera() -> PermissionStatus {
+        let status = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+        switch status {
+        case .Authorized:
+            return .Authorized
+        case .Restricted, .Denied:
+            return .Unauthorized
+        case .NotDetermined:
+            return .Unknown
+        }
+    }
+    
+    func requestCamera() {
+        if statusCamera() == .Unknown {
+            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo,
+                completionHandler: { (granted) -> Void in
+                    self.detectAndCallback()
+            })
+        } else if statusCamera() == .Unauthorized {
+            // TODO: Alert. User must go to Settings.
+            self.showDeniedAlert(.Camera)
         }
     }
 
@@ -550,6 +610,10 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                 status = statusContacts()
             case .Notifications:
                 status = statusNotifications()
+            case .Microphone:
+                status = statusMicrophone();
+            case .Camera:
+                status = statusCamera()
             }
 
             let result = PermissionResult(type: config.type, status: status, demands: config.demands)
