@@ -259,6 +259,13 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         button.backgroundColor = tintColor
         button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
     }
+    
+    func setButtonUnauthorizedStyle(button: UIButton) {
+        // TODO: Complete
+        button.layer.borderWidth = 0
+        button.backgroundColor = tintColor.inverseColor
+        button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+    }
 
     func permissionStyledLabel(message: String) -> UILabel {
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 260, height: 50))
