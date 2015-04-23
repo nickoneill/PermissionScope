@@ -9,25 +9,26 @@
 import UIKit
 import CoreLocation
 import AddressBook
-
-public enum PermissionType {
-    case Contacts
-    case LocationAlways
-    case LocationInUse
-    case Notifications
 //    case Microphone
 //    case Camera
+import AVFoundation
+
+public enum PermissionType: String {
+    case Contacts = "Contacts"
+    case LocationAlways = "LocationAlways"
+    case LocationInUse = "LocationInUse"
+    case Notifications = "Notifications"
 }
 
-public enum PermissionStatus {
-    case Authorized
-    case Unauthorized
-    case Unknown
+public enum PermissionStatus: String {
+    case Authorized = "Authorized"
+    case Unauthorized = "Unauthorized"
+    case Unknown = "Unknown"
 }
 
-public enum PermissionDemands {
-    case Required
-    case Optional
+public enum PermissionDemands: String {
+    case Required = "Required"
+    case Optional = "Optional"
 }
 
 public struct PermissionConfig {
