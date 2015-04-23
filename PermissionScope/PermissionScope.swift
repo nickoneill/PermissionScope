@@ -216,10 +216,10 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                     button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
                 }
             case .Microphone:
-                if statusCamera() == .Authorized {
+                if statusMicrophone() == .Authorized {
                     setButtonAuthorizedStyle(button)
                     button.setTitle("Allowed \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
-                } else if statusCamera() == .Unauthorized {
+                } else if statusMicrophone() == .Unauthorized {
                     setButtonUnauthorizedStyle(button)
                     button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
                 }
