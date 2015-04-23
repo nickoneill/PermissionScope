@@ -178,28 +178,43 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             button.center = contentView.center
             button.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
             button.frame.offset(dx: 0, dy: -80 + CGFloat(index * baseOffset))
-
+            
+            // TODO: New func to setUnauthorizedStyle ? new tintColor also ?
+            // Question: Use (XXX, YYY) tuple instead of case XXX: if status() = YYY ? => Each Permission should know how to get it's status
             let type = configuredPermissions[index].type
             switch type {
             case .LocationAlways:
                 if statusLocationAlways() == .Authorized {
                     setButtonAuthorizedStyle(button)
                     button.setTitle("Got Location".uppercaseString, forState: UIControlState.Normal)
+                } else if statusNotifications() == .Unauthorized {
+                    setButtonUnauthorizedStyle(button)
+                    button.setTitle("Denied Location".uppercaseString, forState: UIControlState.Normal)
                 }
             case .LocationInUse:
                 if statusLocationInUse() == .Authorized {
                     setButtonAuthorizedStyle(button)
                     button.setTitle("Got Location".uppercaseString, forState: UIControlState.Normal)
+                } else if statusLocationInUse() == .Unauthorized {
+                    setButtonUnauthorizedStyle(button)
+                    button.setTitle("Denied Location".uppercaseString, forState: UIControlState.Normal)
                 }
             case .Contacts:
                 if statusContacts() == .Authorized {
                     setButtonAuthorizedStyle(button)
                     button.setTitle("Allowed Contacts".uppercaseString, forState: UIControlState.Normal)
+                } else if statusContacts() == .Unauthorized {
+                    setButtonUnauthorizedStyle(button)
+                    button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
                 }
             case .Notifications:
                 if statusNotifications() == .Authorized {
                     setButtonAuthorizedStyle(button)
                     button.setTitle("Allowed Notifications".uppercaseString, forState: UIControlState.Normal)
+                } else if statusNotifications() == .Unauthorized {
+                    setButtonUnauthorizedStyle(button)
+                    button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                }
                 }
             }
 
@@ -283,17 +298,22 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
     public func statusLocationAlways() -> PermissionStatus {
         let status = CLLocationManager.authorizationStatus()
-        if status == CLAuthorizationStatus.AuthorizedAlways {
+        switch status {
+        case .AuthorizedAlways:
             return .Authorized
+        case .Restricted, .Denied, .AuthorizedWhenInUse:
+            return .Unauthorized
+        case .NotDetermined:
+            return .Unknown
         }
-
-        return .Unknown
     }
 
     func requestLocationAlways() {
         if statusLocationAlways() != .Authorized {
             locationManager.delegate = self
             locationManager.requestAlwaysAuthorization()
+        } else if statusContacts() == .Unauthorized {
+            self.showDeniedAlert(.LocationAlways)
         }
     }
 
@@ -301,34 +321,44 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         let status = CLLocationManager.authorizationStatus()
         // if you're already "always" authorized, then you don't need in use
         // but the user can still demote you! So I still use them separately.
-        if status == CLAuthorizationStatus.AuthorizedWhenInUse || status == CLAuthorizationStatus.AuthorizedAlways {
+        switch status {
+        case .AuthorizedWhenInUse, .AuthorizedAlways:
             return .Authorized
+        case .Restricted, .Denied:
+            return .Unauthorized
+        case .NotDetermined:
+            return .Unknown
         }
-
-        return .Unknown
     }
 
     func requestLocationInUse() {
         if statusLocationInUse() != .Authorized {
             locationManager.delegate = self
             locationManager.requestWhenInUseAuthorization()
+        } else if statusContacts() == .Unauthorized {
+            self.showDeniedAlert(.LocationInUse)
         }
     }
 
     public func statusContacts() -> PermissionStatus {
         let status = ABAddressBookGetAuthorizationStatus()
-        if status == ABAuthorizationStatus.Authorized {
-            return .Authorized
+        switch status {
+            case .Authorized:
+                return .Authorized
+            case .Restricted, .Denied:
+                return .Unauthorized
+            case .NotDetermined:
+                return .Unknown
         }
-
-        return .Unknown
     }
 
     func requestContacts() {
-        if statusContacts() != .Authorized {
+        if statusContacts() == .Unknown {
             ABAddressBookRequestAccessWithCompletion(nil) { (success, error) -> Void in
                 self.detectAndCallback()
             }
+        } else if statusContacts() == .Unauthorized {
+            self.showDeniedAlert(.Contacts)
         }
     }
 
@@ -336,15 +366,22 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         let settings = UIApplication.sharedApplication().currentUserNotificationSettings()
         if settings.types != UIUserNotificationType.None {
             return .Authorized
+        } else {
+            return .Unauthorized
         }
-
-        return .Unknown
+        
+        //        return .Unknown
     }
-
+    
     func requestNotifications() {
         if statusNotifications() != .Authorized {
             UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Sound | .Badge, categories: nil))
             self.pollForNotificationChanges()
+        } else if statusContacts() == .Unauthorized {
+            // TODO: Alert. User must go to Settings.
+            self.showDeniedAlert(.Notifications)
+        }
+    }
         }
     }
 
