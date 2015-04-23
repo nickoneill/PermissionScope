@@ -49,7 +49,9 @@ public struct PermissionResult: Printable {
     public let demands: PermissionDemands
 
     public var description: String {
-        return "\(type) \(status)"
+        return "\(type.rawValue) \(status.rawValue)"
+    }
+}
     }
 }
 
