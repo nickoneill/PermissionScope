@@ -257,6 +257,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     public func addPermission(config: PermissionConfig) {
         assert(!config.message.isEmpty, "Including a message about your permission usage is helpful")
         assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
+        if config.type == .Notifications && config.demands == .Required {
+            assertionFailure("We cannot tell if notifications have been denied so it's unwise to mark this as required")
+        }
 
         configuredPermissions.append(config)
     }
@@ -391,15 +394,13 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         if settings.types != UIUserNotificationType.None {
             return .Authorized
         } else {
-            return .Unauthorized
+            return .Unknown
         }
-        
-        //        return .Unknown
     }
     
     func requestNotifications() {
         switch statusNotifications() {
-        case .Unauthorized:
+        case .Unknown:
             UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Sound | .Badge, categories: nil))
             self.pollForNotificationChanges()
         default:
@@ -650,7 +651,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             case .Notifications:
                 status = statusNotifications()
             case .Microphone:
-                status = statusMicrophone();
+                status = statusMicrophone()
             case .Camera:
                 status = statusCamera()
             case .Photos:
