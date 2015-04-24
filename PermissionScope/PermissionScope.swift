@@ -37,12 +37,6 @@ public struct PermissionConfig {
     let type: PermissionType
     let demands: PermissionDemands
     let message: String
-
-    public init(type: PermissionType, demands: PermissionDemands, message: String) {
-        self.type = type
-        self.demands = demands
-        self.message = message
-    }
 }
 
 public struct PermissionResult: Printable {
