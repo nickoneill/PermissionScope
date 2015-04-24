@@ -388,11 +388,11 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
     
     func requestNotifications() {
+        
         if statusNotifications() != .Authorized {
             UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Sound | .Badge, categories: nil))
             self.pollForNotificationChanges()
         } else if statusNotifications() == .Unauthorized {
-            // TODO: Alert. User must go to Settings.
             self.showDeniedAlert(.Notifications)
         }
     }
@@ -647,12 +647,12 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
     func showDeniedAlert(permission: PermissionType) {
         var alert = UIAlertController(title: "Permission for \(permission.rawValue) was denied.",
-            message: "Go to Settings and enable access to \(permission.rawValue)",
+            message: "Please enable access to \(permission.rawValue) in Settings",
             preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "No",
-            style: .Destructive,
+        alert.addAction(UIAlertAction(title: "OK",
+            style: .Cancel,
             handler: nil))
-        alert.addAction(UIAlertAction(title: "Ok",
+        alert.addAction(UIAlertAction(title: "Show me",
             style: .Default,
             handler: { (action) -> Void in
                 let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
