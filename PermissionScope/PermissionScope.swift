@@ -9,25 +9,28 @@
 import UIKit
 import CoreLocation
 import AddressBook
+import AVFoundation
+import Photos
 
-public enum PermissionType {
-    case Contacts
-    case LocationAlways
-    case LocationInUse
-    case Notifications
-//    case Microphone
-//    case Camera
+public enum PermissionType: String {
+    case Contacts = "Contacts"
+    case LocationAlways = "LocationAlways"
+    case LocationInUse = "LocationInUse"
+    case Notifications = "Notifications"
+    case Microphone = "Microphone"
+    case Camera = "Camera"
+    case Photos = "Photos"
 }
 
-public enum PermissionStatus {
-    case Authorized
-    case Unauthorized
-    case Unknown
+public enum PermissionStatus: String {
+    case Authorized = "Authorized"
+    case Unauthorized = "Unauthorized"
+    case Unknown = "Unknown"
 }
 
-public enum PermissionDemands {
-    case Required
-    case Optional
+public enum PermissionDemands: String {
+    case Required = "Required"
+    case Optional = "Optional"
 }
 
 public struct PermissionConfig {
@@ -48,7 +51,17 @@ public struct PermissionResult: Printable {
     public let demands: PermissionDemands
 
     public var description: String {
-        return "\(type) \(status)"
+        return "\(type.rawValue) \(status.rawValue)"
+    }
+}
+
+extension UIColor {
+    var inverseColor: UIColor{
+        var r:CGFloat = 0.0; var g:CGFloat = 0.0; var b:CGFloat = 0.0; var a:CGFloat = 0.0;
+        if self.getRed(&r, green: &g, blue: &b, alpha: &a) {
+            return UIColor(red: 1.0-r, green: 1.0 - g, blue: 1.0 - b, alpha: a)
+        }
+        return self
     }
 }
 
@@ -167,28 +180,66 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             button.center = contentView.center
             button.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
             button.frame.offset(dx: 0, dy: -80 + CGFloat(index * baseOffset))
-
+            
+            // TODO: New func to setUnauthorizedStyle ? new tintColor also ?
+            // Question: Use (XXX, YYY) tuple instead of case XXX: if status() = YYY ? => Each Permission should know how to get it's status
             let type = configuredPermissions[index].type
             switch type {
             case .LocationAlways:
                 if statusLocationAlways() == .Authorized {
                     setButtonAuthorizedStyle(button)
                     button.setTitle("Got Location".uppercaseString, forState: UIControlState.Normal)
+                } else if statusNotifications() == .Unauthorized {
+                    setButtonUnauthorizedStyle(button)
+                    button.setTitle("Denied Location".uppercaseString, forState: UIControlState.Normal)
                 }
             case .LocationInUse:
                 if statusLocationInUse() == .Authorized {
                     setButtonAuthorizedStyle(button)
                     button.setTitle("Got Location".uppercaseString, forState: UIControlState.Normal)
+                } else if statusLocationInUse() == .Unauthorized {
+                    setButtonUnauthorizedStyle(button)
+                    button.setTitle("Denied Location".uppercaseString, forState: UIControlState.Normal)
                 }
             case .Contacts:
                 if statusContacts() == .Authorized {
                     setButtonAuthorizedStyle(button)
                     button.setTitle("Allowed Contacts".uppercaseString, forState: UIControlState.Normal)
+                } else if statusContacts() == .Unauthorized {
+                    setButtonUnauthorizedStyle(button)
+                    button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
                 }
             case .Notifications:
                 if statusNotifications() == .Authorized {
                     setButtonAuthorizedStyle(button)
                     button.setTitle("Allowed Notifications".uppercaseString, forState: UIControlState.Normal)
+                } else if statusNotifications() == .Unauthorized {
+                    setButtonUnauthorizedStyle(button)
+                    button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                }
+            case .Microphone:
+                if statusMicrophone() == .Authorized {
+                    setButtonAuthorizedStyle(button)
+                    button.setTitle("Allowed \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                } else if statusMicrophone() == .Unauthorized {
+                    setButtonUnauthorizedStyle(button)
+                    button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                }
+            case .Camera:
+                if statusCamera() == .Authorized {
+                    setButtonAuthorizedStyle(button)
+                    button.setTitle("Allowed \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                } else if statusCamera() == .Unauthorized {
+                    setButtonUnauthorizedStyle(button)
+                    button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                }
+            case .Photos:
+                if statusPhotos() == .Authorized {
+                    setButtonAuthorizedStyle(button)
+                    button.setTitle("Allowed \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                } else if statusPhotos() == .Unauthorized {
+                    setButtonUnauthorizedStyle(button)
+                    button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
                 }
             }
 
@@ -221,31 +272,27 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
         // this is a bit of a mess, eh?
         switch type {
-        case .Contacts:
-            button.setTitle("Allow Contacts".uppercaseString, forState: UIControlState.Normal)
-            button.addTarget(self, action: Selector("requestContacts"), forControlEvents: UIControlEvents.TouchUpInside)
-        case .LocationAlways:
+        case .LocationAlways, .LocationInUse:
             button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
-            button.addTarget(self, action: Selector("requestLocationAlways"), forControlEvents: UIControlEvents.TouchUpInside)
-        case .LocationInUse:
-            button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
-            button.addTarget(self, action: Selector("requestLocationInUse"), forControlEvents: UIControlEvents.TouchUpInside)
-        case .Notifications:
-            button.setTitle("Enable Notifications".uppercaseString, forState: UIControlState.Normal)
-            button.addTarget(self, action: Selector("requestNotifications"), forControlEvents: UIControlEvents.TouchUpInside)
-
-//        case .Microphone:
-//            button.setTitle("Allow Microphone".uppercaseString, forState: UIControlState.Normal)
-//        case .Camera:
-//            button.setTitle("Allow Camera".uppercaseString, forState: UIControlState.Normal)
+        default:
+            button.setTitle("Allow \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
         }
-
+        
+        button.addTarget(self, action: Selector("request\(type.rawValue)"), forControlEvents: UIControlEvents.TouchUpInside)
+        
         return button
     }
 
     func setButtonAuthorizedStyle(button: UIButton) {
         button.layer.borderWidth = 0
         button.backgroundColor = tintColor
+        button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+    }
+    
+    func setButtonUnauthorizedStyle(button: UIButton) {
+        // TODO: Complete
+        button.layer.borderWidth = 0
+        button.backgroundColor = tintColor.inverseColor
         button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
     }
 
@@ -265,17 +312,25 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
     public func statusLocationAlways() -> PermissionStatus {
         let status = CLLocationManager.authorizationStatus()
-        if status == CLAuthorizationStatus.AuthorizedAlways {
+        switch status {
+        case .AuthorizedAlways:
             return .Authorized
+        case .Restricted, .Denied, .AuthorizedWhenInUse:
+            return .Unauthorized
+        case .NotDetermined:
+            return .Unknown
         }
-
-        return .Unknown
     }
 
     func requestLocationAlways() {
-        if statusLocationAlways() != .Authorized {
+        switch statusLocationAlways() {
+        case .Unknown:
             locationManager.delegate = self
             locationManager.requestAlwaysAuthorization()
+        case .Unauthorized:
+            self.showDeniedAlert(.LocationAlways)
+        default:
+            break
         }
     }
 
@@ -283,53 +338,152 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         let status = CLLocationManager.authorizationStatus()
         // if you're already "always" authorized, then you don't need in use
         // but the user can still demote you! So I still use them separately.
-        if status == CLAuthorizationStatus.AuthorizedWhenInUse || status == CLAuthorizationStatus.AuthorizedAlways {
+        switch status {
+        case .AuthorizedWhenInUse, .AuthorizedAlways:
             return .Authorized
+        case .Restricted, .Denied:
+            return .Unauthorized
+        case .NotDetermined:
+            return .Unknown
         }
-
-        return .Unknown
     }
 
     func requestLocationInUse() {
-        if statusLocationInUse() != .Authorized {
+        switch statusLocationInUse() {
+        case .Unknown:
             locationManager.delegate = self
             locationManager.requestWhenInUseAuthorization()
+        case .Unauthorized:
+            self.showDeniedAlert(.LocationInUse)
+        default:
+            break
         }
     }
 
     public func statusContacts() -> PermissionStatus {
         let status = ABAddressBookGetAuthorizationStatus()
-        if status == ABAuthorizationStatus.Authorized {
-            return .Authorized
+        switch status {
+            case .Authorized:
+                return .Authorized
+            case .Restricted, .Denied:
+                return .Unauthorized
+            case .NotDetermined:
+                return .Unknown
         }
-
-        return .Unknown
     }
 
     func requestContacts() {
-        if statusContacts() != .Authorized {
+        switch statusContacts() {
+        case .Unknown:
             ABAddressBookRequestAccessWithCompletion(nil) { (success, error) -> Void in
                 self.detectAndCallback()
             }
+        case .Unauthorized:
+            self.showDeniedAlert(.Contacts)
+        default:
+            break
         }
     }
 
+    // TODO: can we tell if notifications has been denied?
     public func statusNotifications() -> PermissionStatus {
         let settings = UIApplication.sharedApplication().currentUserNotificationSettings()
         if settings.types != UIUserNotificationType.None {
             return .Authorized
+        } else {
+            return .Unauthorized
         }
-
-        return .Unknown
+        
+        //        return .Unknown
     }
-
+    
     func requestNotifications() {
-        if statusNotifications() != .Authorized {
+        switch statusNotifications() {
+        case .Unauthorized:
             UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Sound | .Badge, categories: nil))
             self.pollForNotificationChanges()
+        default:
+            break
+        }
+        
+//        self.showDeniedAlert(.Notifications)
+    }
+    
+    public func statusMicrophone() -> PermissionStatus {
+        let status = AVAudioSession.sharedInstance().recordPermission()
+        if status == .Granted {
+            return .Authorized
+        } else if status == .Denied {
+            return .Unauthorized
+        }
+        
+        return .Unknown
+    }
+    
+    func requestMicrophone() {
+        switch statusMicrophone() {
+        case .Unknown:
+            AVAudioSession.sharedInstance().requestRecordPermission({ (granted) -> Void in
+                self.detectAndCallback()
+            })
+        case .Unauthorized:
+            self.showDeniedAlert(.Microphone)
+        default:
+            break
+        }
+    }
+    
+    public func statusCamera() -> PermissionStatus {
+        let status = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+        switch status {
+        case .Authorized:
+            return .Authorized
+        case .Restricted, .Denied:
+            return .Unauthorized
+        case .NotDetermined:
+            return .Unknown
+        }
+    }
+    
+    func requestCamera() {
+        switch statusCamera() {
+        case .Unknown:
+            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo,
+                completionHandler: { (granted) -> Void in
+                    self.detectAndCallback()
+            })
+        case .Unauthorized:
+            self.showDeniedAlert(.Camera)
+        default:
+            break
         }
     }
 
+    public func statusPhotos() -> PermissionStatus {
+        let status = PHPhotoLibrary.authorizationStatus()
+        switch status {
+        case .Authorized:
+            return .Authorized
+        case .Denied, .Restricted:
+            return .Unauthorized
+        case .NotDetermined:
+            return .Unknown
+        }
+    }
+    
+    func requestPhotos() {
+        switch statusPhotos() {
+        case .Unknown:
+            PHPhotoLibrary.requestAuthorization({ (status) -> Void in
+                self.detectAndCallback()
+            })
+        case .Unauthorized:
+            self.showDeniedAlert(.Photos)
+        default:
+            break
+        }
+    }
+    
     func pollForNotificationChanges() {
         // yuck
         // the alternative is telling developers to call detectAndCallback() in their app delegate
@@ -495,6 +649,12 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                 status = statusContacts()
             case .Notifications:
                 status = statusNotifications()
+            case .Microphone:
+                status = statusMicrophone();
+            case .Camera:
+                status = statusCamera()
+            case .Photos:
+                status = statusPhotos()
             }
 
             let result = PermissionResult(type: config.type, status: status, demands: config.demands)
@@ -504,6 +664,23 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         return results
     }
 
+    func showDeniedAlert(permission: PermissionType) {
+        var alert = UIAlertController(title: "Permission for \(permission.rawValue) was denied.",
+            message: "Please enable access to \(permission.rawValue) in Settings",
+            preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "OK",
+            style: .Cancel,
+            handler: nil))
+        alert.addAction(UIAlertAction(title: "Show me",
+            style: .Default,
+            handler: { (action) -> Void in
+                let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
+                UIApplication.sharedApplication().openURL(settingsUrl!)
+        }))
+        self.presentViewController(alert,
+            animated: true, completion: nil)
+    }
+    
     // MARK: gesture delegate
 
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
