@@ -93,6 +93,17 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     var authChangeClosure: ((Bool, [PermissionResult]) -> Void)? = nil
     var cancelClosure: (([PermissionResult]) -> Void)? = nil
 
+    // Computed variables
+    var allAuthorized: Bool {
+        let permissionsArray = getResultsForConfig()
+        return permissionsArray.filter { $0.status != .Authorized }.isEmpty
+    }
+    
+    var requiredAuthorized: Bool {
+        let permissionsArray = getResultsForConfig()
+        return permissionsArray.filter { $0.status != .Authorized && $0.demands == .Required }.isEmpty
+    }
+    
     public init() {
         super.init(nibName: nil, bundle: nil)
 
