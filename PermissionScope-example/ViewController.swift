@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreAudio
 import PermissionScope
 
 class ViewController: UIViewController {
