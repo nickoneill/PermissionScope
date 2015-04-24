@@ -323,11 +323,14 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
 
     func requestLocationAlways() {
-        if statusLocationAlways() != .Authorized {
+        switch statusLocationAlways() {
+        case .Unknown:
             locationManager.delegate = self
             locationManager.requestAlwaysAuthorization()
-        } else if statusContacts() == .Unauthorized {
+        case .Unauthorized:
             self.showDeniedAlert(.LocationAlways)
+        default:
+            break
         }
     }
 
@@ -346,11 +349,14 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
 
     func requestLocationInUse() {
-        if statusLocationInUse() != .Authorized {
+        switch statusLocationInUse() {
+        case .Unknown:
             locationManager.delegate = self
             locationManager.requestWhenInUseAuthorization()
-        } else if statusContacts() == .Unauthorized {
+        case .Unauthorized:
             self.showDeniedAlert(.LocationInUse)
+        default:
+            break
         }
     }
 
@@ -367,15 +373,19 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
 
     func requestContacts() {
-        if statusContacts() == .Unknown {
+        switch statusContacts() {
+        case .Unknown:
             ABAddressBookRequestAccessWithCompletion(nil) { (success, error) -> Void in
                 self.detectAndCallback()
             }
-        } else if statusContacts() == .Unauthorized {
+        case .Unauthorized:
             self.showDeniedAlert(.Contacts)
+        default:
+            break
         }
     }
 
+    // TODO: can we tell if notifications has been denied?
     public func statusNotifications() -> PermissionStatus {
         let settings = UIApplication.sharedApplication().currentUserNotificationSettings()
         if settings.types != UIUserNotificationType.None {
@@ -388,13 +398,15 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
     
     func requestNotifications() {
-        
-        if statusNotifications() != .Authorized {
+        switch statusNotifications() {
+        case .Unauthorized:
             UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Sound | .Badge, categories: nil))
             self.pollForNotificationChanges()
-        } else if statusNotifications() == .Unauthorized {
-            self.showDeniedAlert(.Notifications)
+        default:
+            break
         }
+        
+//        self.showDeniedAlert(.Notifications)
     }
     
     public func statusMicrophone() -> PermissionStatus {
@@ -409,13 +421,15 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
     
     func requestMicrophone() {
-        if statusMicrophone() == .Unknown {
+        switch statusMicrophone() {
+        case .Unknown:
             AVAudioSession.sharedInstance().requestRecordPermission({ (granted) -> Void in
                 self.detectAndCallback()
             })
-        } else if statusMicrophone() == .Unauthorized {
-            // TODO: Alert. User must go to Settings.
+        case .Unauthorized:
             self.showDeniedAlert(.Microphone)
+        default:
+            break
         }
     }
     
@@ -432,14 +446,16 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
     
     func requestCamera() {
-        if statusCamera() == .Unknown {
+        switch statusCamera() {
+        case .Unknown:
             AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo,
                 completionHandler: { (granted) -> Void in
                     self.detectAndCallback()
             })
-        } else if statusCamera() == .Unauthorized {
-            // TODO: Alert. User must go to Settings.
+        case .Unauthorized:
             self.showDeniedAlert(.Camera)
+        default:
+            break
         }
     }
 
@@ -456,12 +472,15 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
     
     func requestPhotos() {
-        if statusPhotos() == .Unknown {
+        switch statusPhotos() {
+        case .Unknown:
             PHPhotoLibrary.requestAuthorization({ (status) -> Void in
                 self.detectAndCallback()
             })
-        } else if statusPhotos() == .Unauthorized {
+        case .Unauthorized:
             self.showDeniedAlert(.Photos)
+        default:
+            break
         }
     }
     
