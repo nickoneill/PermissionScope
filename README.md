@@ -42,7 +42,7 @@ The simplest implementation displays a list of permissions and is removed when a
         pscope.addPermission(PermissionConfig(type: .Contacts, demands: .Required, message: "We use this to steal\r\nyour friends"))
    	    pscope.addPermission(PermissionConfig(type: .Notifications, demands: .Optional, message: "We use this to send you\r\nspam and love notes"))
         pscope.addPermission(PermissionConfig(type: .LocationInUse, demands: .Required, message: "We use this to track\r\nwhere you live"))
-    
+
     pscope.show()
 ```
 
@@ -61,6 +61,12 @@ If you're attempting to block access to a screen in your app without permissions
 A permission can either have `.Required` or .`Optional` demands. Required permissions (such as access to contacts for a contact picker) are evaluated when you call `show` and, if all required demands are met, the dialog isn't shown!
 
 A permission with the `.Optional` demand will not cause the dialog to show alone. Users who have accepted all the required permissions but not all optional permissions can also tap a button to continue without allowing the optional permissions.
+
+### issues
+
+* You get "Library not loaded: @rpath/libswiftCoreAudio.dylib", "image not found" errors when your app runs:
+
+PermissionScope imports CoreAudio to request microphone access but it's not automatically linked in if your app doesn't `import CoreAudio` somewhere. I'm not sure if this is a bug or a a quirk of how CoreAudio is imported. For now, if you `import CoreAudio` in your top level project it should fix the issue.
 
 ### beta
 We're using PermissionScope in [treat](https://gettre.at) and fixing issues as they arise. Still, there's definitely some beta-ness around. Check out what we have planned in [issues](http://github.com/nickoneill/PermissionScope/issues) and contribute a suggestion or some code 😃
