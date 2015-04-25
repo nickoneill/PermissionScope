@@ -37,11 +37,16 @@ public struct PermissionConfig {
     let type: PermissionType
     let demands: PermissionDemands
     let message: String
-
-    public init(type: PermissionType, demands: PermissionDemands, message: String) {
+    let notificationCategories: Set<UIUserNotificationCategory>? // Only for Notifications
+    
+    public init(type: PermissionType, demands: PermissionDemands, message: String, notificationCategories: Set<UIUserNotificationCategory>?) {
+        assert(notificationCategories != .None && type != .Notifications,
+            "Only .Notifications Permission can have notificationCategories not nil")
+        
         self.type = type
         self.demands = demands
         self.message = message
+        self.notificationCategories = notificationCategories
     }
 }
 
@@ -93,6 +98,17 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     var authChangeClosure: ((Bool, [PermissionResult]) -> Void)? = nil
     var cancelClosure: (([PermissionResult]) -> Void)? = nil
 
+    // Computed variables
+    var allAuthorized: Bool {
+        let permissionsArray = getResultsForConfig()
+        return permissionsArray.filter { $0.status != .Authorized }.isEmpty
+    }
+    
+    var requiredAuthorized: Bool {
+        let permissionsArray = getResultsForConfig()
+        return permissionsArray.filter { $0.status != .Authorized && $0.demands == .Required }.isEmpty
+    }
+    
     public init() {
         super.init(nibName: nil, bundle: nil)
 
@@ -257,6 +273,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     public func addPermission(config: PermissionConfig) {
         assert(!config.message.isEmpty, "Including a message about your permission usage is helpful")
         assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
+        assert(!configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type.rawValue) already set")
         if config.type == .Notifications && config.demands == .Required {
             assertionFailure("We cannot tell if notifications have been denied so it's unwise to mark this as required")
         }
@@ -401,7 +418,12 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     func requestNotifications() {
         switch statusNotifications() {
         case .Unknown:
-            UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Sound | .Badge, categories: nil))
+            // There should be only one...
+            let notificationsPermissionSet = self.configuredPermissions.filter { $0.notificationCategories != .None && !$0.notificationCategories!.isEmpty }.first?.notificationCategories
+
+            UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Sound | .Badge,
+                categories: notificationsPermissionSet))
+            
             self.pollForNotificationChanges()
         default:
             break
@@ -601,17 +623,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
 
     func detectAndCallback() {
-        var allAuthorized = true
-        var requiredAuthorized = true
+        let allAuthorized = self.allAuthorized
+        let requiredAuthorized = self.requiredAuthorized
         let results = getResultsForConfig()
-        for result in results {
-            if result.status != .Authorized {
-                allAuthorized = false
-                if result.demands == .Required {
-                    requiredAuthorized = false
-                }
-            }
-        }
 
         // compile the results and pass them back if necessary
         if let authChangeClosure = authChangeClosure {
