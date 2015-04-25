@@ -535,22 +535,10 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         authChangeClosure = authChange
         cancelClosure = cancelled
 
-        var allAuthorized = true
-        var requiredAuthorized = true
-        let results = getResultsForConfig()
-        for result in results {
-            if result.status != .Authorized {
-                allAuthorized = false
-                if result.demands == .Required {
-                    requiredAuthorized = false
-                }
-            }
-        }
-
         // no missing required perms? callback and do nothing
         if requiredAuthorized {
             if let authChangeClosure = authChangeClosure {
-                authChangeClosure(true, results)
+                authChangeClosure(true, getResultsForConfig())
             }
 
             return
@@ -623,27 +611,23 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
 
     func detectAndCallback() {
-        let allAuthorized = self.allAuthorized
-        let requiredAuthorized = self.requiredAuthorized
-        let results = getResultsForConfig()
-
         // compile the results and pass them back if necessary
         if let authChangeClosure = authChangeClosure {
-            authChangeClosure(allAuthorized, results)
+            authChangeClosure(allAuthorized, getResultsForConfig())
         }
 
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.view.setNeedsLayout()
 
             // enable the finalize button if we have all required perms
-            if requiredAuthorized {
+            if self.requiredAuthorized {
                 self.finalizeButton.enabled = true
             } else {
                 self.finalizeButton.enabled = false
             }
 
             // and hide if we've sucessfully got all permissions
-            if allAuthorized {
+            if self.allAuthorized {
                 self.hide()
             }
         })
