@@ -37,6 +37,9 @@ public struct PermissionConfig {
     let type: PermissionType
     let demands: PermissionDemands
     let message: String
+    
+    // TODO: Use assert to check notificationCategories != .None when type != .Notifications
+    let notificationCategories: Set<UIUserNotificationCategory>?
 }
 
 public struct PermissionResult: Printable {
@@ -406,7 +409,12 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     func requestNotifications() {
         switch statusNotifications() {
         case .Unknown:
-            UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Sound | .Badge, categories: nil))
+            // There should be only one...
+            let notificationsPermissionSet = self.configuredPermissions.filter { $0.notificationCategories != .None && !$0.notificationCategories!.isEmpty }.first?.notificationCategories
+
+            UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Sound | .Badge,
+                categories: notificationsPermissionSet))
+            
             self.pollForNotificationChanges()
         default:
             break
