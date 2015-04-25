@@ -623,17 +623,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
 
     func detectAndCallback() {
-        var allAuthorized = true
-        var requiredAuthorized = true
+        let allAuthorized = self.allAuthorized
+        let requiredAuthorized = self.requiredAuthorized
         let results = getResultsForConfig()
-        for result in results {
-            if result.status != .Authorized {
-                allAuthorized = false
-                if result.demands == .Required {
-                    requiredAuthorized = false
-                }
-            }
-        }
 
         // compile the results and pass them back if necessary
         if let authChangeClosure = authChangeClosure {
