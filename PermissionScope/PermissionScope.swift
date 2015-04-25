@@ -37,9 +37,9 @@ public struct PermissionConfig {
     let type: PermissionType
     let demands: PermissionDemands
     let message: String
+    let notificationCategories: Set<UIUserNotificationCategory>? // Only for Notifications
     
-    let notificationCategories: Set<UIUserNotificationCategory>?
-    init(type: PermissionType, demands: PermissionDemands, message: String, notificationCategories: Set<UIUserNotificationCategory>?) {
+    public init(type: PermissionType, demands: PermissionDemands, message: String, notificationCategories: Set<UIUserNotificationCategory>?) {
         assert(notificationCategories != .None && type != .Notifications,
             "Only .Notifications Permission can have notificationCategories not nil")
         
