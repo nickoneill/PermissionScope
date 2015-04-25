@@ -38,8 +38,16 @@ public struct PermissionConfig {
     let demands: PermissionDemands
     let message: String
     
-    // TODO: Use assert to check notificationCategories != .None when type != .Notifications
     let notificationCategories: Set<UIUserNotificationCategory>?
+    init(type: PermissionType, demands: PermissionDemands, message: String, notificationCategories: Set<UIUserNotificationCategory>?) {
+        assert(notificationCategories != .None && type != .Notifications,
+            "Only .Notifications Permission can have notificationCategories not nil")
+        
+        self.type = type
+        self.demands = demands
+        self.message = message
+        self.notificationCategories = notificationCategories
+    }
 }
 
 public struct PermissionResult: Printable {
