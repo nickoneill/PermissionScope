@@ -69,6 +69,11 @@ extension UIColor {
         return self
     }
 }
+extension String {
+    var localized: String {
+        return NSLocalizedString(self, comment: "")
+    }
+}
 
 public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate {
     // constants
@@ -209,58 +214,58 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             case .LocationAlways:
                 if statusLocationAlways() == .Authorized {
                     setButtonAuthorizedStyle(button)
-                    button.setTitle("Got Location".uppercaseString, forState: UIControlState.Normal)
+                    button.setTitle("Got Location".localized.uppercaseString, forState: UIControlState.Normal)
                 } else if statusNotifications() == .Unauthorized {
                     setButtonUnauthorizedStyle(button)
-                    button.setTitle("Denied Location".uppercaseString, forState: UIControlState.Normal)
+                    button.setTitle("Denied Location".localized.uppercaseString, forState: UIControlState.Normal)
                 }
             case .LocationInUse:
                 if statusLocationInUse() == .Authorized {
                     setButtonAuthorizedStyle(button)
-                    button.setTitle("Got Location".uppercaseString, forState: UIControlState.Normal)
+                    button.setTitle("Got Location".localized.uppercaseString, forState: UIControlState.Normal)
                 } else if statusLocationInUse() == .Unauthorized {
                     setButtonUnauthorizedStyle(button)
-                    button.setTitle("Denied Location".uppercaseString, forState: UIControlState.Normal)
+                    button.setTitle("Denied Location".localized.uppercaseString, forState: UIControlState.Normal)
                 }
             case .Contacts:
                 if statusContacts() == .Authorized {
                     setButtonAuthorizedStyle(button)
-                    button.setTitle("Allowed Contacts".uppercaseString, forState: UIControlState.Normal)
+                    button.setTitle("Allowed Contacts".localized.uppercaseString, forState: UIControlState.Normal)
                 } else if statusContacts() == .Unauthorized {
                     setButtonUnauthorizedStyle(button)
-                    button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                    button.setTitle("Denied \(type.rawValue)".localized.uppercaseString, forState: UIControlState.Normal)
                 }
             case .Notifications:
                 if statusNotifications() == .Authorized {
                     setButtonAuthorizedStyle(button)
-                    button.setTitle("Allowed Notifications".uppercaseString, forState: UIControlState.Normal)
+                    button.setTitle("Allowed Notifications".localized.uppercaseString, forState: UIControlState.Normal)
                 } else if statusNotifications() == .Unauthorized {
                     setButtonUnauthorizedStyle(button)
-                    button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                    button.setTitle("Denied \(type.rawValue)".localized.uppercaseString, forState: UIControlState.Normal)
                 }
             case .Microphone:
                 if statusMicrophone() == .Authorized {
                     setButtonAuthorizedStyle(button)
-                    button.setTitle("Allowed \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                    button.setTitle("Allowed \(type.rawValue)".localized.uppercaseString, forState: UIControlState.Normal)
                 } else if statusMicrophone() == .Unauthorized {
                     setButtonUnauthorizedStyle(button)
-                    button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                    button.setTitle("Denied \(type.rawValue)".localized.uppercaseString, forState: UIControlState.Normal)
                 }
             case .Camera:
                 if statusCamera() == .Authorized {
                     setButtonAuthorizedStyle(button)
-                    button.setTitle("Allowed \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                    button.setTitle("Allowed \(type.rawValue)".localized.uppercaseString, forState: UIControlState.Normal)
                 } else if statusCamera() == .Unauthorized {
                     setButtonUnauthorizedStyle(button)
-                    button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                    button.setTitle("Denied \(type.rawValue)".localized.uppercaseString, forState: UIControlState.Normal)
                 }
             case .Photos:
                 if statusPhotos() == .Authorized {
                     setButtonAuthorizedStyle(button)
-                    button.setTitle("Allowed \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                    button.setTitle("Allowed \(type.rawValue)".localized.uppercaseString, forState: UIControlState.Normal)
                 } else if statusPhotos() == .Unauthorized {
                     setButtonUnauthorizedStyle(button)
-                    button.setTitle("Denied \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+                    button.setTitle("Denied \(type.rawValue)".localized.uppercaseString, forState: UIControlState.Normal)
                 }
             }
 
@@ -298,9 +303,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         // this is a bit of a mess, eh?
         switch type {
         case .LocationAlways, .LocationInUse:
-            button.setTitle("Enable Location".uppercaseString, forState: UIControlState.Normal)
+            button.setTitle("Enable Location".localized.uppercaseString, forState: UIControlState.Normal)
         default:
-            button.setTitle("Allow \(type.rawValue)".uppercaseString, forState: UIControlState.Normal)
+            button.setTitle("Allow \(type.rawValue)".localized.uppercaseString, forState: UIControlState.Normal)
         }
         
         button.addTarget(self, action: Selector("request\(type.rawValue)"), forControlEvents: UIControlEvents.TouchUpInside)
