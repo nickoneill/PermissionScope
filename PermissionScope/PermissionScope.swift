@@ -39,6 +39,7 @@ public struct PermissionConfig {
     let message: String
     
     let notificationCategories: Set<UIUserNotificationCategory>?
+    
     public init(type: PermissionType, demands: PermissionDemands, message: String, notificationCategories: Set<UIUserNotificationCategory>? = .None) {
         assert((notificationCategories != .None && type == .Notifications) || (notificationCategories == .None && type != .Notifications), "Only .Notifications Permission can have notificationCategories not nil")
         
@@ -102,13 +103,12 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         let permissionsArray = getResultsForConfig()
         return permissionsArray.filter { $0.status != .Authorized }.isEmpty
     }
-    
     var requiredAuthorized: Bool {
         let permissionsArray = getResultsForConfig()
         return permissionsArray.filter { $0.status != .Authorized && $0.demands == .Required }.isEmpty
     }
     
-    public init() {
+    public init(enableSkipOnBackgroundTap: Bool) {
         super.init(nibName: nil, bundle: nil)
 
         // Set up main view
@@ -119,9 +119,11 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         // Base View
         baseView.frame = view.frame
         baseView.addSubview(contentView)
-        let tap = UITapGestureRecognizer(target: self, action: Selector("cancel"))
-        tap.delegate = self
-        baseView.addGestureRecognizer(tap)
+        if enableSkipOnBackgroundTap {
+            let tap = UITapGestureRecognizer(target: self, action: Selector("cancel"))
+            tap.delegate = self
+            baseView.addGestureRecognizer(tap)
+        }
         // Content View
         contentView.backgroundColor = UIColor.whiteColor()
         contentView.layer.cornerRadius = 10
@@ -154,6 +156,10 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         finalizeButton.addTarget(self, action: Selector("finish"), forControlEvents: UIControlEvents.TouchUpInside)
 
         contentView.addSubview(finalizeButton)
+    }
+    
+    public convenience init() {
+        self.init(enableSkipOnBackgroundTap: true)
     }
 
     required public init(coder aDecoder: NSCoder) {
