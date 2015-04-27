@@ -125,7 +125,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         return permissionsArray.filter { $0.status != .Authorized && $0.demands == .Required }.isEmpty
     }
     
-    public init(enableSkipOnBackgroundTap: Bool) {
+    public init(backgroundTapCancels: Bool) {
         super.init(nibName: nil, bundle: nil)
 
         // Set up main view
@@ -136,7 +136,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         // Base View
         baseView.frame = view.frame
         baseView.addSubview(contentView)
-        if enableSkipOnBackgroundTap {
+        if backgroundTapCancels {
             let tap = UITapGestureRecognizer(target: self, action: Selector("cancel"))
             tap.delegate = self
             baseView.addGestureRecognizer(tap)
@@ -176,7 +176,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
     
     public convenience init() {
-        self.init(enableSkipOnBackgroundTap: true)
+        self.init(backgroundTapCancels: true)
     }
 
     required public init(coder aDecoder: NSCoder) {
