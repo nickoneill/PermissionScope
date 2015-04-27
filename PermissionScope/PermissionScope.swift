@@ -26,6 +26,7 @@ public enum PermissionStatus: String {
     case Authorized = "Authorized"
     case Unauthorized = "Unauthorized"
     case Unknown = "Unknown"
+    case Disabled = "Disabled" // System-level
 }
 
 public enum PermissionDemands: String {
@@ -341,6 +342,10 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     // MARK: dealing with system permissions
 
     public func statusLocationAlways() -> PermissionStatus {
+        if !CLLocationManager.locationServicesEnabled() {
+            return .Disabled
+        }
+        
         let status = CLLocationManager.authorizationStatus()
         switch status {
         case .AuthorizedAlways:
@@ -359,12 +364,18 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             locationManager.requestAlwaysAuthorization()
         case .Unauthorized:
             self.showDeniedAlert(.LocationAlways)
+        case .Disabled:
+            self.showDisabledAlert(.LocationInUse)
         default:
             break
         }
     }
 
     public func statusLocationInUse() -> PermissionStatus {
+        if !CLLocationManager.locationServicesEnabled() {
+            return .Disabled
+        }
+        
         let status = CLLocationManager.authorizationStatus()
         // if you're already "always" authorized, then you don't need in use
         // but the user can still demote you! So I still use them separately.
@@ -385,6 +396,8 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             locationManager.requestWhenInUseAuthorization()
         case .Unauthorized:
             self.showDeniedAlert(.LocationInUse)
+        case .Disabled:
+            self.showDisabledAlert(.LocationInUse)
         default:
             break
         }
@@ -675,7 +688,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
     func showDeniedAlert(permission: PermissionType) {
         var alert = UIAlertController(title: "Permission for \(permission.rawValue) was denied.",
-            message: "Please enable access to \(permission.rawValue) in Settings",
+            message: "Please enable access to \(permission.rawValue) in the App's Settings",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
@@ -686,6 +699,17 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                 let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
                 UIApplication.sharedApplication().openURL(settingsUrl!)
         }))
+        self.presentViewController(alert,
+            animated: true, completion: nil)
+    }
+    
+    func showDisabledAlert(permission: PermissionType) {
+        var alert = UIAlertController(title: "\(permission.rawValue) is currently disabled.",
+            message: "Please enable access to \(permission.rawValue) in Settings",
+            preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "OK",
+            style: .Cancel,
+            handler: nil))
         self.presentViewController(alert,
             animated: true, completion: nil)
     }
