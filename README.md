@@ -38,12 +38,14 @@ No promises that it works with Obj-C at the moment, I'm using it with a mostly-S
 The simplest implementation displays a list of permissions and is removed when all of them have satisfactory access.
 
 ```swift
-    let pscope = PermissionScope()
-        pscope.addPermission(PermissionConfig(type: .Contacts, demands: .Required, message: "We use this to steal\r\nyour friends"))
-   	    pscope.addPermission(PermissionConfig(type: .Notifications, demands: .Optional, message: "We use this to send you\r\nspam and love notes"))
-        pscope.addPermission(PermissionConfig(type: .LocationInUse, demands: .Required, message: "We use this to track\r\nwhere you live"))
+let pscope = PermissionScope()
+pscope.addPermission(PermissionConfig(type: .Contacts, demands: .Required, message: "We use this to steal\r\nyour friends"))
 
-    pscope.show()
+pscope.addPermission(PermissionConfig(type: .Notifications, demands: .Optional, message: "We use this to send you\r\nspam and love notes", notificationCategories: Set([somePreviouslyConfiguredCategory])))
+
+pscope.addPermission(PermissionConfig(type: .LocationInUse, demands: .Required, message: "We use this to track\r\nwhere you live"))
+
+pscope.show()
 ```
 
 The permissions view will automatically show if there are permissions to approve and will take no action if permissions are already granted. It will automatically hide when all permissions have been approved.
@@ -51,16 +53,32 @@ The permissions view will automatically show if there are permissions to approve
 If you're attempting to block access to a screen in your app without permissions (like, say, the broadcast screen in Periscope), you should watch for the cancel closure and take an appropriate action for your app.
 
 ```swift
-		pscope.show(authChange: { (results) -> Void in
-        println("results is a PermissionsResult for each config")
-    }, cancelled: { () -> Void in
-        println("thing was cancelled")
-    })
+pscope.show(authChange: { (finished, results) -> Void in
+    println("results is a PermissionsResult for each config")
+}, cancelled: { (results) -> Void in
+    println("thing was cancelled")
+})
 ```
 
 A permission can either have `.Required` or .`Optional` demands. Required permissions (such as access to contacts for a contact picker) are evaluated when you call `show` and, if all required demands are met, the dialog isn't shown!
 
 A permission with the `.Optional` demand will not cause the dialog to show alone. Users who have accepted all the required permissions but not all optional permissions can also tap a button to continue without allowing the optional permissions.
+
+### customizability
+
+You can easily change the colors, label and buttons fonts with PermissionScope.
+
+```swift
+pscope.tintColor = UIColor...
+pscope.headerLabel.text = "..."
+pscope.headerLabel.font = UIFont...
+pscope.bodyLabel.text = "..."
+pscope.bodyLabel.font = UIFont...
+pscope.buttonFont = UIFont...
+pscope.labelFont = UIFont...
+```
+
+In addition, the default behavior for tapping the background behind the dialog is to cancel the dialog (which calls the cancel closure you can provide on `show`). You can change this behavior with `backgroundTapCancels` during init.
 
 ### issues
 
@@ -74,9 +92,13 @@ We're using PermissionScope in [treat](https://gettre.at) and fixing issues as t
 ### PermissionScope registers user notification settings, not remote notifications
 Users will get the prompt to enable notifications when using PermissionScope but it's up to you to watch for results in your app delegate's `didRegisterUserNotificationSettings` and then register for remote notifications independently. This won't alert the user again. You're still responsible for handling the shipment of user notification settings off to your push server.
 
-### Notes about location
+### notes about location
 **You must set these Info.plist keys for location to work**
 
 Trickiest part of implementing location permissions? You must implement the proper key in your Info.plist file with a short description of how your app uses location info (shown in the system permissions dialog). Without this, trying to get location  permissions will just silently fail. *Software*!
 
 Use `NSLocationAlwaysUsageDescription` or `NSLocationWhenInUseUsageDescription` where appropriate for your app usage. You can specify which of these location permissions you wish to request with `.LocationAlways` or `.LocationInUse` while configuring PermissionScope.
+
+### license, etc
+
+PermissionScope uses the MIT license. Please file an issue if you have any questions or if you'd like to share how you're using this tool. Thanks! 
