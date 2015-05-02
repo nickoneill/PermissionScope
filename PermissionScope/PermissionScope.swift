@@ -679,29 +679,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         var results: [PermissionResult] = []
 
         for config in configuredPermissions {
-            var status: PermissionStatus
-
-            switch config.type {
-            case .LocationAlways:
-                status = statusLocationAlways()
-            case .LocationInUse:
-                status = statusLocationInUse()
-            case .Contacts:
-                status = statusContacts()
-            case .Notifications:
-                status = statusNotifications()
-            case .Microphone:
-                status = statusMicrophone()
-            case .Camera:
-                status = statusCamera()
-            case .Photos:
-                status = statusPhotos()
-            case .Reminders:
-                status = statusReminders()
-            case .Events:
-                status = statusEvents()
-            }
-
+            var status = statusForPermission(config.type)
             let result = PermissionResult(type: config.type, status: status, demands: config.demands)
             results.append(result)
         }
