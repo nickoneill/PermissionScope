@@ -11,15 +11,18 @@ import CoreLocation
 import AddressBook
 import AVFoundation
 import Photos
+import EventKit
 
 public enum PermissionType: String {
-    case Contacts = "Contacts"
+    case Contacts       = "Contacts"
     case LocationAlways = "LocationAlways"
-    case LocationInUse = "LocationInUse"
-    case Notifications = "Notifications"
-    case Microphone = "Microphone"
-    case Camera = "Camera"
-    case Photos = "Photos"
+    case LocationInUse  = "LocationInUse"
+    case Notifications  = "Notifications"
+    case Microphone     = "Microphone"
+    case Camera         = "Camera"
+    case Photos         = "Photos"
+    case Reminders      = "Reminders"
+    case Events         = "Events"
     
     var prettyName: String {
         switch self {
@@ -32,10 +35,10 @@ public enum PermissionType: String {
 }
 
 public enum PermissionStatus: String {
-    case Authorized = "Authorized"
-    case Unauthorized = "Unauthorized"
-    case Unknown = "Unknown"
-    case Disabled = "Disabled" // System-level
+    case Authorized     = "Authorized"
+    case Unauthorized   = "Unauthorized"
+    case Unknown        = "Unknown"
+    case Disabled       = "Disabled" // System-level
 }
 
 public enum PermissionDemands: String {
@@ -494,6 +497,58 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
     
+    public func statusReminders() -> PermissionStatus {
+        let status = EKEventStore.authorizationStatusForEntityType(EKEntityTypeReminder)
+        switch status {
+        case .Authorized:
+            return .Authorized
+        case .Restricted, .Denied:
+            return .Unauthorized
+        case .NotDetermined:
+            return .Unknown
+        }
+    }
+    
+    func requestReminders() {
+        switch statusReminders() {
+        case .Unknown:
+            EKEventStore().requestAccessToEntityType(EKEntityTypeReminder,
+                completion: { (granted, error) -> Void in
+                    self.detectAndCallback()
+            })
+        case .Unauthorized:
+            self.showDeniedAlert(.Reminders)
+        default:
+            break
+        }
+    }
+    
+    public func statusEvents() -> PermissionStatus {
+        let status = EKEventStore.authorizationStatusForEntityType(EKEntityTypeEvent)
+        switch status {
+        case .Authorized:
+            return .Authorized
+        case .Restricted, .Denied:
+            return .Unauthorized
+        case .NotDetermined:
+            return .Unknown
+        }
+    }
+    
+    func requestEvents() {
+        switch statusEvents() {
+        case .Unknown:
+            EKEventStore().requestAccessToEntityType(EKEntityTypeEvent,
+                completion: { (granted, error) -> Void in
+                    self.detectAndCallback()
+            })
+        case .Unauthorized:
+            self.showDeniedAlert(.Reminders)
+        default:
+            break
+        }
+    }
+    
     func pollForNotificationChanges() {
         // yuck
         // the alternative is telling developers to call detectAndCallback() in their app delegate
@@ -641,6 +696,10 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                 status = statusCamera()
             case .Photos:
                 status = statusPhotos()
+            case .Reminders:
+                status = statusReminders()
+            case .Events:
+                status = statusEvents()
             }
 
             let result = PermissionResult(type: config.type, status: status, demands: config.demands)
@@ -716,6 +775,10 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             return statusCamera()
         case .Photos:
             return statusPhotos()
+        case .Reminders:
+            return statusReminders()
+        case .Events:
+            return statusEvents()
         }
     }
 }
