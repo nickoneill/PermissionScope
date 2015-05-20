@@ -612,7 +612,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             permissionLabels.append(label)
             contentView.addSubview(label)
         }
-
+        
+        self.view.setNeedsLayout()
+        
         // slide in the view
         self.baseView.frame.origin.y = -400
         UIView.animateWithDuration(0.2, animations: {
