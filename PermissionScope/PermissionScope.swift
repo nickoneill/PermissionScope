@@ -32,6 +32,8 @@ public enum PermissionType: String {
             return self.rawValue
         }
     }
+    
+    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events]
 }
 
 public enum PermissionStatus: String {
@@ -126,6 +128,24 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     var requiredAuthorized: Bool {
         let permissionsArray = getResultsForConfig()
         return permissionsArray.filter { $0.status != .Authorized && $0.demands == .Required }.isEmpty
+    }
+    
+    // use the code we have to see permission status
+    public func permissionStatuses(permissionTypes: [PermissionType]?) -> Dictionary<PermissionType, PermissionStatus> {
+        var statuses: Dictionary<PermissionType, PermissionStatus> = [:]
+        var types = permissionTypes
+        
+        if types == nil {
+            types = PermissionType.allValues
+        }
+        
+        if let types = types {
+            for type in types {
+                statuses[type] = self.statusForPermission(type)
+            }
+        }
+        
+        return statuses
     }
     
     public init(backgroundTapCancels: Bool) {
@@ -306,7 +326,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         return label
     }
 
-    // MARK: dealing with system permissions
+    // MARK: status and requests for each permission
 
     public func statusLocationAlways() -> PermissionStatus {
         if !CLLocationManager.locationServicesEnabled() {
