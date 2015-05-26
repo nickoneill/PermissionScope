@@ -192,7 +192,6 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         // close button
         closeButton.setTitle("Close", forState: UIControlState.Normal)
         closeButton.addTarget(self, action: Selector("cancel"), forControlEvents: UIControlEvents.TouchUpInside)
-        closeButton.setTranslatesAutoresizingMaskIntoConstraints(false)
         
         contentView.addSubview(closeButton)
     }
@@ -286,9 +285,6 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         assert(!config.message.isEmpty, "Including a message about your permission usage is helpful")
         assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
         assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type.rawValue) already set")
-        if config.type == .Notifications && config.demands == .Required {
-            assertionFailure("We cannot tell if notifications have been denied so it's unwise to mark this as required")
-        }
 
         configuredPermissions.append(config)
     }
