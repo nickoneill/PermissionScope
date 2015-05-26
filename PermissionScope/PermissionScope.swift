@@ -103,13 +103,11 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     public var tintColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
     public var buttonFont = UIFont.boldSystemFontOfSize(14)
     public var labelFont = UIFont.systemFontOfSize(14)
-    public var finalizeFont = UIFont.systemFontOfSize(16)
     public var closeButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 32))
 
     // some view hierarchy
     let baseView = UIView()
     let contentView = UIView()
-    let finalizeButton = UIButton(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
 
     // various managers
     let locationManager = CLLocationManager()
@@ -190,13 +188,6 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 //        bodyLabel.backgroundColor = UIColor.redColor()
 
         contentView.addSubview(bodyLabel)
-
-        finalizeButton.setTitle("Let's go!", forState: UIControlState.Normal)
-        finalizeButton.setTitleColor(UIColor.grayColor(), forState: UIControlState.Disabled)
-        finalizeButton.enabled = false
-        finalizeButton.addTarget(self, action: Selector("finish"), forControlEvents: UIControlEvents.TouchUpInside)
-
-        contentView.addSubview(finalizeButton)
         
         closeButton.setTitle("Close", forState: UIControlState.Normal)
         closeButton.addTarget(self, action: Selector("cancel"), forControlEvents: UIControlEvents.TouchUpInside)
@@ -229,17 +220,12 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         // offset the header from the content center, compensate for the content's offset
         headerLabel.center = contentView.center
         headerLabel.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-        headerLabel.frame.offset(dx: 0, dy: -200)
+        headerLabel.frame.offset(dx: 0, dy: -180)
 
         // ... same with the body
         bodyLabel.center = contentView.center
         bodyLabel.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-        bodyLabel.frame.offset(dx: 0, dy: -150)
-
-        finalizeButton.center = contentView.center
-        finalizeButton.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-        finalizeButton.frame.offset(dx: 0, dy: 210)
-        finalizeButton.setTitleColor(tintColor, forState: UIControlState.Normal)
+        bodyLabel.frame.offset(dx: 0, dy: -130)
         
         closeButton.center = contentView.center
         closeButton.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
@@ -251,7 +237,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         for button in permissionButtons {
             button.center = contentView.center
             button.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-            button.frame.offset(dx: 0, dy: -80 + CGFloat(index * baseOffset))
+            button.frame.offset(dx: 0, dy: -60 + CGFloat(index * baseOffset))
             
             let type = configuredPermissions[index].type
             
@@ -271,7 +257,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             let label = permissionLabels[index]
             label.center = contentView.center
             label.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-            label.frame.offset(dx: 0, dy: -35 + CGFloat(index * baseOffset))
+            label.frame.offset(dx: 0, dy: -15 + CGFloat(index * baseOffset))
 
             index++
         }
@@ -693,13 +679,6 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.view.setNeedsLayout()
-
-            // enable the finalize button if we have all required perms
-            if self.requiredAuthorized {
-                self.finalizeButton.enabled = true
-            } else {
-                self.finalizeButton.enabled = false
-            }
 
             // and hide if we've sucessfully got all permissions
             if self.allAuthorized {
