@@ -103,6 +103,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     public var buttonFont = UIFont.boldSystemFontOfSize(14)
     public var labelFont = UIFont.systemFontOfSize(14)
     public var closeButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 32))
+    public var closeOffset = CGSize(width: 0, height: 0)
 
     // some view hierarchy
     let baseView = UIView()
@@ -242,6 +243,10 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         closeButton.center = contentView.center
         closeButton.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
         closeButton.frame.offset(dx: 105, dy: -((dialogHeight/2)-20))
+        closeButton.frame.offset(dx: self.closeOffset.width, dy: self.closeOffset.height)
+        if closeButton.imageView?.image != nil {
+            closeButton.setTitle("", forState: UIControlState.Normal)
+        }
         closeButton.setTitleColor(tintColor, forState: UIControlState.Normal)
 
         let baseOffset = 95
