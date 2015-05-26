@@ -104,6 +104,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     public var buttonFont = UIFont.boldSystemFontOfSize(14)
     public var labelFont = UIFont.systemFontOfSize(14)
     public var finalizeFont = UIFont.systemFontOfSize(16)
+    public var closeButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 32))
 
     // some view hierarchy
     let baseView = UIView()
@@ -196,6 +197,11 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         finalizeButton.addTarget(self, action: Selector("finish"), forControlEvents: UIControlEvents.TouchUpInside)
 
         contentView.addSubview(finalizeButton)
+        
+        closeButton.setTitle("Close", forState: UIControlState.Normal)
+        closeButton.addTarget(self, action: Selector("cancel"), forControlEvents: UIControlEvents.TouchUpInside)
+        
+        contentView.addSubview(closeButton)
     }
     
     public convenience init() {
@@ -234,6 +240,11 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         finalizeButton.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
         finalizeButton.frame.offset(dx: 0, dy: 210)
         finalizeButton.setTitleColor(tintColor, forState: UIControlState.Normal)
+        
+        closeButton.center = contentView.center
+        closeButton.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
+        closeButton.frame.offset(dx: 105, dy: -220)
+        closeButton.setTitleColor(tintColor, forState: UIControlState.Normal)
 
         let baseOffset = 95
         var index = 0
