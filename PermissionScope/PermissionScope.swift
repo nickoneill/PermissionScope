@@ -94,8 +94,7 @@ extension String {
 
 public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate {
     // constants
-    let ContentWidth: CGFloat = 280.0
-    let ContentHeight: CGFloat = 480.0
+    let contentWidth: CGFloat = 280.0
 
     // configurable things
     public let headerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
@@ -189,8 +188,10 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
         contentView.addSubview(bodyLabel)
         
+        // close button
         closeButton.setTitle("Close", forState: UIControlState.Normal)
         closeButton.addTarget(self, action: Selector("cancel"), forControlEvents: UIControlEvents.TouchUpInside)
+        closeButton.setTranslatesAutoresizingMaskIntoConstraints(false)
         
         contentView.addSubview(closeButton)
     }
@@ -213,23 +214,34 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         // Set background frame
         view.frame.size = screenSize
         // Set frames
-        var x = (screenSize.width - ContentWidth) / 2
-        var y = (screenSize.height - ContentHeight) / 2
-        contentView.frame = CGRect(x:x, y:y, width:ContentWidth, height:ContentHeight)
+        var x = (screenSize.width - contentWidth) / 2
+
+        let dialogHeight: CGFloat
+        switch self.configuredPermissions.count {
+        case 2:
+            dialogHeight = 360
+        case 3:
+            dialogHeight = 460
+        default:
+            dialogHeight = 260
+        }
+        
+        var y = (screenSize.height - dialogHeight) / 2
+        contentView.frame = CGRect(x:x, y:y, width:contentWidth, height:dialogHeight)
 
         // offset the header from the content center, compensate for the content's offset
         headerLabel.center = contentView.center
         headerLabel.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-        headerLabel.frame.offset(dx: 0, dy: -180)
+        headerLabel.frame.offset(dx: 0, dy: -((dialogHeight/2)-50))
 
         // ... same with the body
         bodyLabel.center = contentView.center
         bodyLabel.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-        bodyLabel.frame.offset(dx: 0, dy: -130)
+        bodyLabel.frame.offset(dx: 0, dy: -((dialogHeight/2)-100))
         
         closeButton.center = contentView.center
         closeButton.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-        closeButton.frame.offset(dx: 105, dy: -220)
+        closeButton.frame.offset(dx: 105, dy: -((dialogHeight/2)-20))
         closeButton.setTitleColor(tintColor, forState: UIControlState.Normal)
 
         let baseOffset = 95
@@ -237,7 +249,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         for button in permissionButtons {
             button.center = contentView.center
             button.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-            button.frame.offset(dx: 0, dy: -60 + CGFloat(index * baseOffset))
+            button.frame.offset(dx: 0, dy: -((dialogHeight/2)-160) + CGFloat(index * baseOffset))
             
             let type = configuredPermissions[index].type
             
@@ -257,7 +269,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             let label = permissionLabels[index]
             label.center = contentView.center
             label.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-            label.frame.offset(dx: 0, dy: -15 + CGFloat(index * baseOffset))
+            label.frame.offset(dx: 0, dy: -((dialogHeight/2)-205) + CGFloat(index * baseOffset))
 
             index++
         }
