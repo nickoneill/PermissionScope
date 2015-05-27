@@ -13,6 +13,10 @@ import AVFoundation
 import Photos
 import EventKit
 
+struct PermissionScopeConstants {
+    static let requestedInUseToAlwaysUpgrade = "requestedInUseToAlwaysUpgrade"
+}
+
 public enum PermissionType: String {
     case Contacts       = "Contacts"
     case LocationAlways = "LocationAlways"
@@ -347,8 +351,17 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         switch status {
         case .AuthorizedAlways:
             return .Authorized
-        case .Restricted, .Denied, .AuthorizedWhenInUse:
+        case .Restricted, .Denied:
             return .Unauthorized
+        case .AuthorizedWhenInUse:
+            let defaults = NSUserDefaults.standardUserDefaults()
+            // curious why this happens? Details on upgrading from WhenInUse to Always:
+            // https://github.com/nickoneill/PermissionScope/issues/24
+            if defaults.boolForKey(PermissionScopeConstants.requestedInUseToAlwaysUpgrade) == true {
+                return .Unauthorized
+            } else {
+                return .Unknown
+            }
         case .NotDetermined:
             return .Unknown
         }
@@ -357,6 +370,11 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     func requestLocationAlways() {
         switch statusLocationAlways() {
         case .Unknown:
+            if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse {
+                let defaults = NSUserDefaults.standardUserDefaults()
+                defaults.setBool(true, forKey: PermissionScopeConstants.requestedInUseToAlwaysUpgrade)
+                defaults.synchronize()
+            }
             locationManager.delegate = self
             locationManager.requestAlwaysAuthorization()
         case .Unauthorized:
