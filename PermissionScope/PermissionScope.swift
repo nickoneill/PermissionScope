@@ -52,6 +52,8 @@ public enum PermissionDemands: String {
     case Optional = "Optional"
 }
 
+private let PermissionScopeAskedForNotificationsDefaultsKey = "PermissionScopeAskedForNotificationsDefaultsKey"
+
 public struct PermissionConfig {
     let type: PermissionType
     let demands: PermissionDemands
@@ -290,6 +292,13 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
         assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type.rawValue) already set")
 
+        if config.type == PermissionType.Notifications {
+            let hasAskedForNotifications = NSUserDefaults.standardUserDefaults().boolForKey(PermissionScopeAskedForNotificationsDefaultsKey)
+            if hasAskedForNotifications {
+                return
+            }
+        }
+        
         configuredPermissions.append(config)
     }
 
@@ -458,7 +467,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         case .Unknown:
             // There should be only one...
             let notificationsPermissionSet = self.configuredPermissions.filter { $0.notificationCategories != .None && !$0.notificationCategories!.isEmpty }.first?.notificationCategories
-
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: PermissionScopeAskedForNotificationsDefaultsKey)
             UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Sound | .Badge,
                 categories: notificationsPermissionSet))
             
