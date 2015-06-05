@@ -597,23 +597,34 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
     
+    var notificationTimer : NSTimer?
+    var pollCount : Int?
+    
     func pollForNotificationChanges() {
         // yuck
         // the alternative is telling developers to call detectAndCallback() in their app delegate
 
         // poll every second, try for a minute
+        
+        if notificationTimer == nil {
+            notificationTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("pollForNotificationChanges"), userInfo: nil, repeats: true)
+            pollCount = 0
+        }
         let pollMax = 60
-        var pollCount = 0
-        while pollCount <= pollMax {
-
+        if pollCount! <= pollMax {
+            
+            pollCount?++
+            
             let settings = UIApplication.sharedApplication().currentUserNotificationSettings()
-//            println("polling \(settings)")
+            println("polling \(settings)")
             if settings.types != UIUserNotificationType.None {
                 self.detectAndCallback()
-                break
-            } else {
-                sleep(1)
             }
+        }
+        if pollCount == pollMax {
+            notificationTimer?.invalidate()
+            notificationTimer = nil
+            pollCount = nil
         }
     }
 
@@ -684,6 +695,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }, completion: { finished in
             self.view.removeFromSuperview()
         })
+        
+        notificationTimer?.invalidate()
+        notificationTimer = nil
     }
 
     func cancel() {
