@@ -27,9 +27,9 @@ Installation for [Carthage](https://github.com/Carthage/Carthage) is simple enou
 
 `github "nickoneill/PermissionScope"`
 
-As for [Cocoapods](https://cocoapods.org), this should work:
+As for [Cocoapods](https://cocoapods.org), use this to get the latest code:
 
-`pod 'PermissionScope', '~> 0.4'`
+`pod 'PermissionScope', :head`
 
 And `import PermissionScope` in the files you'd like to use it.
 
@@ -40,31 +40,36 @@ No promises that it works with Obj-C at the moment, I'm using it with a mostly-S
 The simplest implementation displays a list of permissions and is removed when all of them have satisfactory access.
 
 ```swift
-let pscope = PermissionScope()
-pscope.addPermission(PermissionConfig(type: .Contacts, demands: .Required, message: "We use this to steal\r\nyour friends"))
+class ViewController: UIViewController {
+    let pscope = PermissionScope()
 
-pscope.addPermission(PermissionConfig(type: .Notifications, demands: .Optional, message: "We use this to send you\r\nspam and love notes", notificationCategories: Set([somePreviouslyConfiguredCategory])))
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
-pscope.addPermission(PermissionConfig(type: .LocationInUse, demands: .Required, message: "We use this to track\r\nwhere you live"))
+        pscope.addPermission(PermissionConfig(type: .Contacts, demands: .Required, message: "We use this to steal\r\nyour friends"))
+        pscope.addPermission(PermissionConfig(type: .Notifications, demands: .Optional, message: "We use this to send you\r\nspam and love notes", notificationCategories: .None))
+        pscope.addPermission(PermissionConfig(type: .LocationInUse, demands: .Required, message: "We use this to track\r\nwhere you live"))
 
-pscope.show()
+        pscope.show()
+    }
+
+    @IBAction func doAThing() {
+        pscope.show(authChange: { (finished, results) -> Void in
+            println("got results \(results)")
+        }, cancelled: { (results) -> Void in
+            println("thing was cancelled")
+        })
+    }
+}
 ```
 
 The permissions view will automatically show if there are permissions to approve and will take no action if permissions are already granted. It will automatically hide when all permissions have been approved.
 
 If you're attempting to block access to a screen in your app without permissions (like, say, the broadcast screen in Periscope), you should watch for the cancel closure and take an appropriate action for your app.
 
-```swift
-pscope.show(authChange: { (finished, results) -> Void in
-    println("results is a PermissionsResult for each config")
-}, cancelled: { (results) -> Void in
-    println("thing was cancelled")
-})
-```
-
 A permission can either have `.Required` or .`Optional` demands. Required permissions (such as access to contacts for a contact picker) are evaluated when you call `show` and, if all required demands are met, the dialog isn't shown!
 
-A permission with the `.Optional` demand will not cause the dialog to show alone. Users who have accepted all the required permissions but not all optional permissions can also tap a button to continue without allowing the optional permissions.
+A permission with the `.Optional` demand will not cause the dialog to show alone. Users who have accepted all the required permissions but not all optional permissions can tap out to continue without allowing the optional permissions.
 
 ### customizability
 
@@ -103,4 +108,4 @@ Use `NSLocationAlwaysUsageDescription` or `NSLocationWhenInUseUsageDescription` 
 
 ### license, etc
 
-PermissionScope uses the MIT license. Please file an issue if you have any questions or if you'd like to share how you're using this tool. Thanks! 
+PermissionScope uses the MIT license. Please file an issue if you have any questions or if you'd like to share how you're using this tool. Thanks!
