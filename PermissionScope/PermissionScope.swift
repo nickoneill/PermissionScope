@@ -591,7 +591,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                     self.detectAndCallback()
             })
         case .Unauthorized:
-            self.showDeniedAlert(.Reminders)
+            self.showDeniedAlert(.Events)
         default:
             break
         }
