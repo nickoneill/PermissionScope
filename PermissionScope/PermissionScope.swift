@@ -52,6 +52,8 @@ public enum PermissionDemands: String {
     case Optional = "Optional"
 }
 
+private let PermissionScopeAskedForNotificationsDefaultsKey = "PermissionScopeAskedForNotificationsDefaultsKey"
+
 public struct PermissionConfig {
     let type: PermissionType
     let demands: PermissionDemands
@@ -289,7 +291,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         assert(!config.message.isEmpty, "Including a message about your permission usage is helpful")
         assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
         assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type.rawValue) already set")
-
+        
         configuredPermissions.append(config)
     }
 
@@ -449,25 +451,66 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         if settings.types != UIUserNotificationType.None {
             return .Authorized
         } else {
-            return .Unknown
+            if NSUserDefaults.standardUserDefaults().boolForKey(PermissionScopeAskedForNotificationsDefaultsKey) {
+                return .Unauthorized
+            } else {
+                return .Unknown
+            }
         }
+    }
+    
+    func showingNotificationPermission () {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillResignActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("finishedShowingNotificationPermission"), name: UIApplicationDidBecomeActiveNotification, object: nil)
+        notificationTimer?.invalidate()
+    }
+    
+    var notificationTimer : NSTimer?
+
+    func finishedShowingNotificationPermission () {
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillResignActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidBecomeActiveNotification, object: nil)
+        
+        notificationTimer?.invalidate()
+        
+        let allResults = getResultsForConfig().filter {
+            $0.type == PermissionType.Notifications
+        }
+        if let notificationResult : PermissionResult = allResults.first {
+            if notificationResult.status == PermissionStatus.Unknown {
+                showDeniedAlert(notificationResult.type)
+            } else {
+                detectAndCallback()
+            }
+        }
+        
     }
     
     func requestNotifications() {
         switch statusNotifications() {
         case .Unknown:
+            
             // There should be only one...
             let notificationsPermissionSet = self.configuredPermissions.filter { $0.notificationCategories != .None && !$0.notificationCategories!.isEmpty }.first?.notificationCategories
+            
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: PermissionScopeAskedForNotificationsDefaultsKey)
+            NSUserDefaults.standardUserDefaults().synchronize()
+            
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("showingNotificationPermission"), name: UIApplicationWillResignActiveNotification, object: nil)
+            
+            notificationTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("finishedShowingNotificationPermission"), userInfo: nil, repeats: false)
 
             UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Sound | .Badge,
                 categories: notificationsPermissionSet))
             
-            self.pollForNotificationChanges()
+        case .Unauthorized:
+            
+            showDeniedAlert(PermissionType.Notifications)
+            
         default:
             break
         }
-        
-//        self.showDeniedAlert(.Notifications)
     }
     
     public func statusMicrophone() -> PermissionStatus {
@@ -597,37 +640,6 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
     
-    var notificationTimer : NSTimer?
-    var pollCount : Int?
-    
-    func pollForNotificationChanges() {
-        // yuck
-        // the alternative is telling developers to call detectAndCallback() in their app delegate
-
-        // poll every second, try for a minute
-        
-        if notificationTimer == nil {
-            notificationTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("pollForNotificationChanges"), userInfo: nil, repeats: true)
-            pollCount = 0
-        }
-        let pollMax = 60
-        if pollCount! <= pollMax {
-            
-            pollCount?++
-            
-            let settings = UIApplication.sharedApplication().currentUserNotificationSettings()
-            println("polling \(settings)")
-            if settings.types != UIUserNotificationType.None {
-                self.detectAndCallback()
-            }
-        }
-        if pollCount == pollMax {
-            notificationTimer?.invalidate()
-            notificationTimer = nil
-            pollCount = nil
-        }
-    }
-
     // MARK: finally, displaying the panel
 
     public func show(authChange: ((finished: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: ((results: [PermissionResult]) -> Void)? = nil) {
@@ -744,6 +756,13 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         return results
     }
 
+    func appForegroundedAfterSettings (){
+
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidBecomeActiveNotification, object: nil)
+        
+        detectAndCallback()
+    }
+    
     func showDeniedAlert(permission: PermissionType) {
         var alert = UIAlertController(title: "Permission for \(permission.rawValue) was denied.",
             message: "Please enable access to \(permission.rawValue) in the App's Settings",
@@ -754,6 +773,8 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         alert.addAction(UIAlertAction(title: "Show me",
             style: .Default,
             handler: { (action) -> Void in
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("appForegroundedAfterSettings"), name: UIApplicationDidBecomeActiveNotification, object: nil)
+                
                 let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
                 UIApplication.sharedApplication().openURL(settingsUrl!)
         }))
