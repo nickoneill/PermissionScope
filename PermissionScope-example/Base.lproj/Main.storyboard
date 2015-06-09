@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14D127a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="xBn-zd-ZG0">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="xBn-zd-ZG0">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <scenes>
         <!--view controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="modalperms_example" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="PermissionScope_example" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -16,19 +16,34 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Caz-ES-oJ2">
-                                <rect key="frame" x="236" y="283" width="128" height="33"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bRV-Y8-Fit">
+                                <rect key="frame" x="202" y="322" width="200" height="33"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="128" id="P8W-hA-aOH"/>
-                                    <constraint firstAttribute="height" constant="33" id="qtk-qz-VCf"/>
+                                    <constraint firstAttribute="width" constant="200" id="Hly-2e-EHj"/>
+                                    <constraint firstAttribute="height" constant="33" id="aH1-vi-VLk"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
-                                <state key="normal" title="Do a thing">
+                                <state key="normal" title="Multiple Permissions">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="doAThing" destination="BYZ-38-t0r" eventType="touchUpInside" id="kON-6q-LZ7"/>
+                                    <action selector="multiPerms" destination="BYZ-38-t0r" eventType="touchUpInside" id="ctY-iK-t0u"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Caz-ES-oJ2">
+                                <rect key="frame" x="200" y="247" width="200" height="33"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="P8W-hA-aOH"/>
+                                    <constraint firstAttribute="height" constant="33" id="qtk-qz-VCf"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
+                                <state key="normal" title="Simple Notifications">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="singlePerm" destination="BYZ-38-t0r" eventType="touchUpInside" id="SoH-j6-hTO"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -36,7 +51,15 @@
                         <constraints>
                             <constraint firstAttribute="centerY" secondItem="Caz-ES-oJ2" secondAttribute="centerY" constant="0.5" id="3vu-t3-QA9"/>
                             <constraint firstAttribute="centerX" secondItem="Caz-ES-oJ2" secondAttribute="centerX" id="8O9-3g-0Ll"/>
+                            <constraint firstAttribute="centerX" secondItem="bRV-Y8-Fit" secondAttribute="centerX" constant="-2" id="a5B-q8-xub"/>
+                            <constraint firstItem="bRV-Y8-Fit" firstAttribute="top" secondItem="Caz-ES-oJ2" secondAttribute="bottom" constant="42" id="wpe-ep-4fb"/>
+                            <constraint firstItem="Caz-ES-oJ2" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="183" id="xUZ-nL-1Wn"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="3vu-t3-QA9"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" title="view controller" id="7jH-aV-NG0"/>
                 </viewController>

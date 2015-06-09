@@ -746,7 +746,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
 
     func showDeniedAlert(permission: PermissionType) {
         var alert = UIAlertController(title: "Permission for \(permission.rawValue) was denied.",
-            message: "Please enable access to \(permission.rawValue) in the App's Settings",
+            message: "Please enable access to \(permission.rawValue) in the Settings app",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
