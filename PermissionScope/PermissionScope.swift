@@ -369,7 +369,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
 
-    func requestLocationAlways() {
+    public func requestLocationAlways() {
         switch statusLocationAlways() {
         case .Unknown:
             if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse {
@@ -406,7 +406,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
 
-    func requestLocationInUse() {
+    public func requestLocationInUse() {
         switch statusLocationInUse() {
         case .Unknown:
             locationManager.delegate = self
@@ -432,7 +432,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
 
-    func requestContacts() {
+    public func requestContacts() {
         switch statusContacts() {
         case .Unknown:
             ABAddressBookRequestAccessWithCompletion(nil) { (success, error) -> Void in
@@ -487,7 +487,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         
     }
     
-    func requestNotifications() {
+    public func requestNotifications() {
         switch statusNotifications() {
         case .Unknown:
             
@@ -524,7 +524,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         return .Unknown
     }
     
-    func requestMicrophone() {
+    public func requestMicrophone() {
         switch statusMicrophone() {
         case .Unknown:
             AVAudioSession.sharedInstance().requestRecordPermission({ (granted) -> Void in
@@ -549,7 +549,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
     
-    func requestCamera() {
+    public func requestCamera() {
         switch statusCamera() {
         case .Unknown:
             AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo,
@@ -575,7 +575,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
     
-    func requestPhotos() {
+    public func requestPhotos() {
         switch statusPhotos() {
         case .Unknown:
             PHPhotoLibrary.requestAuthorization({ (status) -> Void in
@@ -600,7 +600,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
     
-    func requestReminders() {
+    public func requestReminders() {
         switch statusReminders() {
         case .Unknown:
             EKEventStore().requestAccessToEntityType(EKEntityTypeReminder,
@@ -626,7 +626,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
     
-    func requestEvents() {
+    public func requestEvents() {
         switch statusEvents() {
         case .Unknown:
             EKEventStore().requestAccessToEntityType(EKEntityTypeEvent,

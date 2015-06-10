@@ -6,7 +6,7 @@
 [![License](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat
 )](http://mit-license.org)
 
-Inspired by (but unrelated to) [Periscope](https://www.periscope.tv)'s permission control, PermissionScope is a Swift framework for intelligently requesting permissions from users.
+Inspired by (but unrelated to) [Periscope](https://www.periscope.tv)'s permission control, PermissionScope is a Swift framework for intelligently requesting permissions from users. It contains not only a simple UI to request permissions but a unified permissions API that can tell you the status of any given system permission or easily request them.
 
 Some examples of multiple permissions requests, a single permission and the denied alert.
 
@@ -88,12 +88,22 @@ pscope.labelFont = UIFont...
 
 In addition, the default behavior for tapping the background behind the dialog is to cancel the dialog (which calls the cancel closure you can provide on `show`). You can change this behavior with `backgroundTapCancels` during init.
 
-### other uses
+### unified permissions API
 
-PermissionScope also has an abstracted API for getting the state for a given permission and requesting that permission if you need to do so outside of the normal dialog UI.
+PermissionScope also has an abstracted API for getting the state for a given permission and requesting permissions if you need to do so outside of the normal dialog UI. Think of it as a unified iOS permissions API that can provide some features that even Apple does not (such as detecting denied notification permissions).
 
 ```swift
-
+switch PermissionScope().statusContacts() {
+case .Unknown:
+    // ask
+    PermissionScope().requestContacts()
+case .Unauthorized, .Disabled:
+    // bummer
+    return
+case .Authorized:
+    // thanks!
+    return
+}
 ```
 
 ### issues
@@ -103,7 +113,7 @@ PermissionScope also has an abstracted API for getting the state for a given per
 PermissionScope imports CoreAudio to request microphone access but it's not automatically linked in if your app doesn't `import CoreAudio` somewhere. I'm not sure if this is a bug or a a quirk of how CoreAudio is imported. For now, if you `import CoreAudio` in your top level project it should fix the issue.
 
 ### beta
-We're using PermissionScope in [treat](https://gettre.at) and fixing issues as they arise. Still, there's definitely some beta-ness around. Check out what we have planned in [issues](http://github.com/nickoneill/PermissionScope/issues) and contribute a suggestion or some code 😃
+We're using PermissionScope in [treat](https://gettre.at) and fixing issues as they arise. Still, there's definitely some beta-ness around and the API can change without warning. Check out what we have planned in [issues](http://github.com/nickoneill/PermissionScope/issues) and contribute a suggestion or some code 😃
 
 ### PermissionScope registers user notification settings, not remote notifications
 Users will get the prompt to enable notifications when using PermissionScope but it's up to you to watch for results in your app delegate's `didRegisterUserNotificationSettings` and then register for remote notifications independently. This won't alert the user again. You're still responsible for handling the shipment of user notification settings off to your push server.
@@ -117,4 +127,4 @@ Use `NSLocationAlwaysUsageDescription` or `NSLocationWhenInUseUsageDescription` 
 
 ### license, etc
 
-PermissionScope uses the MIT license. Please file an issue if you have any questions or if you'd like to share how you're using this tool. Thanks!
+PermissionScope uses the MIT license. Please file an issue if you have any questions or if you'd like to share how you're using this tool.

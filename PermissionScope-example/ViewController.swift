@@ -30,6 +30,21 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    // an example of how to use the unified permissions API
+    func checkContacts() {
+        switch PermissionScope().statusContacts() {
+        case .Unknown:
+            // ask
+            PermissionScope().requestContacts()
+        case .Unauthorized, .Disabled:
+            // bummer
+            return
+        case .Authorized:
+            // thanks!
+            return
+        }
+    }
+    
     @IBAction func singlePerm() {
         singlePscope.show(authChange: { (finished, results) -> Void in
             println("got results \(results)")
