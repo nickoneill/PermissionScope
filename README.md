@@ -29,7 +29,7 @@ Installation for [Carthage](https://github.com/Carthage/Carthage) is simple enou
 
 As for [Cocoapods](https://cocoapods.org), use this to get the latest code:
 
-`pod 'PermissionScope', :head`
+`pod 'PermissionScope', '~> 0.6'`
 
 And `import PermissionScope` in the files you'd like to use it.
 
