@@ -8,10 +8,11 @@
 
 Inspired by (but unrelated to) [Periscope](https://www.periscope.tv)'s permission control, PermissionScope is a Swift framework for intelligently requesting permissions from users.
 
-The default view and an example of customization done for [treat](https://gettre.at)
+Some examples of multiple permissions requests, a single permission and the denied alert.
 
-<img src="https://raw.githubusercontent.com/nickoneill/PermissionScope/master/permissions.png" width="345" height="614" alt="permissions screen" />
-<img src="https://raw.githubusercontent.com/nickoneill/PermissionScope/master/permissions-treat.png" width="345" height="614" alt="customized permissions" />
+<img src="https://raw.githubusercontent.com/nickoneill/PermissionScope/master/permissions-full.png" width="320" height="568" alt="permissions full" />
+<img src="https://raw.githubusercontent.com/nickoneill/PermissionScope/master/permissions-small.png" width="320" height="568" alt="permissions small" />
+<img src="https://raw.githubusercontent.com/nickoneill/PermissionScope/master/permissions-denied.png" width="320" height="568" alt="permissions denied" />
 
 We should all be more careful about when we request permissions from users, opting to request them only when they're needed and definitely not all in one barrage when the user opens the app for the first time.
 
@@ -35,7 +36,7 @@ And `import PermissionScope` in the files you'd like to use it.
 
 No promises that it works with Obj-C at the moment, I'm using it with a mostly-Swift codebase. Feedback on this would be great though.
 
-## usage
+## dialog usage
 
 The simplest implementation displays a list of permissions and is removed when all of them have satisfactory access.
 
@@ -86,6 +87,14 @@ pscope.labelFont = UIFont...
 ```
 
 In addition, the default behavior for tapping the background behind the dialog is to cancel the dialog (which calls the cancel closure you can provide on `show`). You can change this behavior with `backgroundTapCancels` during init.
+
+### other uses
+
+PermissionScope also has an abstracted API for getting the state for a given permission and requesting that permission if you need to do so outside of the normal dialog UI.
+
+```swift
+
+```
 
 ### issues
 
