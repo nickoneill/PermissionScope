@@ -348,7 +348,6 @@ extension String {
             button.setTitle("Allow \(type.stringValue())".localized.uppercaseString, forState: UIControlState.Normal)
         }
         
-        println("SETTING TARGET: request\(type.stringValue())")
         button.addTarget(self, action: Selector("request\(type.stringValue())"), forControlEvents: UIControlEvents.TouchUpInside)
         
         return button
@@ -407,7 +406,6 @@ extension String {
     }
     
     public func requestLocationAlways() {
-        println("LOCATION ALWAYS METHOD CALLED status: \(statusLocationAlways().stringValue())" )
         switch statusLocationAlways() {
         case .Unknown:
             if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse {
@@ -503,8 +501,6 @@ extension String {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillResignActiveNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("finishedShowingNotificationPermission"), name: UIApplicationDidBecomeActiveNotification, object: nil)
         notificationTimer?.invalidate()
-        
-        println("showing notification permission")
     }
     
     var notificationTimer : NSTimer?
@@ -804,7 +800,6 @@ extension String {
     }
     
     func showDeniedAlert(permission: PermissionType) {
-        println("showing denied")
         
         var alert = UIAlertController(title: "Permission for \(permission.prettyName()) was denied.",
             message: "Please enable access to \(permission.prettyName()) in the App's Settings",
@@ -823,7 +818,6 @@ extension String {
     }
     
     func showDisabledAlert(permission: PermissionType) {
-        println("showing disabled")
         
         var alert = UIAlertController(title: "\(permission.prettyName()) is currently disabled.",
             message: "Please enable access to \(permission.prettyName()) in Settings",
