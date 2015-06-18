@@ -84,7 +84,6 @@ public class PermissionConfig : NSObject {
     public init(type: PermissionType, demands: PermissionDemands, message: String, notificationCategories: Set<UIUserNotificationCategory>? = .None) {
         
         if type != .Notifications && notificationCategories != .None {
-            println("NOT NONE")
             assertionFailure("notificationCategories only apply to the .Notifications permission")
         }
         
@@ -190,7 +189,6 @@ extension String {
         
         // defaults.removeObjectForKey(PermissionScopeAskedForNotificationsDefaultsKey)
         
-        println(baseView)
         // Set up main view
         view.frame = UIScreen.mainScreen().bounds
         view.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
@@ -235,8 +233,6 @@ extension String {
         closeButton.addTarget(self, action: Selector("cancel"), forControlEvents: UIControlEvents.TouchUpInside)
         
         contentView.addSubview(closeButton)
-        
-        println(baseView)
     }
     
     public convenience init() {
@@ -517,15 +513,11 @@ extension String {
         }
         
         if let notificationResult : PermissionResult = allResults.first {
-            println("NOTIFICATION result: \(allResults.first?.type.stringValue())")
-            
             if notificationResult.status == PermissionStatus.Unknown {
                 showDeniedAlert(notificationResult.type)
             } else {
                 detectAndCallback()
             }
-        } else {
-            println("NOTIFICATION DIDN'T INSTANTIATE")
         }
     }
     
