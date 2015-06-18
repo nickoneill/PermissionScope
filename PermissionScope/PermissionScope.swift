@@ -17,44 +17,64 @@ struct PermissionScopeConstants {
     static let requestedInUseToAlwaysUpgrade = "requestedInUseToAlwaysUpgrade"
 }
 
-public enum PermissionType: String {
-    case Contacts       = "Contacts"
-    case LocationAlways = "LocationAlways"
-    case LocationInUse  = "LocationInUse"
-    case Notifications  = "Notifications"
-    case Microphone     = "Microphone"
-    case Camera         = "Camera"
-    case Photos         = "Photos"
-    case Reminders      = "Reminders"
-    case Events         = "Events"
+@objc public enum PermissionType: Int {
+    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events
     
-    var prettyName: String {
+    func stringValue() -> String {
+        switch self {
+        case .Contacts: return "Contacts"
+        case .Events: return "Events"
+        case .LocationAlways: return "LocationAlways"
+        case .LocationInUse: return "LocationInUse"
+        case .Notifications: return "Notifications"
+        case .Microphone: return "Microphone"
+        case .Camera: return "Camera"
+        case .Photos: return "Photos"
+        case .Reminders: return "Reminders"
+        }
+    }
+    
+    func prettyName() -> String {
         switch self {
         case .LocationAlways, .LocationInUse:
             return "Location"
         default:
-            return self.rawValue
+            return self.stringValue()
         }
     }
     
     static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events]
 }
 
-public enum PermissionStatus: String {
-    case Authorized     = "Authorized"
-    case Unauthorized   = "Unauthorized"
-    case Unknown        = "Unknown"
-    case Disabled       = "Disabled" // System-level
+@objc public enum PermissionStatus: Int {
+    case Authorized, Unauthorized, Unknown, Disabled
+    
+    func stringValue() -> String {
+        switch(self) {
+        case .Authorized: return "Authorized"
+        case .Unauthorized:  return "Unauthorized"
+        case .Unknown: return "Unknown"
+        case .Disabled: return "Disabled" // System-level
+        }
+    }
 }
 
-public enum PermissionDemands: String {
-    case Required = "Required"
-    case Optional = "Optional"
+@objc public enum PermissionDemands: Int {
+    case Required, Optional
+    
+    func stringValue() -> String {
+        switch(self) {
+        case .Required: return "Required"
+        case .Optional: return "Optional"
+        }
+    }
+    
 }
 
 private let PermissionScopeAskedForNotificationsDefaultsKey = "PermissionScopeAskedForNotificationsDefaultsKey"
 
-public struct PermissionConfig {
+
+public class PermissionConfig : NSObject {
     let type: PermissionType
     let demands: PermissionDemands
     let message: String
@@ -62,10 +82,12 @@ public struct PermissionConfig {
     let notificationCategories: Set<UIUserNotificationCategory>?
     
     public init(type: PermissionType, demands: PermissionDemands, message: String, notificationCategories: Set<UIUserNotificationCategory>? = .None) {
+        
         if type != .Notifications && notificationCategories != .None {
+            println("NOT NONE")
             assertionFailure("notificationCategories only apply to the .Notifications permission")
         }
-
+        
         self.type = type
         self.demands = demands
         self.message = message
@@ -73,13 +95,19 @@ public struct PermissionConfig {
     }
 }
 
-public struct PermissionResult: Printable {
+@objc public class PermissionResult: NSObject {
     public let type: PermissionType
     public let status: PermissionStatus
     public let demands: PermissionDemands
-
-    public var description: String {
-        return "\(type.rawValue) \(status.rawValue)"
+    
+    private init(type: PermissionType, status : PermissionStatus, demands : PermissionDemands) {
+        self.type = type
+        self.status = status
+        self.demands = demands
+    }
+    
+    override public var description: String {
+        return "\(type.prettyName()) \(status)"
     }
 }
 
@@ -98,10 +126,10 @@ extension String {
     }
 }
 
-public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate {
+@objc public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate {
     // constants
     let contentWidth: CGFloat = 280.0
-
+    
     // configurable things
     public let headerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
     public let bodyLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 240, height: 70))
@@ -110,21 +138,23 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     public var labelFont = UIFont.systemFontOfSize(14)
     public var closeButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 32))
     public var closeOffset = CGSize(width: 0, height: 0)
-
+    
     // some view hierarchy
     let baseView = UIView()
     let contentView = UIView()
-
+    
+    var tap : UIGestureRecognizer!
+    
     // various managers
     let locationManager = CLLocationManager()
-
+    
     // internal state and resolution
     var configuredPermissions: [PermissionConfig] = []
     var permissionButtons: [UIButton] = []
     var permissionLabels: [UILabel] = []
     var authChangeClosure: ((Bool, [PermissionResult]) -> Void)? = nil
     var cancelClosure: (([PermissionResult]) -> Void)? = nil
-
+    
     // Computed variables
     var allAuthorized: Bool {
         let permissionsArray = getResultsForConfig()
@@ -141,7 +171,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         var types = permissionTypes
         
         if types == nil {
-            types = PermissionType.allValues
+            //types = PermissionType.allValues
         }
         
         if let types = types {
@@ -155,7 +185,12 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     
     public init(backgroundTapCancels: Bool) {
         super.init(nibName: nil, bundle: nil)
-
+        
+        let defaults = NSUserDefaults.standardUserDefaults()
+        
+        // defaults.removeObjectForKey(PermissionScopeAskedForNotificationsDefaultsKey)
+        
+        println(baseView)
         // Set up main view
         view.frame = UIScreen.mainScreen().bounds
         view.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
@@ -165,7 +200,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         baseView.frame = view.frame
         baseView.addSubview(contentView)
         if backgroundTapCancels {
-            let tap = UITapGestureRecognizer(target: self, action: Selector("cancel"))
+            tap = UITapGestureRecognizer(target: self, action: Selector("cancel"))
             tap.delegate = self
             baseView.addGestureRecognizer(tap)
         }
@@ -174,25 +209,25 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         contentView.layer.cornerRadius = 10
         contentView.layer.masksToBounds = true
         contentView.layer.borderWidth = 0.5
-
+        
         // header label
         headerLabel.font = UIFont.systemFontOfSize(22)
         headerLabel.textColor = UIColor.blackColor()
         headerLabel.textAlignment = NSTextAlignment.Center
         headerLabel.text = "Hey, listen!"
-//        headerLabel.backgroundColor = UIColor.redColor()
-
+        //        headerLabel.backgroundColor = UIColor.redColor()
+        
         contentView.addSubview(headerLabel)
-
+        
         // body label
         bodyLabel.font = UIFont.boldSystemFontOfSize(16)
         bodyLabel.textColor = UIColor.blackColor()
         bodyLabel.textAlignment = NSTextAlignment.Center
         bodyLabel.text = "We need a couple things\r\nbefore you get started."
         bodyLabel.numberOfLines = 2
-//        bodyLabel.text = "We need\r\na couple things before you\r\nget started."
-//        bodyLabel.backgroundColor = UIColor.redColor()
-
+        //        bodyLabel.text = "We need\r\na couple things before you\r\nget started."
+        //        bodyLabel.backgroundColor = UIColor.redColor()
+        
         contentView.addSubview(bodyLabel)
         
         // close button
@@ -200,20 +235,22 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         closeButton.addTarget(self, action: Selector("cancel"), forControlEvents: UIControlEvents.TouchUpInside)
         
         contentView.addSubview(closeButton)
+        
+        println(baseView)
     }
     
     public convenience init() {
         self.init(backgroundTapCancels: true)
     }
-
+    
     required public init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     override public init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName:nibNameOrNil, bundle:nibBundleOrNil)
     }
-
+    
     public override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         var screenSize = UIScreen.mainScreen().bounds.size
@@ -221,7 +258,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         view.frame.size = screenSize
         // Set frames
         var x = (screenSize.width - contentWidth) / 2
-
+        
         let dialogHeight: CGFloat
         switch self.configuredPermissions.count {
         case 2:
@@ -234,12 +271,12 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         
         var y = (screenSize.height - dialogHeight) / 2
         contentView.frame = CGRect(x:x, y:y, width:contentWidth, height:dialogHeight)
-
+        
         // offset the header from the content center, compensate for the content's offset
         headerLabel.center = contentView.center
         headerLabel.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
         headerLabel.frame.offset(dx: 0, dy: -((dialogHeight/2)-50))
-
+        
         // ... same with the body
         bodyLabel.center = contentView.center
         bodyLabel.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
@@ -253,7 +290,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             closeButton.setTitle("", forState: UIControlState.Normal)
         }
         closeButton.setTitleColor(tintColor, forState: UIControlState.Normal)
-
+        
         let baseOffset = 95
         var index = 0
         for button in permissionButtons {
@@ -264,59 +301,59 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             let type = configuredPermissions[index].type
             
             let currentStatus = statusForPermission(type)
-            let prettyName = type.prettyName
             if currentStatus == .Authorized {
                 setButtonAuthorizedStyle(button)
-                button.setTitle("Allowed \(prettyName)".localized.uppercaseString, forState: .Normal)
+                button.setTitle("Allowed \(type.prettyName())".localized.uppercaseString, forState: .Normal)
             } else if currentStatus == .Unauthorized {
                 setButtonUnauthorizedStyle(button)
-                button.setTitle("Denied \(prettyName)".localized.uppercaseString, forState: .Normal)
+                button.setTitle("Denied \(type.prettyName())".localized.uppercaseString, forState: .Normal)
             } else if currentStatus == .Disabled {
-//                setButtonDisabledStyle(button)
-                button.setTitle("\(prettyName) Disabled".localized.uppercaseString, forState: .Normal)
+                //                setButtonDisabledStyle(button)
+                button.setTitle("\(type.prettyName()) Disabled".localized.uppercaseString, forState: .Normal)
             }
-
+            
             let label = permissionLabels[index]
             label.center = contentView.center
             label.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
             label.frame.offset(dx: 0, dy: -((dialogHeight/2)-205) + CGFloat(index * baseOffset))
-
+            
             index++
         }
     }
-
+    
     // MARK: customizing the permissions
-
+    
     public func addPermission(config: PermissionConfig) {
         assert(!config.message.isEmpty, "Including a message about your permission usage is helpful")
         assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
-        assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type.rawValue) already set")
+        assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type) already set")
         
         configuredPermissions.append(config)
     }
-
+    
     func permissionStyledButton(type: PermissionType) -> UIButton {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 220, height: 40))
         button.setTitleColor(tintColor, forState: UIControlState.Normal)
         button.titleLabel?.font = buttonFont
-
+        
         button.layer.borderWidth = 1
         button.layer.borderColor = tintColor.CGColor
         button.layer.cornerRadius = 6
-
+        
         // this is a bit of a mess, eh?
         switch type {
         case .LocationAlways, .LocationInUse:
-            button.setTitle("Enable \(type.prettyName)".localized.uppercaseString, forState: UIControlState.Normal)
+            button.setTitle("Enable \(type.prettyName())".localized.uppercaseString, forState: UIControlState.Normal)
         default:
-            button.setTitle("Allow \(type.rawValue)".localized.uppercaseString, forState: UIControlState.Normal)
+            button.setTitle("Allow \(type.stringValue())".localized.uppercaseString, forState: UIControlState.Normal)
         }
         
-        button.addTarget(self, action: Selector("request\(type.rawValue)"), forControlEvents: UIControlEvents.TouchUpInside)
+        println("SETTING TARGET: request\(type.stringValue())")
+        button.addTarget(self, action: Selector("request\(type.stringValue())"), forControlEvents: UIControlEvents.TouchUpInside)
         
         return button
     }
-
+    
     func setButtonAuthorizedStyle(button: UIButton) {
         button.layer.borderWidth = 0
         button.backgroundColor = tintColor
@@ -329,26 +366,26 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         button.backgroundColor = tintColor.inverseColor
         button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
     }
-
+    
     func permissionStyledLabel(message: String) -> UILabel {
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 260, height: 50))
         label.font = labelFont
         label.numberOfLines = 2
         label.textAlignment = NSTextAlignment.Center
-
+        
         label.text = message
-//        label.backgroundColor = UIColor.greenColor()
-
+        //        label.backgroundColor = UIColor.greenColor()
+        
         return label
     }
-
+    
     // MARK: status and requests for each permission
-
+    
     public func statusLocationAlways() -> PermissionStatus {
         if !CLLocationManager.locationServicesEnabled() {
             return .Disabled
         }
-
+        
         let status = CLLocationManager.authorizationStatus()
         switch status {
         case .AuthorizedAlways:
@@ -368,8 +405,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             return .Unknown
         }
     }
-
+    
     public func requestLocationAlways() {
+        println("LOCATION ALWAYS METHOD CALLED status: \(statusLocationAlways().stringValue())" )
         switch statusLocationAlways() {
         case .Unknown:
             if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse {
@@ -379,15 +417,17 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             }
             locationManager.delegate = self
             locationManager.requestAlwaysAuthorization()
+            self.detectAndCallback()
         case .Unauthorized:
             self.showDeniedAlert(.LocationAlways)
         case .Disabled:
             self.showDisabledAlert(.LocationInUse)
         default:
+            self.detectAndCallback()
             break
         }
     }
-
+    
     public func statusLocationInUse() -> PermissionStatus {
         if !CLLocationManager.locationServicesEnabled() {
             return .Disabled
@@ -405,7 +445,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             return .Unknown
         }
     }
-
+    
     public func requestLocationInUse() {
         switch statusLocationInUse() {
         case .Unknown:
@@ -419,19 +459,19 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             break
         }
     }
-
+    
     public func statusContacts() -> PermissionStatus {
         let status = ABAddressBookGetAuthorizationStatus()
         switch status {
-            case .Authorized:
-                return .Authorized
-            case .Restricted, .Denied:
-                return .Unauthorized
-            case .NotDetermined:
-                return .Unknown
+        case .Authorized:
+            return .Authorized
+        case .Restricted, .Denied:
+            return .Unauthorized
+        case .NotDetermined:
+            return .Unknown
         }
     }
-
+    
     public func requestContacts() {
         switch statusContacts() {
         case .Unknown:
@@ -444,7 +484,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             break
         }
     }
-
+    
     // TODO: can we tell if notifications has been denied?
     public func statusNotifications() -> PermissionStatus {
         let settings = UIApplication.sharedApplication().currentUserNotificationSettings()
@@ -463,10 +503,12 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillResignActiveNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("finishedShowingNotificationPermission"), name: UIApplicationDidBecomeActiveNotification, object: nil)
         notificationTimer?.invalidate()
+        
+        println("showing notification permission")
     }
     
     var notificationTimer : NSTimer?
-
+    
     func finishedShowingNotificationPermission () {
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillResignActiveNotification, object: nil)
@@ -477,20 +519,23 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         let allResults = getResultsForConfig().filter {
             $0.type == PermissionType.Notifications
         }
+        
         if let notificationResult : PermissionResult = allResults.first {
+            println("NOTIFICATION result: \(allResults.first?.type.stringValue())")
+            
             if notificationResult.status == PermissionStatus.Unknown {
                 showDeniedAlert(notificationResult.type)
             } else {
                 detectAndCallback()
             }
+        } else {
+            println("NOTIFICATION DIDN'T INSTANTIATE")
         }
-        
     }
     
     public func requestNotifications() {
         switch statusNotifications() {
         case .Unknown:
-            
             // There should be only one...
             let notificationsPermissionSet = self.configuredPermissions.filter { $0.notificationCategories != .None && !$0.notificationCategories!.isEmpty }.first?.notificationCategories
             
@@ -500,7 +545,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("showingNotificationPermission"), name: UIApplicationWillResignActiveNotification, object: nil)
             
             notificationTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("finishedShowingNotificationPermission"), userInfo: nil, repeats: false)
-
+            
             UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Sound | .Badge,
                 categories: notificationsPermissionSet))
             
@@ -562,7 +607,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             break
         }
     }
-
+    
     public func statusPhotos() -> PermissionStatus {
         let status = PHPhotoLibrary.authorizationStatus()
         switch status {
@@ -634,51 +679,53 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                     self.detectAndCallback()
             })
         case .Unauthorized:
-            self.showDeniedAlert(.Events)
+            self.showDeniedAlert(.Reminders)
         default:
             break
         }
     }
     
+    
     // MARK: finally, displaying the panel
-
-    public func show(authChange: ((finished: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: ((results: [PermissionResult]) -> Void)? = nil) {
+    
+    @objc public func show(authChange: ((finished: Bool, results: [PermissionResult]!) -> Void)? = nil, cancelled: ((results: [PermissionResult]!) -> Void)? = nil) {
         assert(configuredPermissions.count > 0, "Please add at least one permission")
-
-        authChangeClosure = authChange
-        cancelClosure = cancelled
-
+        
+        // this is so it works with Objective-C too.
+        authChangeClosure = { (authChange)!(finished: $0, results: $1) }
+        cancelClosure = { (cancelled)!(results: $0) }
+        
         // no missing required perms? callback and do nothing
         if requiredAuthorized {
             if let authChangeClosure = authChangeClosure {
                 authChangeClosure(true, getResultsForConfig())
             }
-
+            
             return
         }
-
+        
         // add the backing views
         let window = UIApplication.sharedApplication().keyWindow!
         window.addSubview(view)
         view.frame = window.bounds
         baseView.frame = window.bounds
-
+        
         for button in permissionButtons {
             button.removeFromSuperview()
         }
         permissionButtons = []
-
+        
         for label in permissionLabels {
             label.removeFromSuperview()
         }
         permissionLabels = []
-
+        
         // create the buttons
         for config in configuredPermissions {
             let button = permissionStyledButton(config.type)
             permissionButtons.append(button)
             contentView.addSubview(button)
-
+            
             let label = permissionStyledLabel(config.message)
             permissionLabels.append(label)
             contentView.addSubview(label)
@@ -691,81 +738,76 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         UIView.animateWithDuration(0.2, animations: {
             self.baseView.center.y = window.center.y + 15
             self.view.alpha = 1
-        }, completion: { finished in
-            UIView.animateWithDuration(0.2, animations: {
-                self.baseView.center = window.center
-            })
+            }, completion: { finished in
+                UIView.animateWithDuration(0.2, animations: {
+                    self.baseView.center = window.center
+                })
         })
     }
-
+    
     public func hide() {
         let window = UIApplication.sharedApplication().keyWindow!
-
+        
         UIView.animateWithDuration(0.2, animations: {
             self.baseView.frame.origin.y = window.center.y + 400
             self.view.alpha = 0
-        }, completion: { finished in
-            self.view.removeFromSuperview()
+            }, completion: { finished in
+                self.view.removeFromSuperview()
         })
-        
-        notificationTimer?.invalidate()
-        notificationTimer = nil
     }
-
+    
     func cancel() {
         self.hide()
-
+        
         if let cancelClosure = cancelClosure {
             cancelClosure(getResultsForConfig())
         }
     }
-
+    
     func finish() {
         self.hide()
-
+        
         if let authChangeClosure = authChangeClosure {
             authChangeClosure(true, getResultsForConfig())
         }
     }
-
+    
+    
     func detectAndCallback() {
+        
         // compile the results and pass them back if necessary
         if let authChangeClosure = authChangeClosure {
             authChangeClosure(allAuthorized, getResultsForConfig())
         }
-
+        
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.view.setNeedsLayout()
-
+            
             // and hide if we've sucessfully got all permissions
             if self.allAuthorized {
                 self.hide()
             }
         })
+        
     }
-
+    
     func getResultsForConfig() -> [PermissionResult] {
         var results: [PermissionResult] = []
-
+        
         for config in configuredPermissions {
             var status = statusForPermission(config.type)
             let result = PermissionResult(type: config.type, status: status, demands: config.demands)
             results.append(result)
         }
-
-        return results
-    }
-
-    func appForegroundedAfterSettings (){
-
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidBecomeActiveNotification, object: nil)
         
-        detectAndCallback()
+        return results
     }
     
     func showDeniedAlert(permission: PermissionType) {
-        var alert = UIAlertController(title: "Permission for \(permission.rawValue) was denied.",
-            message: "Please enable access to \(permission.rawValue) in the Settings app",
+        println("showing denied")
+        
+        var alert = UIAlertController(title: "Permission for \(permission.prettyName()) was denied.",
+            message: "Please enable access to \(permission.prettyName()) in the App's Settings",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
@@ -773,8 +815,6 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         alert.addAction(UIAlertAction(title: "Show me",
             style: .Default,
             handler: { (action) -> Void in
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("appForegroundedAfterSettings"), name: UIApplicationDidBecomeActiveNotification, object: nil)
-                
                 let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
                 UIApplication.sharedApplication().openURL(settingsUrl!)
         }))
@@ -783,8 +823,10 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
     
     func showDisabledAlert(permission: PermissionType) {
-        var alert = UIAlertController(title: "\(permission.rawValue) is currently disabled.",
-            message: "Please enable access to \(permission.rawValue) in Settings",
+        println("showing disabled")
+        
+        var alert = UIAlertController(title: "\(permission.prettyName()) is currently disabled.",
+            message: "Please enable access to \(permission.prettyName()) in Settings",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
@@ -794,28 +836,24 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
     
     // MARK: gesture delegate
-
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-
         // this prevents our tap gesture from firing for subviews of baseview
         if touch.view == baseView {
             return true
         }
-
+        
         return false
     }
-
+    
     // MARK: location delegate
-
+    
     public func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-
         detectAndCallback()
     }
     
     // MARK: Helpers
     
     func statusForPermission(type: PermissionType) -> PermissionStatus {
-        // :(
         switch type {
         case .LocationAlways:
             return statusLocationAlways()

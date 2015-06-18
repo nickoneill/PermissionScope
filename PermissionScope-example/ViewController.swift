@@ -59,6 +59,19 @@ class ViewController: UIViewController {
         }, cancelled: { (results) -> Void in
             println("thing was cancelled")
         })
+        
+        
+        /* 
+         * This is what it would look like in Objective-C :
+        
+        [multiPscope showWithAuthChange:^(BOOL finished, NSArray * __null_unspecified results) {
+        NSLog(@"changed results are: %@", results);
+        
+        } cancelled:^(NSArray * __null_unspecified results) {
+        NSLog(@"thing was cancelled");
+        }];
+
+        */
     }
 }
 
