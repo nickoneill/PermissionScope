@@ -122,8 +122,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     var configuredPermissions: [PermissionConfig] = []
     var permissionButtons: [UIButton] = []
     var permissionLabels: [UILabel] = []
-    var authChangeClosure: ((Bool, [PermissionResult]) -> Void)? = nil
-    var cancelClosure: (([PermissionResult]) -> Void)? = nil
+    public var authChangeClosure: ((Bool, [PermissionResult]) -> Void)? = nil
+    public var cancelClosure: (([PermissionResult]) -> Void)? = nil
+    public var disabledOrDeniedClosure: (([PermissionResult]) -> Void)? = nil
 
     // Computed variables
     var allAuthorized: Bool {
@@ -369,7 +370,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
 
-    public func requestLocationAlways() {
+    public func requestLocationAlways(presentingViewController: UIViewController? = nil) {
         switch statusLocationAlways() {
         case .Unknown:
             if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse {
@@ -380,9 +381,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             locationManager.delegate = self
             locationManager.requestAlwaysAuthorization()
         case .Unauthorized:
-            self.showDeniedAlert(.LocationAlways)
+            self.showDeniedAlert(.LocationAlways, presentingViewController: presentingViewController)
         case .Disabled:
-            self.showDisabledAlert(.LocationInUse)
+            self.showDisabledAlert(.LocationInUse, presentingViewController: presentingViewController)
         default:
             break
         }
@@ -406,15 +407,15 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
 
-    public func requestLocationInUse() {
+    public func requestLocationInUse(presentingViewController: UIViewController? = nil) {
         switch statusLocationInUse() {
         case .Unknown:
             locationManager.delegate = self
             locationManager.requestWhenInUseAuthorization()
         case .Unauthorized:
-            self.showDeniedAlert(.LocationInUse)
+            self.showDeniedAlert(.LocationInUse, presentingViewController: presentingViewController)
         case .Disabled:
-            self.showDisabledAlert(.LocationInUse)
+            self.showDisabledAlert(.LocationInUse, presentingViewController: presentingViewController)
         default:
             break
         }
@@ -432,14 +433,14 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
 
-    public func requestContacts() {
+    public func requestContacts(presentingViewController: UIViewController? = nil) {
         switch statusContacts() {
         case .Unknown:
             ABAddressBookRequestAccessWithCompletion(nil) { (success, error) -> Void in
                 self.detectAndCallback()
             }
         case .Unauthorized:
-            self.showDeniedAlert(.Contacts)
+            self.showDeniedAlert(.Contacts, presentingViewController: presentingViewController)
         default:
             break
         }
@@ -487,7 +488,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         
     }
     
-    public func requestNotifications() {
+    public func requestNotifications(presentingViewController: UIViewController? = nil) {
         switch statusNotifications() {
         case .Unknown:
             
@@ -506,7 +507,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             
         case .Unauthorized:
             
-            showDeniedAlert(PermissionType.Notifications)
+            showDeniedAlert(PermissionType.Notifications, presentingViewController: presentingViewController)
             
         default:
             break
@@ -524,14 +525,14 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         return .Unknown
     }
     
-    public func requestMicrophone() {
+    public func requestMicrophone(presentingViewController: UIViewController? = nil) {
         switch statusMicrophone() {
         case .Unknown:
             AVAudioSession.sharedInstance().requestRecordPermission({ (granted) -> Void in
                 self.detectAndCallback()
             })
         case .Unauthorized:
-            self.showDeniedAlert(.Microphone)
+            self.showDeniedAlert(.Microphone, presentingViewController: presentingViewController)
         default:
             break
         }
@@ -549,7 +550,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
     
-    public func requestCamera() {
+    public func requestCamera(presentingViewController: UIViewController? = nil) {
         switch statusCamera() {
         case .Unknown:
             AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo,
@@ -557,7 +558,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                     self.detectAndCallback()
             })
         case .Unauthorized:
-            self.showDeniedAlert(.Camera)
+            self.showDeniedAlert(.Camera, presentingViewController: presentingViewController)
         default:
             break
         }
@@ -575,14 +576,14 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
     
-    public func requestPhotos() {
+    public func requestPhotos(presentingViewController: UIViewController? = nil) {
         switch statusPhotos() {
         case .Unknown:
             PHPhotoLibrary.requestAuthorization({ (status) -> Void in
                 self.detectAndCallback()
             })
         case .Unauthorized:
-            self.showDeniedAlert(.Photos)
+            self.showDeniedAlert(.Photos, presentingViewController: presentingViewController)
         default:
             break
         }
@@ -600,7 +601,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
     
-    public func requestReminders() {
+    public func requestReminders(presentingViewController: UIViewController? = nil) {
         switch statusReminders() {
         case .Unknown:
             EKEventStore().requestAccessToEntityType(EKEntityTypeReminder,
@@ -608,7 +609,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                     self.detectAndCallback()
             })
         case .Unauthorized:
-            self.showDeniedAlert(.Reminders)
+            self.showDeniedAlert(.Reminders, presentingViewController: presentingViewController)
         default:
             break
         }
@@ -626,7 +627,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
     
-    public func requestEvents() {
+    public func requestEvents(presentingViewController: UIViewController? = nil) {
         switch statusEvents() {
         case .Unknown:
             EKEventStore().requestAccessToEntityType(EKEntityTypeEvent,
@@ -634,7 +635,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                     self.detectAndCallback()
             })
         case .Unauthorized:
-            self.showDeniedAlert(.Events)
+            self.showDeniedAlert(.Events, presentingViewController: presentingViewController)
         default:
             break
         }
@@ -763,7 +764,10 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         detectAndCallback()
     }
     
-    func showDeniedAlert(permission: PermissionType) {
+    func showDeniedAlert(permission: PermissionType, presentingViewController: UIViewController? = nil) {
+        if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
+            disabledOrDeniedClosure(self.getResultsForConfig())
+        }
         var alert = UIAlertController(title: "Permission for \(permission.rawValue) was denied.",
             message: "Please enable access to \(permission.rawValue) in the Settings app",
             preferredStyle: .Alert)
@@ -778,18 +782,21 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                 let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
                 UIApplication.sharedApplication().openURL(settingsUrl!)
         }))
-        self.presentViewController(alert,
+        (presentingViewController ?? self).presentViewController(alert,
             animated: true, completion: nil)
     }
     
-    func showDisabledAlert(permission: PermissionType) {
+    func showDisabledAlert(permission: PermissionType, presentingViewController: UIViewController? = nil) {
+        if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
+            disabledOrDeniedClosure(self.getResultsForConfig())
+        }
         var alert = UIAlertController(title: "\(permission.rawValue) is currently disabled.",
             message: "Please enable access to \(permission.rawValue) in Settings",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
             handler: nil))
-        self.presentViewController(alert,
+        (presentingViewController ?? self).presentViewController(alert,
             animated: true, completion: nil)
     }
     
