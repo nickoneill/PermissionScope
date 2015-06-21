@@ -126,6 +126,12 @@ Trickiest part of implementing location permissions? You must implement the prop
 
 Use `NSLocationAlwaysUsageDescription` or `NSLocationWhenInUseUsageDescription` where appropriate for your app usage. You can specify which of these location permissions you wish to request with `.LocationAlways` or `.LocationInUse` while configuring PermissionScope.
 
+### notes about bluetooth
+The *NSBluetoothPeripheralUsageDescription* key in the Info.plist specifying a short description of why your app needs to act as a bluetooth peripheralin the background is **optional**. 
+
+However, enabling `background-modes` in the capabilities section and checking the `acts as a bluetooth LE accessory` checkbox is **required**.
+
+
 ### license, etc
 
 PermissionScope uses the MIT license. Please file an issue if you have any questions or if you'd like to share how you're using this tool.
