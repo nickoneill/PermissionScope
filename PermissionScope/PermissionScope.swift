@@ -656,9 +656,14 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         } else {
             return .Unknown
         }
+        
         switch bluetoothManager.state {
-        case .Unknown,.Resetting,  .Unsupported, .Unauthorized, .PoweredOff:
+        case .Unknown, .Resetting:
             return .Unknown
+        case .Unsupported, .PoweredOff:
+            return .Disabled
+        case .Unauthorized:
+            return .Unauthorized
         case .PoweredOn:
             return .Authorized
         }
