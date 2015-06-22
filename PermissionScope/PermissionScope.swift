@@ -122,8 +122,14 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     var configuredPermissions: [PermissionConfig] = []
     var permissionButtons: [UIButton] = []
     var permissionLabels: [UILabel] = []
-    var authChangeClosure: ((Bool, [PermissionResult]) -> Void)? = nil
-    var cancelClosure: (([PermissionResult]) -> Void)? = nil
+	
+	// properties that may be useful for direct use of the request* methods
+    public var authChangeClosure: ((Bool, [PermissionResult]) -> Void)? = nil
+    public var cancelClosure: (([PermissionResult]) -> Void)? = nil
+	/** Called when the user has disabled or denied access to notifications, and we're presenting them with a help dialog. */
+    public var disabledOrDeniedClosure: (([PermissionResult]) -> Void)? = nil
+	/** View controller to be used when presenting alerts. Defaults to self. You'll want to set this if you are calling the `request*` methods directly. */
+	public var viewControllerForAlerts : UIViewController?
 
     // Computed variables
     var allAuthorized: Bool {
@@ -156,6 +162,8 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     public init(backgroundTapCancels: Bool) {
         super.init(nibName: nil, bundle: nil)
 
+		viewControllerForAlerts = self
+		
         // Set up main view
         view.frame = UIScreen.mainScreen().bounds
         view.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
@@ -764,6 +772,9 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
     
     func showDeniedAlert(permission: PermissionType) {
+        if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
+            disabledOrDeniedClosure(self.getResultsForConfig())
+        }
         var alert = UIAlertController(title: "Permission for \(permission.rawValue) was denied.",
             message: "Please enable access to \(permission.rawValue) in the Settings app",
             preferredStyle: .Alert)
@@ -778,18 +789,21 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                 let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
                 UIApplication.sharedApplication().openURL(settingsUrl!)
         }))
-        self.presentViewController(alert,
+        viewControllerForAlerts?.presentViewController(alert,
             animated: true, completion: nil)
     }
     
     func showDisabledAlert(permission: PermissionType) {
+        if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
+            disabledOrDeniedClosure(self.getResultsForConfig())
+        }
         var alert = UIAlertController(title: "\(permission.rawValue) is currently disabled.",
             message: "Please enable access to \(permission.rawValue) in Settings",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
             handler: nil))
-        self.presentViewController(alert,
+        viewControllerForAlerts?.presentViewController(alert,
             animated: true, completion: nil)
     }
     
