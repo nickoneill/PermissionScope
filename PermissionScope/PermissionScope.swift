@@ -789,7 +789,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                 let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
                 UIApplication.sharedApplication().openURL(settingsUrl!)
         }))
-        viewControllerForAlerts!.presentViewController(alert,
+        viewControllerForAlerts?.presentViewController(alert,
             animated: true, completion: nil)
     }
     
@@ -803,7 +803,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
             handler: nil))
-        viewControllerForAlerts!.presentViewController(alert,
+        viewControllerForAlerts?.presentViewController(alert,
             animated: true, completion: nil)
     }
     
