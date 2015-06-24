@@ -11,9 +11,7 @@ Inspired by (but unrelated to) [Periscope](https://www.periscope.tv)'s permissio
 
 Some examples of multiple permissions requests, a single permission and the denied alert.
 
-<img src="https://raw.githubusercontent.com/nickoneill/PermissionScope/master/permissions-full.png" width="320" height="568" alt="permissions full" />
-<img src="https://raw.githubusercontent.com/nickoneill/PermissionScope/master/permissions-small.png" width="320" height="568" alt="permissions small" />
-<img src="https://raw.githubusercontent.com/nickoneill/PermissionScope/master/permissions-denied.png" width="320" height="568" alt="permissions denied" />
+<img src="http://raquo.net/images/permissionscope.gif" alt="permissionscope gif" />
 
 We should all be more careful about when we request permissions from users, opting to request them only when they're needed and definitely not all in one barrage when the user opens the app for the first time.
 
