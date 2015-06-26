@@ -7,16 +7,25 @@
 //
 
 #import "ViewController.h"
+//#import "PermissionScope-Swift.h"
 
-@interface ViewController ()
-
+@interface ObjCViewController ()
+//@property (nonatomic, strong) PermissionScope *singlePscope;
 @end
 
-@implementation ViewController
+@implementation ObjCViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+}
+
+- (IBAction)single {
+    
+}
+
+- (IBAction)multiple {
+    
 }
 
 - (void)didReceiveMemoryWarning {

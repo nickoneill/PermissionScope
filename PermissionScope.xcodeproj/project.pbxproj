@@ -23,6 +23,8 @@
 		D0A47C121B3DE694000D39E2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0A47C101B3DE694000D39E2 /* Main.storyboard */; };
 		D0A47C141B3DE694000D39E2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0A47C131B3DE694000D39E2 /* Images.xcassets */; };
 		D0A47C171B3DE694000D39E2 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0A47C151B3DE694000D39E2 /* LaunchScreen.xib */; };
+		D0A47C2A1B3DE868000D39E2 /* PermissionScope.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D092BA331AD1E5A300BFC163 /* PermissionScope.framework */; };
+		D0A47C2B1B3DE868000D39E2 /* PermissionScope.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D092BA331AD1E5A300BFC163 /* PermissionScope.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +34,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = D092BA321AD1E5A300BFC163;
 			remoteInfo = modalperms;
+		};
+		D0A47C2C1B3DE868000D39E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D092BA2A1AD1E5A200BFC163 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D092BA321AD1E5A300BFC163;
+			remoteInfo = PermissionScope;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -43,6 +52,17 @@
 			dstSubfolderSpec = 10;
 			files = (
 				D023BA601B3B47C90006D8E2 /* PermissionScope.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D0A47C2E1B3DE868000D39E2 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				D0A47C2B1B3DE868000D39E2 /* PermissionScope.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -94,6 +114,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0A47C2A1B3DE868000D39E2 /* PermissionScope.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,10 +264,12 @@
 				D0A47C001B3DE694000D39E2 /* Sources */,
 				D0A47C011B3DE694000D39E2 /* Frameworks */,
 				D0A47C021B3DE694000D39E2 /* Resources */,
+				D0A47C2E1B3DE868000D39E2 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				D0A47C2D1B3DE868000D39E2 /* PBXTargetDependency */,
 			);
 			name = "objc-example";
 			productName = "objc-example";
@@ -361,6 +384,11 @@
 			isa = PBXTargetDependency;
 			target = D092BA321AD1E5A300BFC163 /* PermissionScope */;
 			targetProxy = D05F10641AD1F3D8000F8267 /* PBXContainerItemProxy */;
+		};
+		D0A47C2D1B3DE868000D39E2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D092BA321AD1E5A300BFC163 /* PermissionScope */;
+			targetProxy = D0A47C2C1B3DE868000D39E2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
