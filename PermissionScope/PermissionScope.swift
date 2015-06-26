@@ -119,7 +119,11 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     let contentView = UIView()
 
     // various managers
-    let locationManager = CLLocationManager()
+    lazy var locationManager:CLLocationManager = {
+        let lm = CLLocationManager()
+        lm.delegate = self
+        return lm
+    }()
     lazy var bluetoothManager:CBPeripheralManager = {
         return CBPeripheralManager(delegate: self, queue: nil)
     }()
