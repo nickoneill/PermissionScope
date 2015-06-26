@@ -105,6 +105,56 @@ case .Authorized:
 }
 ```
 
+### calling `request*` methods directly
+
+Normally PermissionScope is used to walk users through necessary permissions before they're allowed to do something in your app. Sometimes you may wish to instead call into the various `request*` permissions-seeking methods of PermissionScope directly, from your own UI.
+
+To call these methods directly, you must first set the `viewControllerForAlerts` method to your current UIViewController, in case PermissionScope needs to present some alerts to the user for denied or disabled permissions:
+
+```swift
+let pscope = PermissionScope()
+pscope.viewControllerForAlerts = self
+```
+
+You will probably also want to set the `authChangeClosure`, `cancelClosure`, and `disabledOrDeniedClosure` closures, which are called at the appropriate times when the `request*` methods are finished, otherwise you won't know when the work has been completed.
+
+```swift
+pscope.authChangeClosure = { (finished, results) -> Void in
+	println("Request was finished with results \(results)")
+	if results[0].status == .Authorized {
+		println("They've authorized the use of notifications")
+		UIApplication.sharedApplication().registerForRemoteNotifications()
+	}
+}
+pscope.cancelClosure = { (results) -> Void in
+	println("Request was cancelled with results \(results)")
+}
+pscope.disabledOrDeniedClosure = { (results) -> Void in
+	println("Request was denied or disabled with results \(results)")
+}
+```
+
+And then you might call it when the user toggles a switch:
+
+```swift
+@IBAction func notificationsChanged(sender: UISwitch) {
+	if sender.on {
+		// turn on notifications
+		if PermissionScope().statusNotifications() == .Authorized {
+			UIApplication.sharedApplication().registerForRemoteNotifications()
+		} else {
+			pscope.requestNotifications()
+		}
+	} else {
+	    // turn off notifications
+	}
+```
+If you're also using PermissionScope in the traditional manner, don't forget to set viewControllerForAlerts back to it's default, the instance of PermissionScope. The easiest way to do this is to set it explicitly before you call a `request*` method, and then reset it in your closures.
+
+```swift
+pscope.viewControllerForAlerts = pscope as UIViewController
+```
+
 ### issues
 
 * You get "Library not loaded: @rpath/libswiftCoreAudio.dylib", "image not found" errors when your app runs:
