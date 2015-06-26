@@ -22,7 +22,9 @@ class ViewController: UIViewController {
 
         multiPscope.addPermission(PermissionConfig(type: .Contacts, demands: .Required, message: "We use this to steal\r\nyour friends"))
         multiPscope.addPermission(PermissionConfig(type: .Notifications, demands: .Required, message: "We use this to send you\r\nspam and love notes", notificationCategories: .None))
-        multiPscope.addPermission(PermissionConfig(type: .LocationInUse, demands: .Required, message: "We use this to track\r\nwhere you live"))
+//        multiPscope.addPermission(PermissionConfig(type: .LocationInUse, demands: .Required, message: "We use this to track\r\nwhere you live"))
+        multiPscope.addPermission(PermissionConfig(type: .Bluetooth, demands: .Required, message: "We use this to drain your battery"))
+
     }
 
     override func didReceiveMemoryWarning() {
