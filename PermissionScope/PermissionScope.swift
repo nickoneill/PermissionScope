@@ -116,7 +116,11 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     let contentView = UIView()
 
     // various managers
-    let locationManager = CLLocationManager()
+    lazy var locationManager:CLLocationManager = {
+        let lm = CLLocationManager()
+        lm.delegate = self
+        return lm
+    }()
 
     // internal state and resolution
     var configuredPermissions: [PermissionConfig] = []
@@ -385,7 +389,6 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
                 defaults.setBool(true, forKey: PermissionScopeConstants.requestedInUseToAlwaysUpgrade)
                 defaults.synchronize()
             }
-            locationManager.delegate = self
             locationManager.requestAlwaysAuthorization()
         case .Unauthorized:
             self.showDeniedAlert(.LocationAlways)
@@ -417,7 +420,6 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     public func requestLocationInUse() {
         switch statusLocationInUse() {
         case .Unknown:
-            locationManager.delegate = self
             locationManager.requestWhenInUseAuthorization()
         case .Unauthorized:
             self.showDeniedAlert(.LocationInUse)
