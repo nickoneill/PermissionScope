@@ -16,6 +16,7 @@ import CoreBluetooth
 
 struct PermissionScopeConstants {
     static let requestedInUseToAlwaysUpgrade = "requestedInUseToAlwaysUpgrade"
+    static let requestedForBluetooth = "askedForBluetooth"
 }
 
 public enum PermissionType: String {
@@ -645,14 +646,13 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
     
-    let kAskedForBluetoothString = "askedForBluetooth"
     
     public func statusBluetooth() -> PermissionStatus{
-        let askedBluetooth = NSUserDefaults.standardUserDefaults().boolForKey(kAskedForBluetoothString)
+        let askedBluetooth = NSUserDefaults.standardUserDefaults().boolForKey(PermissionScopeConstants.requestedForBluetooth)
         
         // if already asked for bluetooth before, do a request to get status, else wait for user to request
         if askedBluetooth{
-            requestBluetooth()
+            triggerBluetoothStatusUpdate()
         } else {
             return .Unknown
         }
@@ -672,9 +672,25 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     }
     
     func requestBluetooth() {
+        
+        switch statusBluetooth() {
+        case .Disabled:
+            showDisabledAlert(.Bluetooth)
+        case .Unauthorized:
+            showDeniedAlert(.Bluetooth)
+        case .Unknown:
+            triggerBluetoothStatusUpdate()
+        default:
+            break
+        }
+        
+    }
+    
+    private func triggerBluetoothStatusUpdate() {
+        NSUserDefaults.standardUserDefaults().setBool(true, forKey: PermissionScopeConstants.requestedForBluetooth)
+        NSUserDefaults.standardUserDefaults().synchronize()
         bluetoothManager.startAdvertising(nil)
         bluetoothManager.stopAdvertising()
-        NSUserDefaults.standardUserDefaults().setBool(true, forKey: kAskedForBluetoothString)
     }
     
     // MARK: finally, displaying the panel
