@@ -12,9 +12,11 @@ import AddressBook
 import AVFoundation
 import Photos
 import EventKit
+import CoreBluetooth
 
 struct PermissionScopeConstants {
     static let requestedInUseToAlwaysUpgrade = "requestedInUseToAlwaysUpgrade"
+    static let requestedForBluetooth = "askedForBluetooth"
 }
 
 public enum PermissionType: String {
@@ -27,6 +29,7 @@ public enum PermissionType: String {
     case Photos         = "Photos"
     case Reminders      = "Reminders"
     case Events         = "Events"
+    case Bluetooth      = "Bluetooth"
     
     var prettyName: String {
         switch self {
@@ -98,7 +101,7 @@ extension String {
     }
 }
 
-public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate {
+public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
     // constants
     let contentWidth: CGFloat = 280.0
 
@@ -120,6 +123,10 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         let lm = CLLocationManager()
         lm.delegate = self
         return lm
+    }()
+
+    lazy var bluetoothManager:CBPeripheralManager = {
+        return CBPeripheralManager(delegate: self, queue: nil)
     }()
 
     // internal state and resolution
@@ -650,6 +657,53 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         }
     }
     
+    
+    public func statusBluetooth() -> PermissionStatus{
+        let askedBluetooth = NSUserDefaults.standardUserDefaults().boolForKey(PermissionScopeConstants.requestedForBluetooth)
+        
+        // if already asked for bluetooth before, do a request to get status, else wait for user to request
+        if askedBluetooth{
+            triggerBluetoothStatusUpdate()
+        } else {
+            return .Unknown
+        }
+
+        switch (bluetoothManager.state, CBPeripheralManager.authorizationStatus()) {
+        
+        case (.Unsupported, _), (.PoweredOff, _), (_, .Restricted):
+            return .Disabled
+        case (.Unauthorized, _), (_, .Denied):
+            return .Unauthorized
+        case (.PoweredOn, .Authorized):
+            return .Authorized
+        default:
+            return .Unknown
+        }
+        
+    }
+    
+    func requestBluetooth() {
+        
+        switch statusBluetooth() {
+        case .Disabled:
+            showDisabledAlert(.Bluetooth)
+        case .Unauthorized:
+            showDeniedAlert(.Bluetooth)
+        case .Unknown:
+            triggerBluetoothStatusUpdate()
+        default:
+            break
+        }
+        
+    }
+    
+    private func triggerBluetoothStatusUpdate() {
+        NSUserDefaults.standardUserDefaults().setBool(true, forKey: PermissionScopeConstants.requestedForBluetooth)
+        NSUserDefaults.standardUserDefaults().synchronize()
+        bluetoothManager.startAdvertising(nil)
+        bluetoothManager.stopAdvertising()
+    }
+    
     // MARK: finally, displaying the panel
 
     public func show(authChange: ((finished: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: ((results: [PermissionResult]) -> Void)? = nil) {
@@ -828,6 +882,13 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         detectAndCallback()
     }
     
+    // MARK: bluetooth delegate
+    
+    public func peripheralManagerDidUpdateState(peripheral: CBPeripheralManager!) {
+        
+        detectAndCallback()
+    }
+
     // MARK: Helpers
     
     func statusForPermission(type: PermissionType) -> PermissionStatus {
@@ -851,6 +912,8 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             return statusReminders()
         case .Events:
             return statusEvents()
+        case .Bluetooth:
+            return statusBluetooth()
         }
     }
 }
