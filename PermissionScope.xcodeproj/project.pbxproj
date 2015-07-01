@@ -14,7 +14,7 @@
 		D05F104A1AD1EBF6000F8267 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D05F10491AD1EBF6000F8267 /* Images.xcassets */; };
 		D05F104D1AD1EBF6000F8267 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D05F104B1AD1EBF6000F8267 /* LaunchScreen.xib */; };
 		D06EDC581B27BB9000D6863A /* PermissionScope.podspec in Resources */ = {isa = PBXBuildFile; fileRef = D06EDC571B27BB9000D6863A /* PermissionScope.podspec */; };
-		D06EDC5A1B27BBB800D6863A /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = D06EDC591B27BBB800D6863A /* README.md */; };
+		D06EDC5A1B27BBB800D6863A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D06EDC591B27BBB800D6863A /* README.md */; };
 		D092BA391AD1E5A300BFC163 /* PermissionScope.h in Headers */ = {isa = PBXBuildFile; fileRef = D092BA381AD1E5A300BFC163 /* PermissionScope.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D092BA501AD1E67300BFC163 /* PermissionScope.swift in Sources */ = {isa = PBXBuildFile; fileRef = D092BA4F1AD1E67300BFC163 /* PermissionScope.swift */; };
 		D0A47C091B3DE694000D39E2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D0A47C081B3DE694000D39E2 /* main.m */; };
@@ -338,6 +338,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D06EDC581B27BB9000D6863A /* PermissionScope.podspec in Resources */,
+				D06EDC5A1B27BBB800D6863A /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,7 +368,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D06EDC5A1B27BBB800D6863A /* README.md in Sources */,
 				D092BA501AD1E67300BFC163 /* PermissionScope.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -524,7 +524,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -648,6 +648,7 @@
 				D0A47C251B3DE694000D39E2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
