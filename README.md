@@ -179,6 +179,12 @@ The *NSBluetoothPeripheralUsageDescription* key in the Info.plist specifying a s
 
 However, enabling `background-modes` in the capabilities section and checking the `acts as a bluetooth LE accessory` checkbox is **required**.
 
+### projects using PermissionScope
+
+Feel free to add your project in a PR if you're using PermissionScope:
+
+<img src="http://raquo.net/images/icon-round-80.png" width="40" height="40" /><br />
+<a href="https://gettre.at">treat</a>
 
 ### license, etc
 
