@@ -25,11 +25,11 @@ Best of all, PermissionScope detects when ([some of](https://github.com/nickonei
 
 Installation for [Carthage](https://github.com/Carthage/Carthage) is simple enough:
 
-`github "nickoneill/PermissionScope" ~> 0.6`
+`github "nickoneill/PermissionScope" ~> 0.7`
 
 As for [Cocoapods](https://cocoapods.org), use this to get the latest code:
 
-`pod 'PermissionScope', '~> 0.6'`
+`pod 'PermissionScope', '~> 0.7'`
 
 And `import PermissionScope` in the files you'd like to use it.
 
