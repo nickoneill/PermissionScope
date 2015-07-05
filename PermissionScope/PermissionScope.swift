@@ -332,7 +332,7 @@ extension String {
 
     // MARK: customizing the permissions
 
-    public func addPermission(config: PermissionConfig) {
+    @objc public func addPermission(config: PermissionConfig) {
         assert(!config.message.isEmpty, "Including a message about your permission usage is helpful")
         assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
         assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type.stringValue()) already set")
