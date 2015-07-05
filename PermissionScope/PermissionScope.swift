@@ -19,45 +19,65 @@ struct PermissionScopeConstants {
     static let requestedForBluetooth = "askedForBluetooth"
 }
 
-public enum PermissionType: String {
-    case Contacts       = "Contacts"
-    case LocationAlways = "LocationAlways"
-    case LocationInUse  = "LocationInUse"
-    case Notifications  = "Notifications"
-    case Microphone     = "Microphone"
-    case Camera         = "Camera"
-    case Photos         = "Photos"
-    case Reminders      = "Reminders"
-    case Events         = "Events"
-    case Bluetooth      = "Bluetooth"
+@objc public enum PermissionType: Int {
+    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth
     
-    var prettyName: String {
+    func stringValue() -> String {
+        switch self {
+        case .Contacts: return "Contacts"
+        case .Events: return "Events"
+        case .LocationAlways: return "LocationAlways"
+        case .LocationInUse: return "LocationInUse"
+        case .Notifications: return "Notifications"
+        case .Microphone: return "Microphone"
+        case .Camera: return "Camera"
+        case .Photos: return "Photos"
+        case .Reminders: return "Reminders"
+        case .Bluetooth: return "Bluetooth"
+        }
+    }
+    
+    func prettyName() -> String {
         switch self {
         case .LocationAlways, .LocationInUse:
             return "Location"
         default:
-            return self.rawValue
+            return self.stringValue()
         }
     }
     
-    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events]
+    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth]
+    
 }
 
-public enum PermissionStatus: String {
-    case Authorized     = "Authorized"
-    case Unauthorized   = "Unauthorized"
-    case Unknown        = "Unknown"
-    case Disabled       = "Disabled" // System-level
+@objc public enum PermissionStatus: Int {
+    case Authorized, Unauthorized, Unknown, Disabled
+    
+    func stringValue() -> String {
+        switch self{
+        case .Authorized: return "Authorized"
+        case .Unauthorized:return "Unauthorized"
+        case .Unknown: return "Unknown"
+        case .Disabled: return "Disabled" // System-level
+        }
+    }
+
 }
 
-public enum PermissionDemands: String {
-    case Required = "Required"
-    case Optional = "Optional"
+@objc public enum PermissionDemands: Int {
+    case Required, Optional
+    
+    func stringValue() -> String {
+        switch self{
+        case .Required: return "Required"
+        case .Optional: return "Optional"
+        }
+    }
 }
 
 private let PermissionScopeAskedForNotificationsDefaultsKey = "PermissionScopeAskedForNotificationsDefaultsKey"
 
-public struct PermissionConfig {
+@objc public class PermissionConfig: NSObject {
     let type: PermissionType
     let demands: PermissionDemands
     let message: String
@@ -76,12 +96,18 @@ public struct PermissionConfig {
     }
 }
 
-public struct PermissionResult: Printable {
+@objc public class PermissionResult: NSObject {
     public let type: PermissionType
     public let status: PermissionStatus
     public let demands: PermissionDemands
 
-    public var description: String {
+    private init(type:PermissionType, status:PermissionStatus, demands:PermissionDemands) {
+        self.type = type
+        self.status = status
+        self.demands = demands
+    }
+    
+    override public var description: String {
         return "\(type.rawValue) \(status.rawValue)"
     }
 }
@@ -101,7 +127,7 @@ extension String {
     }
 }
 
-public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
+@objc public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
     // constants
     let contentWidth: CGFloat = 280.0
 
@@ -283,7 +309,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
             let type = configuredPermissions[index].type
             
             let currentStatus = statusForPermission(type)
-            let prettyName = type.prettyName
+            let prettyName = type.prettyName()
             if currentStatus == .Authorized {
                 setButtonAuthorizedStyle(button)
                 button.setTitle("Allowed \(prettyName)".localized.uppercaseString, forState: .Normal)
@@ -309,7 +335,7 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     public func addPermission(config: PermissionConfig) {
         assert(!config.message.isEmpty, "Including a message about your permission usage is helpful")
         assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
-        assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type.rawValue) already set")
+        assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type.stringValue()) already set")
         
         configuredPermissions.append(config)
     }
@@ -326,12 +352,12 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         // this is a bit of a mess, eh?
         switch type {
         case .LocationAlways, .LocationInUse:
-            button.setTitle("Enable \(type.prettyName)".localized.uppercaseString, forState: UIControlState.Normal)
+            button.setTitle("Enable \(type.prettyName())".localized.uppercaseString, forState: UIControlState.Normal)
         default:
-            button.setTitle("Allow \(type.rawValue)".localized.uppercaseString, forState: UIControlState.Normal)
+            button.setTitle("Allow \(type.stringValue())".localized.uppercaseString, forState: UIControlState.Normal)
         }
         
-        button.addTarget(self, action: Selector("request\(type.rawValue)"), forControlEvents: UIControlEvents.TouchUpInside)
+        button.addTarget(self, action: Selector("request\(type.stringValue())"), forControlEvents: UIControlEvents.TouchUpInside)
         
         return button
     }
@@ -706,11 +732,12 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
     
     // MARK: finally, displaying the panel
 
-    public func show(authChange: ((finished: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: ((results: [PermissionResult]) -> Void)? = nil) {
+    @objc public func show(authChange: ((finished: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: ((results: [PermissionResult]) -> Void)? = nil) {
         assert(configuredPermissions.count > 0, "Please add at least one permission")
 
-        authChangeClosure = authChange
-        cancelClosure = cancelled
+        // this is so it works with Objective-C too.
+        authChangeClosure = { (authChange)!(finished: $0, results: $1) }
+        cancelClosure = { (cancelled)!(results: $0) }
 
         // no missing required perms? callback and do nothing
         if requiredAuthorized {
@@ -853,8 +880,8 @@ public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGes
         if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
             disabledOrDeniedClosure(self.getResultsForConfig())
         }
-        var alert = UIAlertController(title: "\(permission.rawValue) is currently disabled.",
-            message: "Please enable access to \(permission.rawValue) in Settings",
+        var alert = UIAlertController(title: "\(permission.stringValue()) is currently disabled.",
+            message: "Please enable access to \(permission.stringValue()) in Settings",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
