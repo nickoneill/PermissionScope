@@ -736,8 +736,8 @@ extension String {
         assert(configuredPermissions.count > 0, "Please add at least one permission")
 
         // this is so it works with Objective-C too.
-        authChangeClosure = { (authChange)?(finished: $0, results: $1) }
-        cancelClosure = { (cancelled)?(results: $0) }
+        authChangeClosure = authChange
+        cancelClosure = cancelled 
 
         // no missing required perms? callback and do nothing
         if requiredAuthorized {
