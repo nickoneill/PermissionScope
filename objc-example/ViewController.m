@@ -30,13 +30,16 @@
     
 //    PermissionConfig* configBluetooth = [[PermissionConfig alloc] initWithType:PermissionTypeBluetooth demands:PermissionDemandsRequired message:@"We use this to drain your battery" notificationCategories:UIUserNotificationTypeNone];
     
+//    PermissionConfig* configMotion = [[PermissionConfig alloc] initWithType:PermissionTypeMotion demands:PermissionDemandsRequired message:@"We use this to detect if you are\r\nThe Flash" notificationCategories:UIUserNotificationTypeNone];
+    
     
     [self.singlePscope addPermission:configNotifications];
     
     [self.multiPscope addPermission:configContacts];
     [self.multiPscope addPermission:configNotifications];
     [self.multiPscope addPermission:configLocationInUse];
-    
+//    [self.multiPscope addPermission:configBluetooth];
+//    [self.multiPscope addPermission:configMotion];
 }
 
 - (IBAction)single {
