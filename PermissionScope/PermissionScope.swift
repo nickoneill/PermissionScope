@@ -203,7 +203,7 @@ extension String {
 		
         // Set up main view
         view.frame = UIScreen.mainScreen().bounds
-        view.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
+        view.autoresizingMask = [UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleWidth]
         view.backgroundColor = UIColor(red:0, green:0, blue:0, alpha:0.7)
         view.addSubview(baseView)
         // Base View
@@ -261,11 +261,11 @@ extension String {
 
     public override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        var screenSize = UIScreen.mainScreen().bounds.size
+        let screenSize = UIScreen.mainScreen().bounds.size
         // Set background frame
         view.frame.size = screenSize
         // Set frames
-        var x = (screenSize.width - contentWidth) / 2
+        let x = (screenSize.width - contentWidth) / 2
 
         let dialogHeight: CGFloat
         switch self.configuredPermissions.count {
@@ -277,7 +277,7 @@ extension String {
             dialogHeight = 260
         }
         
-        var y = (screenSize.height - dialogHeight) / 2
+        let y = (screenSize.height - dialogHeight) / 2
         contentView.frame = CGRect(x:x, y:y, width:contentWidth, height:dialogHeight)
 
         // offset the header from the content center, compensate for the content's offset
@@ -491,7 +491,7 @@ extension String {
     // TODO: can we tell if notifications has been denied?
     public func statusNotifications() -> PermissionStatus {
         let settings = UIApplication.sharedApplication().currentUserNotificationSettings()
-        if settings.types != UIUserNotificationType.None {
+        if let settingTypes = settings?.types where settingTypes != UIUserNotificationType.None {
             return .Authorized
         } else {
             if NSUserDefaults.standardUserDefaults().boolForKey(PermissionScopeAskedForNotificationsDefaultsKey) {
@@ -543,8 +543,8 @@ extension String {
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("showingNotificationPermission"), name: UIApplicationWillResignActiveNotification, object: nil)
             
             notificationTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("finishedShowingNotificationPermission"), userInfo: nil, repeats: false)
-
-            UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Sound | .Badge,
+            
+            UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [UIUserNotificationType.Alert, UIUserNotificationType.Sound, UIUserNotificationType.Badge],
                 categories: notificationsPermissionSet))
             
         case .Unauthorized:
@@ -632,7 +632,7 @@ extension String {
     }
     
     public func statusReminders() -> PermissionStatus {
-        let status = EKEventStore.authorizationStatusForEntityType(EKEntityTypeReminder)
+        let status = EKEventStore.authorizationStatusForEntityType(EKEntityType.Reminder)
         switch status {
         case .Authorized:
             return .Authorized
@@ -646,7 +646,7 @@ extension String {
     public func requestReminders() {
         switch statusReminders() {
         case .Unknown:
-            EKEventStore().requestAccessToEntityType(EKEntityTypeReminder,
+            EKEventStore().requestAccessToEntityType(EKEntityType.Reminder,
                 completion: { (granted, error) -> Void in
                     self.detectAndCallback()
             })
@@ -658,7 +658,7 @@ extension String {
     }
     
     public func statusEvents() -> PermissionStatus {
-        let status = EKEventStore.authorizationStatusForEntityType(EKEntityTypeEvent)
+        let status = EKEventStore.authorizationStatusForEntityType(EKEntityType.Event)
         switch status {
         case .Authorized:
             return .Authorized
@@ -672,7 +672,7 @@ extension String {
     public func requestEvents() {
         switch statusEvents() {
         case .Unknown:
-            EKEventStore().requestAccessToEntityType(EKEntityTypeEvent,
+            EKEventStore().requestAccessToEntityType(EKEntityType.Event,
                 completion: { (granted, error) -> Void in
                     self.detectAndCallback()
             })
@@ -839,7 +839,7 @@ extension String {
         var results: [PermissionResult] = []
 
         for config in configuredPermissions {
-            var status = statusForPermission(config.type)
+            let status = statusForPermission(config.type)
             let result = PermissionResult(type: config.type, status: status, demands: config.demands)
             results.append(result)
         }
@@ -858,7 +858,7 @@ extension String {
         if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
             disabledOrDeniedClosure(self.getResultsForConfig())
         }
-        var alert = UIAlertController(title: "Permission for \(permission.rawValue) was denied.",
+        let alert = UIAlertController(title: "Permission for \(permission.rawValue) was denied.",
             message: "Please enable access to \(permission.rawValue) in the Settings app",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
@@ -880,7 +880,7 @@ extension String {
         if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
             disabledOrDeniedClosure(self.getResultsForConfig())
         }
-        var alert = UIAlertController(title: "\(permission.stringValue()) is currently disabled.",
+        let alert = UIAlertController(title: "\(permission.stringValue()) is currently disabled.",
             message: "Please enable access to \(permission.stringValue()) in Settings",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
@@ -904,14 +904,14 @@ extension String {
 
     // MARK: location delegate
 
-    public func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    public func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
 
         detectAndCallback()
     }
     
     // MARK: bluetooth delegate
     
-    public func peripheralManagerDidUpdateState(peripheral: CBPeripheralManager!) {
+    public func peripheralManagerDidUpdateState(peripheral: CBPeripheralManager) {
         
         detectAndCallback()
     }
