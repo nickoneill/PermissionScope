@@ -108,7 +108,7 @@ private let PermissionScopeAskedForNotificationsDefaultsKey = "PermissionScopeAs
     }
     
     override public var description: String {
-        return "\(type.rawValue) \(status.rawValue)"
+        return "\(type.stringValue()) \(status.stringValue())"
     }
 }
 
@@ -858,8 +858,8 @@ extension String {
         if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
             disabledOrDeniedClosure(self.getResultsForConfig())
         }
-        var alert = UIAlertController(title: "Permission for \(permission.rawValue) was denied.",
-            message: "Please enable access to \(permission.rawValue) in the Settings app",
+        var alert = UIAlertController(title: "Permission for \(permission.stringValue()) was denied.",
+            message: "Please enable access to \(permission.stringValue()) in the Settings app",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
