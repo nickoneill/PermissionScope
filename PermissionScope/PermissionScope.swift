@@ -111,7 +111,7 @@ private let PermissionScopeAskedForNotificationsDefaultsKey = "PermissionScopeAs
     }
     
     override public var description: String {
-        return "\(type.rawValue) \(status.rawValue)"
+        return "\(type.stringValue()) \(status.stringValue())"
     }
 }
 
