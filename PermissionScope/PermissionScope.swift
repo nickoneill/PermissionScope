@@ -155,7 +155,7 @@ extension String {
     }()
 
     lazy var bluetoothManager:CBPeripheralManager = {
-        return CBPeripheralManager(delegate: self, queue: nil)
+        return CBPeripheralManager(delegate: self, queue: nil, options:[CBPeripheralManagerOptionShowPowerAlertKey: true])
     }()
     
     lazy var motionManager:CMMotionActivityManager = {
@@ -350,6 +350,10 @@ extension String {
         assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type.stringValue()) already set")
         
         configuredPermissions.append(config)
+        
+        if config.type == .Bluetooth && askedBluetooth {
+            triggerBluetoothStatusUpdate()
+        }
     }
 
     func permissionStyledButton(type: PermissionType) -> UIButton {
@@ -695,10 +699,19 @@ extension String {
         }
     }
     
+    private var askedBluetooth:Bool {
+        get {
+            return NSUserDefaults.standardUserDefaults().boolForKey(PermissionScopeConstants.requestedForBluetooth)
+        }
+        set {
+            NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: PermissionScopeConstants.requestedForBluetooth)
+            NSUserDefaults.standardUserDefaults().synchronize()
+        }
+    }
+    
+    private var waitingForBluetooth = false
     
     public func statusBluetooth() -> PermissionStatus{
-        let askedBluetooth = NSUserDefaults.standardUserDefaults().boolForKey(PermissionScopeConstants.requestedForBluetooth)
-        
         // if already asked for bluetooth before, do a request to get status, else wait for user to request
         if askedBluetooth{
             triggerBluetoothStatusUpdate()
@@ -736,10 +749,12 @@ extension String {
     }
     
     private func triggerBluetoothStatusUpdate() {
-        NSUserDefaults.standardUserDefaults().setBool(true, forKey: PermissionScopeConstants.requestedForBluetooth)
-        NSUserDefaults.standardUserDefaults().synchronize()
-        bluetoothManager.startAdvertising(nil)
-        bluetoothManager.stopAdvertising()
+        if !waitingForBluetooth && bluetoothManager.state == .Unknown {
+            bluetoothManager.startAdvertising(nil)
+            bluetoothManager.stopAdvertising()
+            askedBluetooth = true
+            waitingForBluetooth = true
+        }
     }
     
     public func statusMotion() -> PermissionStatus {
@@ -787,18 +802,24 @@ extension String {
     @objc public func show(authChange: ((finished: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: ((results: [PermissionResult]) -> Void)? = nil) {
         assert(configuredPermissions.count > 0, "Please add at least one permission")
 
-        // this is so it works with Objective-C too.
         authChangeClosure = authChange
         cancelClosure = cancelled 
 
-        // no missing required perms? callback and do nothing
-        if requiredAuthorized {
-            if let authChangeClosure = authChangeClosure {
-                authChangeClosure(true, getResultsForConfig())
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            while self.waitingForBluetooth {}
+            // call other methods that need to wait before show
+            dispatch_async(dispatch_get_main_queue()) {
+                // no missing required perms? callback and do nothing
+                if self.requiredAuthorized {
+                    self.authChangeClosure?(true, self.getResultsForConfig())
+                } else {
+                    self.showAlert()
+                }
             }
-
-            return
         }
+    }
+    
+    private func showAlert() {
 
         // add the backing views
         let window = UIApplication.sharedApplication().keyWindow!
@@ -967,6 +988,7 @@ extension String {
     
     public func peripheralManagerDidUpdateState(peripheral: CBPeripheralManager) {
         
+        waitingForBluetooth = false
         detectAndCallback()
     }
 
