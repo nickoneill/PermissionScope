@@ -24,7 +24,7 @@ struct PermissionScopeConstants {
 @objc public enum PermissionType: Int {
     case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion
     
-    func stringValue() -> String {
+    public func stringValue() -> String {
         switch self {
         case .Contacts: return "Contacts"
         case .Events: return "Events"
@@ -40,7 +40,7 @@ struct PermissionScopeConstants {
         }
     }
     
-    func prettyName() -> String {
+    public func prettyName() -> String {
         switch self {
         case .LocationAlways, .LocationInUse:
             return "Location"
