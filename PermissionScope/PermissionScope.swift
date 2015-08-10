@@ -159,9 +159,8 @@ extension String {
     }()
     
     lazy var motionManager:CMMotionActivityManager = {
-        let ma = CMMotionActivityManager()
-        return ma
-        }()
+        return CMMotionActivityManager()
+    }()
     
     var motionPermissionStatus: PermissionStatus = .Unknown
 
@@ -353,6 +352,10 @@ extension String {
         
         if config.type == .Bluetooth && askedBluetooth {
             triggerBluetoothStatusUpdate()
+        }
+        
+        if config.type == .Motion && askedMotion {
+            triggerMotionStatusUpdate()
         }
     }
 
@@ -757,9 +760,19 @@ extension String {
         }
     }
     
+    private var askedMotion:Bool {
+        get {
+            return NSUserDefaults.standardUserDefaults().boolForKey(PermissionScopeConstants.requestedForMotion)
+        }
+        set {
+            NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: PermissionScopeConstants.requestedForMotion)
+            NSUserDefaults.standardUserDefaults().synchronize()
+        }
+    }
+    
+    private var waitingForMotion = false
+    
     public func statusMotion() -> PermissionStatus {
-        let askedMotion = NSUserDefaults.standardUserDefaults().boolForKey(PermissionScopeConstants.requestedForMotion)
-        
         if askedMotion{
             triggerMotionStatusUpdate()
         }
@@ -792,9 +805,12 @@ extension String {
             
             self.motionManager.stopActivityUpdates()
             if (tmpMotionPermissionStatus != self.motionPermissionStatus){
+                self.waitingForMotion = false
                 self.detectAndCallback()
             }
         })
+        askedMotion = true
+        waitingForMotion = true
     }
     
     // MARK: finally, displaying the panel
@@ -806,7 +822,7 @@ extension String {
         cancelClosure = cancelled 
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            while self.waitingForBluetooth {}
+            while self.waitingForBluetooth && self.waitingForMotion {}
             // call other methods that need to wait before show
             dispatch_async(dispatch_get_main_queue()) {
                 // no missing required perms? callback and do nothing
@@ -854,7 +870,7 @@ extension String {
         self.baseView.frame.origin.y = self.view.bounds.origin.y - self.baseView.frame.size.height
         self.view.alpha = 0
         
-        UIView.animateWithDuration(0.2, delay: 0.5, options: nil, animations: {
+        UIView.animateWithDuration(0.2, delay: 0.0, options: nil, animations: {
             self.baseView.center.y = window.center.y + 15
             self.view.alpha = 1
         }, completion: { finished in
