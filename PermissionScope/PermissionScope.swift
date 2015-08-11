@@ -13,14 +13,16 @@ import AVFoundation
 import Photos
 import EventKit
 import CoreBluetooth
+import CoreMotion
 
 struct PermissionScopeConstants {
     static let requestedInUseToAlwaysUpgrade = "requestedInUseToAlwaysUpgrade"
     static let requestedForBluetooth = "askedForBluetooth"
+    static let requestedForMotion = "askedForMotion"
 }
 
 @objc public enum PermissionType: Int {
-    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth
+    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion
     
     public func stringValue() -> String {
         switch self {
@@ -34,6 +36,7 @@ struct PermissionScopeConstants {
         case .Photos: return "Photos"
         case .Reminders: return "Reminders"
         case .Bluetooth: return "Bluetooth"
+        case .Motion: return "Motion"
         }
     }
     
@@ -46,7 +49,7 @@ struct PermissionScopeConstants {
         }
     }
     
-    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth]
+    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion]
     
 }
 
@@ -154,6 +157,12 @@ extension String {
     lazy var bluetoothManager:CBPeripheralManager = {
         return CBPeripheralManager(delegate: self, queue: nil, options:[CBPeripheralManagerOptionShowPowerAlertKey: true])
     }()
+    
+    lazy var motionManager:CMMotionActivityManager = {
+        return CMMotionActivityManager()
+    }()
+    
+    var motionPermissionStatus: PermissionStatus = .Unknown
 
     // internal state and resolution
     var configuredPermissions: [PermissionConfig] = []
@@ -245,6 +254,8 @@ extension String {
         closeButton.addTarget(self, action: Selector("cancel"), forControlEvents: UIControlEvents.TouchUpInside)
         
         contentView.addSubview(closeButton)
+        
+        self.statusMotion() //Added to check motion status on load
     }
     
     public convenience init() {
@@ -341,6 +352,10 @@ extension String {
         
         if config.type == .Bluetooth && askedBluetooth {
             triggerBluetoothStatusUpdate()
+        }
+        
+        if config.type == .Motion && askedMotion {
+            triggerMotionStatusUpdate()
         }
     }
 
@@ -745,6 +760,59 @@ extension String {
         }
     }
     
+    private var askedMotion:Bool {
+        get {
+            return NSUserDefaults.standardUserDefaults().boolForKey(PermissionScopeConstants.requestedForMotion)
+        }
+        set {
+            NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: PermissionScopeConstants.requestedForMotion)
+            NSUserDefaults.standardUserDefaults().synchronize()
+        }
+    }
+    
+    private var waitingForMotion = false
+    
+    public func statusMotion() -> PermissionStatus {
+        if askedMotion{
+            triggerMotionStatusUpdate()
+        }
+        return motionPermissionStatus
+    }
+    
+    public func requestMotion() {
+        switch statusMotion() {
+        case .Unauthorized:
+            showDeniedAlert(.Motion)
+        case .Unknown:
+            triggerMotionStatusUpdate()
+        default:
+            break
+        }
+    }
+    
+    private func triggerMotionStatusUpdate() {
+        let tmpMotionPermissionStatus = motionPermissionStatus
+        NSUserDefaults.standardUserDefaults().setBool(true, forKey: PermissionScopeConstants.requestedForMotion)
+        NSUserDefaults.standardUserDefaults().synchronize()
+        motionManager.queryActivityStartingFromDate(NSDate(), toDate: NSDate(), toQueue: NSOperationQueue.mainQueue(), withHandler: { ([AnyObject]!, error:NSError!) -> Void in
+            if (error != nil && error.code == Int(CMErrorMotionActivityNotAuthorized.value)) {
+                self.motionPermissionStatus = .Unauthorized
+                
+            }
+            else{
+                self.motionPermissionStatus = .Authorized
+            }
+            
+            self.motionManager.stopActivityUpdates()
+            if (tmpMotionPermissionStatus != self.motionPermissionStatus){
+                self.waitingForMotion = false
+                self.detectAndCallback()
+            }
+        })
+        askedMotion = true
+        waitingForMotion = true
+    }
+    
     // MARK: finally, displaying the panel
 
     @objc public func show(authChange: ((finished: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: ((results: [PermissionResult]) -> Void)? = nil) {
@@ -754,7 +822,7 @@ extension String {
         cancelClosure = cancelled 
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            while self.waitingForBluetooth {}
+            while self.waitingForBluetooth && self.waitingForMotion {}
             // call other methods that need to wait before show
             dispatch_async(dispatch_get_main_queue()) {
                 // no missing required perms? callback and do nothing
@@ -799,8 +867,10 @@ extension String {
         self.view.setNeedsLayout()
         
         // slide in the view
-        self.baseView.frame.origin.y = -400
-        UIView.animateWithDuration(0.2, animations: {
+        self.baseView.frame.origin.y = self.view.bounds.origin.y - self.baseView.frame.size.height
+        self.view.alpha = 0
+        
+        UIView.animateWithDuration(0.2, delay: 0.0, options: nil, animations: {
             self.baseView.center.y = window.center.y + 15
             self.view.alpha = 1
         }, completion: { finished in
@@ -963,6 +1033,8 @@ extension String {
             return statusEvents()
         case .Bluetooth:
             return statusBluetooth()
+        case .Motion:
+            return statusMotion()
         }
     }
 }
