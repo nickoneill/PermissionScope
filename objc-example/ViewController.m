@@ -30,17 +30,20 @@
     
 //    PermissionConfig* configBluetooth = [[PermissionConfig alloc] initWithType:PermissionTypeBluetooth demands:PermissionDemandsRequired message:@"We use this to drain your battery" notificationCategories:UIUserNotificationTypeNone];
     
+//    PermissionConfig* configMotion = [[PermissionConfig alloc] initWithType:PermissionTypeMotion demands:PermissionDemandsRequired message:@"We use this to detect if you are\r\nThe Flash" notificationCategories:UIUserNotificationTypeNone];
+    
     
     [self.singlePscope addPermission:configNotifications];
     
     [self.multiPscope addPermission:configContacts];
     [self.multiPscope addPermission:configNotifications];
     [self.multiPscope addPermission:configLocationInUse];
-    
+//    [self.multiPscope addPermission:configBluetooth];
+//    [self.multiPscope addPermission:configMotion];
 }
 
 - (IBAction)single {
-    [self.singlePscope showWithAuthChange:^(BOOL completed, NSArray *results) {
+    [self.singlePscope show:^(BOOL completed, NSArray *results) {
         NSLog(@"Changed: %@ - %@", @(completed), results);
     } cancelled:^(NSArray *x) {
         NSLog(@"cancelled");
@@ -48,7 +51,7 @@
 }
 
 - (IBAction)multiple {
-    [self.multiPscope showWithAuthChange:^(BOOL completed, NSArray *results) {
+    [self.multiPscope show:^(BOOL completed, NSArray *results) {
         NSLog(@"Changed: %@ - %@", @(completed), results);
     } cancelled:^(NSArray *x) {
         NSLog(@"cancelled");
