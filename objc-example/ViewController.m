@@ -40,7 +40,7 @@
 }
 
 - (IBAction)single {
-    [self.singlePscope showWithAuthChange:^(BOOL completed, NSArray *results) {
+    [self.singlePscope show:^(BOOL completed, NSArray *results) {
         NSLog(@"Changed: %@ - %@", @(completed), results);
     } cancelled:^(NSArray *x) {
         NSLog(@"cancelled");
@@ -48,7 +48,7 @@
 }
 
 - (IBAction)multiple {
-    [self.multiPscope showWithAuthChange:^(BOOL completed, NSArray *results) {
+    [self.multiPscope show:^(BOOL completed, NSArray *results) {
         NSLog(@"Changed: %@ - %@", @(completed), results);
     } cancelled:^(NSArray *x) {
         NSLog(@"cancelled");
