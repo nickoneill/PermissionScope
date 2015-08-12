@@ -64,7 +64,7 @@ struct PermissionScopeConstants {
         case .Disabled: return "Disabled" // System-level
         }
     }
-
+    
 }
 
 @objc public enum PermissionDemands: Int {
@@ -91,7 +91,7 @@ private let PermissionScopeAskedForNotificationsDefaultsKey = "PermissionScopeAs
         if type != .Notifications && notificationCategories != .None {
             assertionFailure("notificationCategories only apply to the .Notifications permission")
         }
-
+        
         self.type = type
         self.demands = demands
         self.message = message
@@ -103,7 +103,7 @@ private let PermissionScopeAskedForNotificationsDefaultsKey = "PermissionScopeAs
     public let type: PermissionType
     public let status: PermissionStatus
     public let demands: PermissionDemands
-
+    
     private init(type:PermissionType, status:PermissionStatus, demands:PermissionDemands) {
         self.type = type
         self.status = status
@@ -133,7 +133,7 @@ extension String {
 @objc public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
     // constants
     let contentWidth: CGFloat = 280.0
-
+    
     // configurable things
     public let headerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
     public let bodyLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 240, height: 70))
@@ -142,41 +142,41 @@ extension String {
     public var labelFont = UIFont.systemFontOfSize(14)
     public var closeButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 32))
     public var closeOffset = CGSize(width: 0, height: 0)
-
+    
     // some view hierarchy
     let baseView = UIView()
     let contentView = UIView()
-
+    
     // various managers
     lazy var locationManager:CLLocationManager = {
         let lm = CLLocationManager()
         lm.delegate = self
         return lm
-    }()
-
+        }()
+    
     lazy var bluetoothManager:CBPeripheralManager = {
         return CBPeripheralManager(delegate: self, queue: nil, options:[CBPeripheralManagerOptionShowPowerAlertKey: true])
-    }()
+        }()
     
     lazy var motionManager:CMMotionActivityManager = {
         return CMMotionActivityManager()
-    }()
+        }()
     
     var motionPermissionStatus: PermissionStatus = .Unknown
-
+    
     // internal state and resolution
     var configuredPermissions: [PermissionConfig] = []
     var permissionButtons: [UIButton] = []
     var permissionLabels: [UILabel] = []
-	
-	// properties that may be useful for direct use of the request* methods
+    
+    // properties that may be useful for direct use of the request* methods
     public var authChangeClosure: ((Bool, [PermissionResult]) -> Void)? = nil
     public var cancelClosure: (([PermissionResult]) -> Void)? = nil
-	/** Called when the user has disabled or denied access to notifications, and we're presenting them with a help dialog. */
+    /** Called when the user has disabled or denied access to notifications, and we're presenting them with a help dialog. */
     public var disabledOrDeniedClosure: (([PermissionResult]) -> Void)? = nil
-	/** View controller to be used when presenting alerts. Defaults to self. You'll want to set this if you are calling the `request*` methods directly. */
-	public var viewControllerForAlerts : UIViewController?
-
+    /** View controller to be used when presenting alerts. Defaults to self. You'll want to set this if you are calling the `request*` methods directly. */
+    public var viewControllerForAlerts : UIViewController?
+    
     // Computed variables
     var allAuthorized: Bool {
         let permissionsArray = getResultsForConfig()
@@ -207,9 +207,9 @@ extension String {
     
     public init(backgroundTapCancels: Bool) {
         super.init(nibName: nil, bundle: nil)
-
-		viewControllerForAlerts = self
-		
+        
+        viewControllerForAlerts = self
+        
         // Set up main view
         view.frame = UIScreen.mainScreen().bounds
         view.autoresizingMask = [UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleWidth]
@@ -228,24 +228,24 @@ extension String {
         contentView.layer.cornerRadius = 10
         contentView.layer.masksToBounds = true
         contentView.layer.borderWidth = 0.5
-
+        
         // header label
         headerLabel.font = UIFont.systemFontOfSize(22)
         headerLabel.textColor = UIColor.blackColor()
         headerLabel.textAlignment = NSTextAlignment.Center
         headerLabel.text = "Hey, listen!"
-//        headerLabel.backgroundColor = UIColor.redColor()
-
+        //        headerLabel.backgroundColor = UIColor.redColor()
+        
         contentView.addSubview(headerLabel)
-
+        
         // body label
         bodyLabel.font = UIFont.boldSystemFontOfSize(16)
         bodyLabel.textColor = UIColor.blackColor()
         bodyLabel.textAlignment = NSTextAlignment.Center
         bodyLabel.text = "We need a couple things\r\nbefore you get started."
         bodyLabel.numberOfLines = 2
-//        bodyLabel.text = "We need\r\na couple things before you\r\nget started."
-//        bodyLabel.backgroundColor = UIColor.redColor()
+        //        bodyLabel.text = "We need\r\na couple things before you\r\nget started."
+        //        bodyLabel.backgroundColor = UIColor.redColor()
 
         contentView.addSubview(bodyLabel)
         
@@ -794,8 +794,8 @@ extension String {
         let tmpMotionPermissionStatus = motionPermissionStatus
         NSUserDefaults.standardUserDefaults().setBool(true, forKey: PermissionScopeConstants.requestedForMotion)
         NSUserDefaults.standardUserDefaults().synchronize()
-        motionManager.queryActivityStartingFromDate(NSDate(), toDate: NSDate(), toQueue: NSOperationQueue.mainQueue(), withHandler: { ([AnyObject]!, error:NSError!) -> Void in
-            if (error != nil && error.code == Int(CMErrorMotionActivityNotAuthorized.value)) {
+        motionManager.queryActivityStartingFromDate( NSDate(), toDate: NSDate(), toQueue: NSOperationQueue.mainQueue(), withHandler: { (motionactivity, error) -> Void in
+            if (error != nil && error!.code == Int(CMErrorMotionActivityNotAuthorized.rawValue)) {
                 self.motionPermissionStatus = .Unauthorized
                 
             }
@@ -819,7 +819,7 @@ extension String {
         assert(configuredPermissions.count > 0, "Please add at least one permission")
 
         authChangeClosure = authChange
-        cancelClosure = cancelled 
+        cancelClosure = cancelled
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             while self.waitingForBluetooth && self.waitingForMotion {}
@@ -870,13 +870,13 @@ extension String {
         self.baseView.frame.origin.y = self.view.bounds.origin.y - self.baseView.frame.size.height
         self.view.alpha = 0
         
-        UIView.animateWithDuration(0.2, delay: 0.0, options: nil, animations: {
+        UIView.animateWithDuration(0.2, animations: {
             self.baseView.center.y = window.center.y + 15
             self.view.alpha = 1
         }, completion: { finished in
             UIView.animateWithDuration(0.2, animations: {
                 self.baseView.center = window.center
-            })
+                })
         })
     }
 
@@ -949,8 +949,8 @@ extension String {
         if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
             disabledOrDeniedClosure(self.getResultsForConfig())
         }
-        let alert = UIAlertController(title: "Permission for \(permission.rawValue) was denied.",
-            message: "Please enable access to \(permission.rawValue) in the Settings app",
+        let alert = UIAlertController(title: "Permission for \(permission.stringValue()) was denied.",
+            message: "Please enable access to \(permission.stringValue()) in the Settings app",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
