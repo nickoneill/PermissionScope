@@ -822,7 +822,7 @@ extension String {
         cancelClosure = cancelled 
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            while self.waitingForBluetooth && self.waitingForMotion {}
+            while self.waitingForBluetooth || self.waitingForMotion {}
             // call other methods that need to wait before show
             dispatch_async(dispatch_get_main_queue()) {
                 // no missing required perms? callback and do nothing
