@@ -736,7 +736,7 @@ extension String {
         
     }
     
-    func requestBluetooth() {
+    public func requestBluetooth() {
         
         switch statusBluetooth() {
         case .Disabled:
