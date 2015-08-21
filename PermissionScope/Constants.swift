@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum PermissionScopeConstants {
+enum Constants {
     static let requestedInUseToAlwaysUpgrade = "requestedInUseToAlwaysUpgrade"
     static let requestedForBluetooth = "askedForBluetooth"
     static let requestedForMotion = "askedForMotion"

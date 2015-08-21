@@ -16,99 +16,6 @@ import CoreBluetooth
 import CoreMotion
 import HealthKit
 
-@objc public enum PermissionType: Int, CustomStringConvertible {
-    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit
-    
-    public var description: String {
-        switch self {
-        case .Contacts: return "Contacts"
-        case .Events: return "Events"
-        case .LocationAlways: return "LocationAlways"
-        case .LocationInUse: return "LocationInUse"
-        case .Notifications: return "Notifications"
-        case .Microphone: return "Microphone"
-        case .Camera: return "Camera"
-        case .Photos: return "Photos"
-        case .Reminders: return "Reminders"
-        case .Bluetooth: return "Bluetooth"
-        case .Motion: return "Motion"
-        case .HealthKit: return "HealthKit"
-        }
-    }
-    
-    public var prettyDescription: String {
-        switch self {
-        case .LocationAlways, .LocationInUse:
-            return "Location"
-        default:
-            return self.description
-        }
-    }
-    
-    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit]
-    
-}
-
-@objc public enum PermissionStatus: Int, CustomStringConvertible {
-    case Authorized, Unauthorized, Unknown, Disabled
-    
-    public var description: String {
-        switch self {
-        case .Authorized: return "Authorized"
-        case .Unauthorized:return "Unauthorized"
-        case .Unknown: return "Unknown"
-        case .Disabled: return "Disabled" // System-level
-        }
-    }
-
-}
-
-@objc public enum PermissionDemands: Int, CustomStringConvertible {
-    case Required, Optional
-    
-    public var description: String {
-        switch self {
-        case .Required: return "Required"
-        case .Optional: return "Optional"
-        }
-    }
-}
-
-@objc public class PermissionConfig: NSObject {
-    let type: PermissionType
-    let demands: PermissionDemands
-    let message: String
-    
-    let notificationCategories: Set<UIUserNotificationCategory>?
-    
-    public init(type: PermissionType, demands: PermissionDemands, message: String, notificationCategories: Set<UIUserNotificationCategory>? = .None) {
-        if type != .Notifications && notificationCategories != .None {
-            assertionFailure("notificationCategories only apply to the .Notifications permission")
-        }
-
-        self.type = type
-        self.demands = demands
-        self.message = message
-        self.notificationCategories = notificationCategories
-    }
-}
-
-@objc public class PermissionResult: NSObject {
-    public let type: PermissionType
-    public let status: PermissionStatus
-    public let demands: PermissionDemands
-
-    private init(type:PermissionType, status:PermissionStatus, demands:PermissionDemands) {
-        self.type = type
-        self.status = status
-        self.demands = demands
-    }
-    
-    override public var description: String {
-        return "\(type.description) \(status.description)"
-    }
-}
-
 @objc public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
     // constants
     let contentWidth: CGFloat = 280.0
@@ -410,7 +317,7 @@ import HealthKit
         case .AuthorizedWhenInUse:
             // curious why this happens? Details on upgrading from WhenInUse to Always:
             // https://github.com/nickoneill/PermissionScope/issues/24
-            if defaults.boolForKey(PermissionScopeConstants.requestedInUseToAlwaysUpgrade) == true {
+            if defaults.boolForKey(Constants.requestedInUseToAlwaysUpgrade) == true {
                 return .Unauthorized
             } else {
                 return .Unknown
@@ -424,7 +331,7 @@ import HealthKit
         switch statusLocationAlways() {
         case .Unknown:
             if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse {
-                defaults.setBool(true, forKey: PermissionScopeConstants.requestedInUseToAlwaysUpgrade)
+                defaults.setBool(true, forKey: Constants.requestedInUseToAlwaysUpgrade)
                 defaults.synchronize()
             }
             locationManager.requestAlwaysAuthorization()
@@ -500,7 +407,7 @@ import HealthKit
         if let settingTypes = settings?.types where settingTypes != UIUserNotificationType.None {
             return .Authorized
         } else {
-            if defaults.boolForKey(PermissionScopeConstants.askedForNotificationsDefaultsKey) {
+            if defaults.boolForKey(Constants.askedForNotificationsDefaultsKey) {
                 return .Unauthorized
             } else {
                 return .Unknown
@@ -543,7 +450,7 @@ import HealthKit
             // There should be only one...
             let notificationsPermissionSet = self.configuredPermissions.filter { $0.notificationCategories != .None && !$0.notificationCategories!.isEmpty }.first?.notificationCategories
             
-            defaults.setBool(true, forKey: PermissionScopeConstants.askedForNotificationsDefaultsKey)
+            defaults.setBool(true, forKey: Constants.askedForNotificationsDefaultsKey)
             defaults.synchronize()
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("showingNotificationPermission"), name: UIApplicationWillResignActiveNotification, object: nil)
@@ -697,10 +604,10 @@ import HealthKit
     // MARK: Bluetooth
     private var askedBluetooth:Bool {
         get {
-            return defaults.boolForKey(PermissionScopeConstants.requestedForBluetooth)
+            return defaults.boolForKey(Constants.requestedForBluetooth)
         }
         set {
-            defaults.setBool(newValue, forKey: PermissionScopeConstants.requestedForBluetooth)
+            defaults.setBool(newValue, forKey: Constants.requestedForBluetooth)
             defaults.synchronize()
         }
     }
@@ -774,7 +681,7 @@ import HealthKit
     
     private func triggerMotionStatusUpdate() {
         let tmpMotionPermissionStatus = motionPermissionStatus
-        defaults.setBool(true, forKey: PermissionScopeConstants.requestedForMotion)
+        defaults.setBool(true, forKey: Constants.requestedForMotion)
         defaults.synchronize()
         motionManager.queryActivityStartingFromDate(NSDate(), toDate: NSDate(), toQueue: NSOperationQueue.mainQueue(), withHandler: { (_: [CMMotionActivity]?, error:NSError?) -> Void in
             if (error != nil && error!.code == Int(CMErrorMotionActivityNotAuthorized.rawValue)) {
@@ -797,10 +704,10 @@ import HealthKit
     
     private var askedMotion:Bool {
         get {
-            return defaults.boolForKey(PermissionScopeConstants.requestedForMotion)
+            return defaults.boolForKey(Constants.requestedForMotion)
         }
         set {
-            defaults.setBool(newValue, forKey: PermissionScopeConstants.requestedForMotion)
+            defaults.setBool(newValue, forKey: Constants.requestedForMotion)
             defaults.synchronize()
         }
     }
