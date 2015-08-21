@@ -239,7 +239,7 @@ import HealthKit
     @objc public func addPermission(config: PermissionConfig) {
         assert(!config.message.isEmpty, "Including a message about your permission usage is helpful")
         assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
-        assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type.description) already set")
+        assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type) already set")
         
         configuredPermissions.append(config)
         
@@ -266,10 +266,10 @@ import HealthKit
         case .LocationAlways, .LocationInUse:
             button.setTitle("Enable \(type.prettyDescription)".localized.uppercaseString, forState: UIControlState.Normal)
         default:
-            button.setTitle("Allow \(type.description)".localized.uppercaseString, forState: UIControlState.Normal)
+            button.setTitle("Allow \(type)".localized.uppercaseString, forState: UIControlState.Normal)
         }
         
-        button.addTarget(self, action: Selector("request\(type.description)"), forControlEvents: UIControlEvents.TouchUpInside)
+        button.addTarget(self, action: Selector("request\(type)"), forControlEvents: UIControlEvents.TouchUpInside)
         
         return button
     }
@@ -714,18 +714,22 @@ import HealthKit
     
     // MARK: HealthKit
     public func statusHealthKit() -> PermissionStatus {
+        guard HKHealthStore.isHealthDataAvailable() else { return .Disabled }
+        
         // There should be only one...
         // TODO: Refactor to comp. var.
-        //        let healthCategoryTypes = self.configuredPermissions.filter { $0.healthCategoryTypes != .None && !$0.healthCategoryTypes!.isEmpty }.first?.healthCategoryTypes
-        //        let status = HKHealthStore().authorizationStatusForType(healthCategoryType!)
-        //        switch status {
-        //        case .SharingAuthorized:
-        //            return .Authorized
-        //        case .SharingDenied:
-        //            return .Unauthorized
-        //        case .NotDetermined:
-        //            return .Unknown
-        //        }
+//        let healthCategoryTypes = self.configuredPermissions
+//            .filter { $0.healthCategoryTypes != .None && !$0.healthCategoryTypes!.isEmpty }
+//            .first?.healthCategoryTypes
+        let status = HKHealthStore().authorizationStatusForType(HKObjectType.workoutType())
+        switch status {
+        case .SharingAuthorized:
+            return .Authorized
+        case .SharingDenied:
+            return .Unauthorized
+        case .NotDetermined:
+            return .Unknown
+        }
         return .Unknown
     }
     
@@ -878,8 +882,8 @@ import HealthKit
         if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
             disabledOrDeniedClosure(self.getResultsForConfig())
         }
-        let alert = UIAlertController(title: "Permission for \(permission.description) was denied.",
-            message: "Please enable access to \(permission.description) in the Settings app",
+        let alert = UIAlertController(title: "Permission for \(permission) was denied.",
+            message: "Please enable access to \(permission) in the Settings app",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
@@ -900,8 +904,8 @@ import HealthKit
         if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
             disabledOrDeniedClosure(self.getResultsForConfig())
         }
-        let alert = UIAlertController(title: "\(permission.description) is currently disabled.",
-            message: "Please enable access to \(permission.description) in Settings",
+        let alert = UIAlertController(title: "\(permission) is currently disabled.",
+            message: "Please enable access to \(permission) in Settings",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
