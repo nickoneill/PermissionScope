@@ -14,7 +14,6 @@ import Photos
 import EventKit
 import CoreBluetooth
 import CoreMotion
-import HealthKit
 
 @objc public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
 
@@ -72,12 +71,14 @@ import HealthKit
 
     // Computed variables
     var allAuthorized: Bool {
-        let permissionsArray = getResultsForConfig()
-        return permissionsArray.filter { $0.status != .Authorized }.isEmpty
+        return getResultsForConfig()
+            .filter { $0.status != .Authorized }
+            .isEmpty
     }
     var requiredAuthorized: Bool {
-        let permissionsArray = getResultsForConfig()
-        return permissionsArray.filter { $0.status != .Authorized && $0.demands == .Required }.isEmpty
+        return getResultsForConfig()
+            .filter { $0.status != .Authorized && $0.demands == .Required }
+            .isEmpty
     }
     
     // use the code we have to see permission status
@@ -239,7 +240,7 @@ import HealthKit
     @objc public func addPermission(config: PermissionConfig) {
         assert(!config.message.isEmpty, "Including a message about your permission usage is helpful")
         assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
-        assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type.description) already set")
+        assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type) already set")
         
         configuredPermissions.append(config)
         
@@ -266,10 +267,10 @@ import HealthKit
         case .LocationAlways, .LocationInUse:
             button.setTitle("Enable \(type.prettyDescription)".localized.uppercaseString, forState: UIControlState.Normal)
         default:
-            button.setTitle("Allow \(type.description)".localized.uppercaseString, forState: UIControlState.Normal)
+            button.setTitle("Allow \(type)".localized.uppercaseString, forState: UIControlState.Normal)
         }
         
-        button.addTarget(self, action: Selector("request\(type.description)"), forControlEvents: UIControlEvents.TouchUpInside)
+        button.addTarget(self, action: Selector("request\(type)"), forControlEvents: UIControlEvents.TouchUpInside)
         
         return button
     }
@@ -712,40 +713,6 @@ import HealthKit
     
     private var waitingForMotion = false
     
-    // MARK: HealthKit
-    public func statusHealthKit() -> PermissionStatus {
-        // There should be only one...
-        // TODO: Refactor to comp. var.
-        //        let healthCategoryTypes = self.configuredPermissions.filter { $0.healthCategoryTypes != .None && !$0.healthCategoryTypes!.isEmpty }.first?.healthCategoryTypes
-        //        let status = HKHealthStore().authorizationStatusForType(healthCategoryType!)
-        //        switch status {
-        //        case .SharingAuthorized:
-        //            return .Authorized
-        //        case .SharingDenied:
-        //            return .Unauthorized
-        //        case .NotDetermined:
-        //            return .Unknown
-        //        }
-        return .Unknown
-    }
-    
-    func requestHealthKit() {
-        //        switch statusHealth() {
-        //        case .Unknown:
-        //            HKHealthStore().requestAuthorizationToShareTypes(<#typesToShare: Set<NSObject>!#>,
-        //                readTypes: <#Set<NSObject>!#>,
-        //                completion: <#((Bool, NSError!) -> Void)!##(Bool, NSError!) -> Void#>)
-        //            EKEventStore().requestAccessToEntityType(EKEntityTypeEvent,
-        //                completion: { (granted, error) -> Void in
-        //                    self.detectAndCallback()
-        //            })
-        //        case .Unauthorized:
-        //            self.showDeniedAlert(.Reminders)
-        //        default:
-        //            break
-        //        }
-    }
-    
     // MARK: - UI
 
     @objc public func show(authChange: ((finished: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: ((results: [PermissionResult]) -> Void)? = nil) {
@@ -826,8 +793,10 @@ import HealthKit
         notificationTimer?.invalidate()
         notificationTimer = nil
     }
-
-    // MARK: - Gesture delegate
+    
+    // MARK: - Delegates
+    
+    // MARK: Gesture delegate
 
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
 
@@ -839,14 +808,14 @@ import HealthKit
         return false
     }
 
-    // MARK: - Location delegate
+    // MARK: Location delegate
 
     public func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
 
         detectAndCallback()
     }
     
-    // MARK: - Bluetooth delegate
+    // MARK: Bluetooth delegate
     
     public func peripheralManagerDidUpdateState(peripheral: CBPeripheralManager) {
         
@@ -872,19 +841,12 @@ import HealthKit
         }
     }
     
-    func appForegroundedAfterSettings (){
-        
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidBecomeActiveNotification, object: nil)
-        
-        detectAndCallback()
-    }
-    
     func showDeniedAlert(permission: PermissionType) {
         if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
             disabledOrDeniedClosure(self.getResultsForConfig())
         }
-        let alert = UIAlertController(title: "Permission for \(permission.description) was denied.",
-            message: "Please enable access to \(permission.description) in the Settings app",
+        let alert = UIAlertController(title: "Permission for \(permission) was denied.",
+            message: "Please enable access to \(permission) in the Settings app",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
@@ -905,8 +867,8 @@ import HealthKit
         if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
             disabledOrDeniedClosure(self.getResultsForConfig())
         }
-        let alert = UIAlertController(title: "\(permission.description) is currently disabled.",
-            message: "Please enable access to \(permission.description) in Settings",
+        let alert = UIAlertController(title: "\(permission) is currently disabled.",
+            message: "Please enable access to \(permission) in Settings",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
@@ -916,6 +878,13 @@ import HealthKit
     }
 
     // MARK: Helpers
+    
+    func appForegroundedAfterSettings (){
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidBecomeActiveNotification, object: nil)
+        
+        detectAndCallback()
+    }
     
     func statusForPermission(type: PermissionType) -> PermissionStatus {
         // :(
@@ -942,8 +911,6 @@ import HealthKit
             return statusBluetooth()
         case .Motion:
             return statusMotion()
-        case .HealthKit:
-            return statusHealthKit()
         }
     }
     
