@@ -141,6 +141,10 @@ import HealthKit
         return CMMotionActivityManager()
     }()
     
+    lazy var defaults:NSUserDefaults = {
+        return .standardUserDefaults()
+    }()
+    
     // Default status for CoreMotion
     var motionPermissionStatus: PermissionStatus = .Unknown
 
@@ -404,7 +408,6 @@ import HealthKit
         case .Restricted, .Denied:
             return .Unauthorized
         case .AuthorizedWhenInUse:
-            let defaults = NSUserDefaults.standardUserDefaults()
             // curious why this happens? Details on upgrading from WhenInUse to Always:
             // https://github.com/nickoneill/PermissionScope/issues/24
             if defaults.boolForKey(PermissionScopeConstants.requestedInUseToAlwaysUpgrade) == true {
@@ -421,7 +424,6 @@ import HealthKit
         switch statusLocationAlways() {
         case .Unknown:
             if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse {
-                let defaults = NSUserDefaults.standardUserDefaults()
                 defaults.setBool(true, forKey: PermissionScopeConstants.requestedInUseToAlwaysUpgrade)
                 defaults.synchronize()
             }
@@ -498,7 +500,7 @@ import HealthKit
         if let settingTypes = settings?.types where settingTypes != UIUserNotificationType.None {
             return .Authorized
         } else {
-            if NSUserDefaults.standardUserDefaults().boolForKey(PermissionScopeConstants.askedForNotificationsDefaultsKey) {
+            if defaults.boolForKey(PermissionScopeConstants.askedForNotificationsDefaultsKey) {
                 return .Unauthorized
             } else {
                 return .Unknown
@@ -541,8 +543,8 @@ import HealthKit
             // There should be only one...
             let notificationsPermissionSet = self.configuredPermissions.filter { $0.notificationCategories != .None && !$0.notificationCategories!.isEmpty }.first?.notificationCategories
             
-            NSUserDefaults.standardUserDefaults().setBool(true, forKey: PermissionScopeConstants.askedForNotificationsDefaultsKey)
-            NSUserDefaults.standardUserDefaults().synchronize()
+            defaults.setBool(true, forKey: PermissionScopeConstants.askedForNotificationsDefaultsKey)
+            defaults.synchronize()
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("showingNotificationPermission"), name: UIApplicationWillResignActiveNotification, object: nil)
             
@@ -695,11 +697,11 @@ import HealthKit
     // MARK: Bluetooth
     private var askedBluetooth:Bool {
         get {
-            return NSUserDefaults.standardUserDefaults().boolForKey(PermissionScopeConstants.requestedForBluetooth)
+            return defaults.boolForKey(PermissionScopeConstants.requestedForBluetooth)
         }
         set {
-            NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: PermissionScopeConstants.requestedForBluetooth)
-            NSUserDefaults.standardUserDefaults().synchronize()
+            defaults.setBool(newValue, forKey: PermissionScopeConstants.requestedForBluetooth)
+            defaults.synchronize()
         }
     }
     
@@ -772,8 +774,8 @@ import HealthKit
     
     private func triggerMotionStatusUpdate() {
         let tmpMotionPermissionStatus = motionPermissionStatus
-        NSUserDefaults.standardUserDefaults().setBool(true, forKey: PermissionScopeConstants.requestedForMotion)
-        NSUserDefaults.standardUserDefaults().synchronize()
+        defaults.setBool(true, forKey: PermissionScopeConstants.requestedForMotion)
+        defaults.synchronize()
         motionManager.queryActivityStartingFromDate(NSDate(), toDate: NSDate(), toQueue: NSOperationQueue.mainQueue(), withHandler: { (_: [CMMotionActivity]?, error:NSError?) -> Void in
             if (error != nil && error!.code == Int(CMErrorMotionActivityNotAuthorized.rawValue)) {
                 self.motionPermissionStatus = .Unauthorized
@@ -795,11 +797,11 @@ import HealthKit
     
     private var askedMotion:Bool {
         get {
-            return NSUserDefaults.standardUserDefaults().boolForKey(PermissionScopeConstants.requestedForMotion)
+            return defaults.boolForKey(PermissionScopeConstants.requestedForMotion)
         }
         set {
-            NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: PermissionScopeConstants.requestedForMotion)
-            NSUserDefaults.standardUserDefaults().synchronize()
+            defaults.setBool(newValue, forKey: PermissionScopeConstants.requestedForMotion)
+            defaults.synchronize()
         }
     }
     
