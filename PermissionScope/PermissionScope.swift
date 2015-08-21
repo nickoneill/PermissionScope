@@ -21,10 +21,10 @@ struct PermissionScopeConstants {
     static let requestedForMotion = "askedForMotion"
 }
 
-@objc public enum PermissionType: Int {
+@objc public enum PermissionType: Int, CustomStringConvertible {
     case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion
     
-    public func stringValue() -> String {
+    public var description: String {
         switch self {
         case .Contacts: return "Contacts"
         case .Events: return "Events"
@@ -40,12 +40,12 @@ struct PermissionScopeConstants {
         }
     }
     
-    public func prettyName() -> String {
+    public var prettyName: String {
         switch self {
         case .LocationAlways, .LocationInUse:
             return "Location"
         default:
-            return self.stringValue()
+            return self.description
         }
     }
     
@@ -53,11 +53,11 @@ struct PermissionScopeConstants {
     
 }
 
-@objc public enum PermissionStatus: Int {
+@objc public enum PermissionStatus: Int, CustomStringConvertible {
     case Authorized, Unauthorized, Unknown, Disabled
     
-    func stringValue() -> String {
-        switch self{
+    public var description: String {
+        switch self {
         case .Authorized: return "Authorized"
         case .Unauthorized:return "Unauthorized"
         case .Unknown: return "Unknown"
@@ -67,11 +67,11 @@ struct PermissionScopeConstants {
 
 }
 
-@objc public enum PermissionDemands: Int {
+@objc public enum PermissionDemands: Int, CustomStringConvertible {
     case Required, Optional
     
-    func stringValue() -> String {
-        switch self{
+    public var description: String {
+        switch self {
         case .Required: return "Required"
         case .Optional: return "Optional"
         }
@@ -111,7 +111,7 @@ private let PermissionScopeAskedForNotificationsDefaultsKey = "PermissionScopeAs
     }
     
     override public var description: String {
-        return "\(type.stringValue()) \(status.stringValue())"
+        return "\(type.description) \(status.description)"
     }
 }
 
@@ -320,7 +320,7 @@ extension String {
             let type = configuredPermissions[index].type
             
             let currentStatus = statusForPermission(type)
-            let prettyName = type.prettyName()
+            let prettyName = type.prettyName
             if currentStatus == .Authorized {
                 setButtonAuthorizedStyle(button)
                 button.setTitle("Allowed \(prettyName)".localized.uppercaseString, forState: .Normal)
@@ -346,7 +346,7 @@ extension String {
     @objc public func addPermission(config: PermissionConfig) {
         assert(!config.message.isEmpty, "Including a message about your permission usage is helpful")
         assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
-        assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type.stringValue()) already set")
+        assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type.description) already set")
         
         configuredPermissions.append(config)
         
@@ -371,12 +371,12 @@ extension String {
         // this is a bit of a mess, eh?
         switch type {
         case .LocationAlways, .LocationInUse:
-            button.setTitle("Enable \(type.prettyName())".localized.uppercaseString, forState: UIControlState.Normal)
+            button.setTitle("Enable \(type.prettyName)".localized.uppercaseString, forState: UIControlState.Normal)
         default:
-            button.setTitle("Allow \(type.stringValue())".localized.uppercaseString, forState: UIControlState.Normal)
+            button.setTitle("Allow \(type.description)".localized.uppercaseString, forState: UIControlState.Normal)
         }
         
-        button.addTarget(self, action: Selector("request\(type.stringValue())"), forControlEvents: UIControlEvents.TouchUpInside)
+        button.addTarget(self, action: Selector("request\(type.description)"), forControlEvents: UIControlEvents.TouchUpInside)
         
         return button
     }
@@ -388,7 +388,6 @@ extension String {
     }
     
     func setButtonUnauthorizedStyle(button: UIButton) {
-        // TODO: Complete
         button.layer.borderWidth = 0
         button.backgroundColor = tintColor.inverseColor
         button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
@@ -813,6 +812,39 @@ extension String {
         waitingForMotion = true
     }
     
+    public func statusHealth() -> PermissionStatus {
+        // There should be only one...
+        // TODO: Refactor to comp. var.
+        //        let healthCategoryTypes = self.configuredPermissions.filter { $0.healthCategoryTypes != .None && !$0.healthCategoryTypes!.isEmpty }.first?.healthCategoryTypes
+        //        let status = HKHealthStore().authorizationStatusForType(healthCategoryType!)
+        //        switch status {
+        //        case .SharingAuthorized:
+        //            return .Authorized
+        //        case .SharingDenied:
+        //            return .Unauthorized
+        //        case .NotDetermined:
+        //            return .Unknown
+        //        }
+        return .Unknown
+    }
+    
+    func requestHealth() {
+        //        switch statusHealth() {
+        //        case .Unknown:
+        //            HKHealthStore().requestAuthorizationToShareTypes(<#typesToShare: Set<NSObject>!#>,
+        //                readTypes: <#Set<NSObject>!#>,
+        //                completion: <#((Bool, NSError!) -> Void)!##(Bool, NSError!) -> Void#>)
+        //            EKEventStore().requestAccessToEntityType(EKEntityTypeEvent,
+        //                completion: { (granted, error) -> Void in
+        //                    self.detectAndCallback()
+        //            })
+        //        case .Unauthorized:
+        //            self.showDeniedAlert(.Reminders)
+        //        default:
+        //            break
+        //        }
+    }
+    
     // MARK: finally, displaying the panel
 
     @objc public func show(authChange: ((finished: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: ((results: [PermissionResult]) -> Void)? = nil) {
@@ -949,8 +981,8 @@ extension String {
         if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
             disabledOrDeniedClosure(self.getResultsForConfig())
         }
-        let alert = UIAlertController(title: "Permission for \(permission.stringValue()) was denied.",
-            message: "Please enable access to \(permission.stringValue()) in the Settings app",
+        let alert = UIAlertController(title: "Permission for \(permission.description) was denied.",
+            message: "Please enable access to \(permission.description) in the Settings app",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
@@ -971,8 +1003,8 @@ extension String {
         if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
             disabledOrDeniedClosure(self.getResultsForConfig())
         }
-        let alert = UIAlertController(title: "\(permission.stringValue()) is currently disabled.",
-            message: "Please enable access to \(permission.stringValue()) in Settings",
+        let alert = UIAlertController(title: "\(permission.description) is currently disabled.",
+            message: "Please enable access to \(permission.description) in Settings",
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK",
             style: .Cancel,
