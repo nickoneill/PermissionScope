@@ -14,7 +14,6 @@ import Photos
 import EventKit
 import CoreBluetooth
 import CoreMotion
-import HealthKit
 
 @objc public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
 
@@ -72,12 +71,14 @@ import HealthKit
 
     // Computed variables
     var allAuthorized: Bool {
-        let permissionsArray = getResultsForConfig()
-        return permissionsArray.filter { $0.status != .Authorized }.isEmpty
+        return getResultsForConfig()
+            .filter { $0.status != .Authorized }
+            .isEmpty
     }
     var requiredAuthorized: Bool {
-        let permissionsArray = getResultsForConfig()
-        return permissionsArray.filter { $0.status != .Authorized && $0.demands == .Required }.isEmpty
+        return getResultsForConfig()
+            .filter { $0.status != .Authorized && $0.demands == .Required }
+            .isEmpty
     }
     
     // use the code we have to see permission status
@@ -712,44 +713,6 @@ import HealthKit
     
     private var waitingForMotion = false
     
-    // MARK: HealthKit
-    public func statusHealthKit() -> PermissionStatus {
-        guard HKHealthStore.isHealthDataAvailable() else { return .Disabled }
-        
-        // There should be only one...
-        // TODO: Refactor to comp. var.
-//        let healthCategoryTypes = self.configuredPermissions
-//            .filter { $0.healthCategoryTypes != .None && !$0.healthCategoryTypes!.isEmpty }
-//            .first?.healthCategoryTypes
-        let status = HKHealthStore().authorizationStatusForType(HKObjectType.workoutType())
-        switch status {
-        case .SharingAuthorized:
-            return .Authorized
-        case .SharingDenied:
-            return .Unauthorized
-        case .NotDetermined:
-            return .Unknown
-        }
-        return .Unknown
-    }
-    
-    func requestHealthKit() {
-        //        switch statusHealth() {
-        //        case .Unknown:
-        //            HKHealthStore().requestAuthorizationToShareTypes(<#typesToShare: Set<NSObject>!#>,
-        //                readTypes: <#Set<NSObject>!#>,
-        //                completion: <#((Bool, NSError!) -> Void)!##(Bool, NSError!) -> Void#>)
-        //            EKEventStore().requestAccessToEntityType(EKEntityTypeEvent,
-        //                completion: { (granted, error) -> Void in
-        //                    self.detectAndCallback()
-        //            })
-        //        case .Unauthorized:
-        //            self.showDeniedAlert(.Reminders)
-        //        default:
-        //            break
-        //        }
-    }
-    
     // MARK: - UI
 
     @objc public func show(authChange: ((finished: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: ((results: [PermissionResult]) -> Void)? = nil) {
@@ -948,8 +911,6 @@ import HealthKit
             return statusBluetooth()
         case .Motion:
             return statusMotion()
-        case .HealthKit:
-            return statusHealthKit()
         }
     }
     

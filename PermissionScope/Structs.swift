@@ -7,10 +7,9 @@
 //
 
 import Foundation
-import HealthKit
 
 @objc public enum PermissionType: Int {
-    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit(Set<HKSampleType>?, Set<HKObjectType>?)
+    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion
     
     public var prettyDescription: String {
         switch self {
@@ -22,7 +21,7 @@ import HealthKit
     }
     
     // Watch out for 
-    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit(nil, nil)]
+    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion]
     
 }
 
