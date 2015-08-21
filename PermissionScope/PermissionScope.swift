@@ -826,8 +826,10 @@ import HealthKit
         notificationTimer?.invalidate()
         notificationTimer = nil
     }
-
-    // MARK: - Gesture delegate
+    
+    // MARK: - Delegates
+    
+    // MARK: Gesture delegate
 
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
 
@@ -839,14 +841,14 @@ import HealthKit
         return false
     }
 
-    // MARK: - Location delegate
+    // MARK: Location delegate
 
     public func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
 
         detectAndCallback()
     }
     
-    // MARK: - Bluetooth delegate
+    // MARK: Bluetooth delegate
     
     public func peripheralManagerDidUpdateState(peripheral: CBPeripheralManager) {
         
@@ -870,13 +872,6 @@ import HealthKit
         if let authChangeClosure = authChangeClosure {
             authChangeClosure(true, getResultsForConfig())
         }
-    }
-    
-    func appForegroundedAfterSettings (){
-        
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidBecomeActiveNotification, object: nil)
-        
-        detectAndCallback()
     }
     
     func showDeniedAlert(permission: PermissionType) {
@@ -916,6 +911,13 @@ import HealthKit
     }
 
     // MARK: Helpers
+    
+    func appForegroundedAfterSettings (){
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidBecomeActiveNotification, object: nil)
+        
+        detectAndCallback()
+    }
     
     func statusForPermission(type: PermissionType) -> PermissionStatus {
         // :(
