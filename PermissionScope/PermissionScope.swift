@@ -40,7 +40,7 @@ struct PermissionScopeConstants {
         }
     }
     
-    public var prettyName: String {
+    public var prettyDescription: String {
         switch self {
         case .LocationAlways, .LocationInUse:
             return "Location"
@@ -320,16 +320,16 @@ extension String {
             let type = configuredPermissions[index].type
             
             let currentStatus = statusForPermission(type)
-            let prettyName = type.prettyName
+            let prettyDescription = type.prettyDescription
             if currentStatus == .Authorized {
                 setButtonAuthorizedStyle(button)
-                button.setTitle("Allowed \(prettyName)".localized.uppercaseString, forState: .Normal)
+                button.setTitle("Allowed \(prettyDescription)".localized.uppercaseString, forState: .Normal)
             } else if currentStatus == .Unauthorized {
                 setButtonUnauthorizedStyle(button)
-                button.setTitle("Denied \(prettyName)".localized.uppercaseString, forState: .Normal)
+                button.setTitle("Denied \(prettyDescription)".localized.uppercaseString, forState: .Normal)
             } else if currentStatus == .Disabled {
 //                setButtonDisabledStyle(button)
-                button.setTitle("\(prettyName) Disabled".localized.uppercaseString, forState: .Normal)
+                button.setTitle("\(prettyDescription) Disabled".localized.uppercaseString, forState: .Normal)
             }
 
             let label = permissionLabels[index]
@@ -371,7 +371,7 @@ extension String {
         // this is a bit of a mess, eh?
         switch type {
         case .LocationAlways, .LocationInUse:
-            button.setTitle("Enable \(type.prettyName)".localized.uppercaseString, forState: UIControlState.Normal)
+            button.setTitle("Enable \(type.prettyDescription)".localized.uppercaseString, forState: UIControlState.Normal)
         default:
             button.setTitle("Allow \(type.description)".localized.uppercaseString, forState: UIControlState.Normal)
         }
