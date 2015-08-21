@@ -17,8 +17,6 @@ import CoreMotion
 import HealthKit
 
 @objc public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
-    // constants
-    let contentWidth: CGFloat = 280.0
 
     // MARK: UI Parameters
     public let headerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
@@ -171,20 +169,20 @@ import HealthKit
         // Set background frame
         view.frame.size = screenSize
         // Set frames
-        let x = (screenSize.width - contentWidth) / 2
+        let x = (screenSize.width - Constants.UI.contentWidth) / 2
 
         let dialogHeight: CGFloat
         switch self.configuredPermissions.count {
         case 2:
-            dialogHeight = 360
+            dialogHeight = Constants.UI.dialogHeightTwoPermissions
         case 3:
-            dialogHeight = 460
+            dialogHeight = Constants.UI.dialogHeightThreePermissions
         default:
-            dialogHeight = 260
+            dialogHeight = Constants.UI.dialogHeightSinglePermission
         }
         
         let y = (screenSize.height - dialogHeight) / 2
-        contentView.frame = CGRect(x:x, y:y, width:contentWidth, height:dialogHeight)
+        contentView.frame = CGRect(x:x, y:y, width:Constants.UI.contentWidth, height:dialogHeight)
 
         // offset the header from the content center, compensate for the content's offset
         headerLabel.center = contentView.center
@@ -317,7 +315,7 @@ import HealthKit
         case .AuthorizedWhenInUse:
             // curious why this happens? Details on upgrading from WhenInUse to Always:
             // https://github.com/nickoneill/PermissionScope/issues/24
-            if defaults.boolForKey(Constants.requestedInUseToAlwaysUpgrade) == true {
+            if defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedInUseToAlwaysUpgrade) == true {
                 return .Unauthorized
             } else {
                 return .Unknown
@@ -331,7 +329,7 @@ import HealthKit
         switch statusLocationAlways() {
         case .Unknown:
             if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse {
-                defaults.setBool(true, forKey: Constants.requestedInUseToAlwaysUpgrade)
+                defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedInUseToAlwaysUpgrade)
                 defaults.synchronize()
             }
             locationManager.requestAlwaysAuthorization()
@@ -407,7 +405,7 @@ import HealthKit
         if let settingTypes = settings?.types where settingTypes != UIUserNotificationType.None {
             return .Authorized
         } else {
-            if defaults.boolForKey(Constants.askedForNotificationsDefaultsKey) {
+            if defaults.boolForKey(Constants.NSUserDefaultsKeys.askedForNotificationsDefaultsKey) {
                 return .Unauthorized
             } else {
                 return .Unknown
@@ -450,7 +448,7 @@ import HealthKit
             // There should be only one...
             let notificationsPermissionSet = self.configuredPermissions.filter { $0.notificationCategories != .None && !$0.notificationCategories!.isEmpty }.first?.notificationCategories
             
-            defaults.setBool(true, forKey: Constants.askedForNotificationsDefaultsKey)
+            defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.askedForNotificationsDefaultsKey)
             defaults.synchronize()
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("showingNotificationPermission"), name: UIApplicationWillResignActiveNotification, object: nil)
@@ -604,10 +602,10 @@ import HealthKit
     // MARK: Bluetooth
     private var askedBluetooth:Bool {
         get {
-            return defaults.boolForKey(Constants.requestedForBluetooth)
+            return defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedForBluetooth)
         }
         set {
-            defaults.setBool(newValue, forKey: Constants.requestedForBluetooth)
+            defaults.setBool(newValue, forKey: Constants.NSUserDefaultsKeys.requestedForBluetooth)
             defaults.synchronize()
         }
     }
@@ -681,7 +679,7 @@ import HealthKit
     
     private func triggerMotionStatusUpdate() {
         let tmpMotionPermissionStatus = motionPermissionStatus
-        defaults.setBool(true, forKey: Constants.requestedForMotion)
+        defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedForMotion)
         defaults.synchronize()
         motionManager.queryActivityStartingFromDate(NSDate(), toDate: NSDate(), toQueue: NSOperationQueue.mainQueue(), withHandler: { (_: [CMMotionActivity]?, error:NSError?) -> Void in
             if (error != nil && error!.code == Int(CMErrorMotionActivityNotAuthorized.rawValue)) {
@@ -704,10 +702,10 @@ import HealthKit
     
     private var askedMotion:Bool {
         get {
-            return defaults.boolForKey(Constants.requestedForMotion)
+            return defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedForMotion)
         }
         set {
-            defaults.setBool(newValue, forKey: Constants.requestedForMotion)
+            defaults.setBool(newValue, forKey: Constants.NSUserDefaultsKeys.requestedForMotion)
             defaults.synchronize()
         }
     }
