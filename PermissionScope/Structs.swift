@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import HealthKit
 
-@objc public enum PermissionType: Int {
-    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion
+@objc public enum PermissionType: Int, Hashable {
+    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit(Set<HKSampleType>?, Set<HKObjectType>?)
     
     public var prettyDescription: String {
         switch self {
@@ -20,8 +21,24 @@ import Foundation
         }
     }
     
+    public var hashValue: Int {
+        switch self {
+        case HealthKit(let typesToShare, let typesToRead):
+            return (typesToShare?.hashValue ?? 1) ^ (typesToRead?.hashValue ?? 1)
+        default:
+            return "\(self)".hashValue
+        }
+    }
+    
+    public var isHealthKit: Bool {
+        if case .HealthKit = self {
+            return true
+        }
+        return false
+    }
+    
     // Watch out for 
-    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion]
+    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit(nil, nil)]
     
 }
 

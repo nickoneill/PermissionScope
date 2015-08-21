@@ -14,6 +14,7 @@ import Photos
 import EventKit
 import CoreBluetooth
 import CoreMotion
+import HealthKit
 
 @objc public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
 
@@ -713,6 +714,40 @@ import CoreMotion
     
     private var waitingForMotion = false
     
+    // MARK: HealthKit
+    public func statusHealthKit() -> PermissionStatus {
+        guard HKHealthStore.isHealthDataAvailable() else { return .Disabled }
+        
+        let status = HKHealthStore().authorizationStatusForType(HKObjectType.workoutType())
+        switch status {
+        case .SharingAuthorized:
+            return .Authorized
+        case .SharingDenied:
+            return .Unauthorized
+        case .NotDetermined:
+            return .Unknown
+        }
+    }
+    
+    func requestHealthKit() {
+        let aux = self.configuredPermissions.first
+//            .filter { $0.type.isHealthKit }
+//            .first
+        
+//        switch statusHealthKit() {
+//        case .Unknown:
+//            HKHealthStore().requestAuthorizationToShareTypes(<#T##typesToShare: Set<HKSampleType>?##Set<HKSampleType>?#>,
+//                readTypes: <#T##Set<HKObjectType>?#>,
+//                completion: { (granted, error) -> Void in
+//                    self.detectAndCallback()
+//            })
+//        case .Unauthorized:
+//            self.showDeniedAlert(.Reminders)
+//        default:
+//            break
+//        }
+    }
+    
     // MARK: - UI
 
     @objc public func show(authChange: ((finished: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: ((results: [PermissionResult]) -> Void)? = nil) {
@@ -911,6 +946,8 @@ import CoreMotion
             return statusBluetooth()
         case .Motion:
             return statusMotion()
+        case .HealthKit:
+            return statusHealthKit()
         }
     }
     
