@@ -14,6 +14,7 @@ import Photos
 import EventKit
 import CoreBluetooth
 import CoreMotion
+import CloudKit
 
 @objc public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
 
@@ -84,16 +85,13 @@ import CoreMotion
     // use the code we have to see permission status
     public func permissionStatuses(permissionTypes: [PermissionType]?) -> Dictionary<PermissionType, PermissionStatus> {
         var statuses: Dictionary<PermissionType, PermissionStatus> = [:]
-        var types = permissionTypes
+        let types: [PermissionType] = permissionTypes ?? PermissionType.allValues
         
-        if types == nil {
-            types = PermissionType.allValues
-        }
-        
-        if let types = types {
-            for type in types {
-                statuses[type] = self.statusForPermission(type)
-            }
+        // FIXME: Return after async calls were executed
+        for type in types {
+            statusForPermission(type, completion: { (status) -> Void in
+                statuses[type] = status
+            })
         }
         
         return statuses
@@ -213,25 +211,27 @@ import CoreMotion
             
             let type = configuredPermissions[index].type
             
-            let currentStatus = statusForPermission(type)
-            let prettyDescription = type.prettyDescription
-            if currentStatus == .Authorized {
-                setButtonAuthorizedStyle(button)
-                button.setTitle("Allowed \(prettyDescription)".localized.uppercaseString, forState: .Normal)
-            } else if currentStatus == .Unauthorized {
-                setButtonUnauthorizedStyle(button)
-                button.setTitle("Denied \(prettyDescription)".localized.uppercaseString, forState: .Normal)
-            } else if currentStatus == .Disabled {
-//                setButtonDisabledStyle(button)
-                button.setTitle("\(prettyDescription) Disabled".localized.uppercaseString, forState: .Normal)
-            }
-
-            let label = permissionLabels[index]
-            label.center = contentView.center
-            label.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-            label.frame.offset(dx: 0, dy: -((dialogHeight/2)-205) + CGFloat(index * baseOffset))
-
-            index++
+            statusForPermission(type,
+                completion: { (currentStatus) -> Void in
+                    let prettyDescription = type.prettyDescription
+                    if currentStatus == .Authorized {
+                        self.setButtonAuthorizedStyle(button)
+                        button.setTitle("Allowed \(prettyDescription)".localized.uppercaseString, forState: .Normal)
+                    } else if currentStatus == .Unauthorized {
+                        self.setButtonUnauthorizedStyle(button)
+                        button.setTitle("Denied \(prettyDescription)".localized.uppercaseString, forState: .Normal)
+                    } else if currentStatus == .Disabled {
+                        //                setButtonDisabledStyle(button)
+                        button.setTitle("\(prettyDescription) Disabled".localized.uppercaseString, forState: .Normal)
+                    }
+                    
+                    let label = self.permissionLabels[index]
+                    label.center = self.contentView.center
+                    label.frame.offset(dx: -self.contentView.frame.origin.x, dy: -self.contentView.frame.origin.y)
+                    label.frame.offset(dx: 0, dy: -((dialogHeight/2)-205) + CGFloat(index * baseOffset))
+                    
+                    index++
+            })
         }
     }
 
@@ -613,7 +613,7 @@ import CoreMotion
     
     private var waitingForBluetooth = false
     
-    public func statusBluetooth() -> PermissionStatus{
+    public func statusBluetooth() -> PermissionStatus {
         // if already asked for bluetooth before, do a request to get status, else wait for user to request
         if askedBluetooth{
             triggerBluetoothStatusUpdate()
@@ -712,6 +712,45 @@ import CoreMotion
     }
     
     private var waitingForMotion = false
+    
+    // MARK: CloudKit
+    
+    public func statusCloudKit(statusCallback: statusRequestClosure)  {
+        CKContainer.defaultContainer().statusForApplicationPermission(.UserDiscoverability)
+            { (status, error) -> Void in
+                switch status {
+                case .InitialState:
+                    statusCallback(status: .Unknown)
+                case .Granted:
+                    statusCallback(status: .Authorized)
+                case .Denied:
+                    statusCallback(status: .Unauthorized)
+                case .CouldNotComplete:
+                    // Error ocurred.
+                    print(error!.localizedDescription, appendNewline: true)
+                    // TODO: What should we return ? Use throws ?
+                    statusCallback(status: .Unknown)
+                }
+        }
+    }
+    
+    public func requestCloudKit() {
+        CKContainer.defaultContainer().accountStatusWithCompletionHandler { (status, error) -> Void in
+            // log error?
+            switch status {
+            case .Available:
+                CKContainer.defaultContainer().requestApplicationPermission(.UserDiscoverability,
+                    completionHandler: { (status2, error2) -> Void in
+                        self.detectAndCallback()
+                })
+            case .Restricted, .NoAccount:
+                self.showDisabledAlert(.CloudKit)
+            case .CouldNotDetermine:
+                // Ask user to login to iCloud
+                break
+            }
+        }
+    }
     
     // MARK: - UI
 
@@ -886,31 +925,34 @@ import CoreMotion
         detectAndCallback()
     }
     
-    func statusForPermission(type: PermissionType) -> PermissionStatus {
+    public typealias statusRequestClosure = (status: PermissionStatus) -> Void
+    func statusForPermission(type: PermissionType, completion: statusRequestClosure) {
         // :(
         switch type {
         case .LocationAlways:
-            return statusLocationAlways()
+            completion(status: statusLocationAlways())
         case .LocationInUse:
-            return statusLocationInUse()
+            completion(status: statusLocationInUse())
         case .Contacts:
-            return statusContacts()
+            completion(status: statusContacts())
         case .Notifications:
-            return statusNotifications()
+            completion(status: statusNotifications())
         case .Microphone:
-            return statusMicrophone()
+            completion(status: statusMicrophone())
         case .Camera:
-            return statusCamera()
+            completion(status: statusCamera())
         case .Photos:
-            return statusPhotos()
+            completion(status: statusPhotos())
         case .Reminders:
-            return statusReminders()
+            completion(status: statusReminders())
         case .Events:
-            return statusEvents()
+            completion(status: statusEvents())
         case .Bluetooth:
-            return statusBluetooth()
+            completion(status: statusBluetooth())
         case .Motion:
-            return statusMotion()
+            completion(status: statusMotion())
+        case .CloudKit:
+            statusCloudKit(completion)
         }
     }
     
@@ -934,11 +976,13 @@ import CoreMotion
         var results: [PermissionResult] = []
         
         for config in configuredPermissions {
-            let status = statusForPermission(config.type)
-            let result = PermissionResult(type: config.type, status: status, demands: config.demands)
-            results.append(result)
+            statusForPermission(config.type, completion: { (status) -> Void in
+                let result = PermissionResult(type: config.type, status: status, demands: config.demands)
+                results.append(result)
+            })
         }
         
+        // FIXME: Return after async calls were executed
         return results
     }
 }

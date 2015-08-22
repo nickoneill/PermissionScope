@@ -9,7 +9,7 @@
 import Foundation
 
 @objc public enum PermissionType: Int, CustomStringConvertible {
-    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion
+    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, CloudKit
     
     public var prettyDescription: String {
         switch self {
@@ -33,11 +33,12 @@ import Foundation
         case .Reminders: return "Reminders"
         case .Bluetooth: return "Bluetooth"
         case .Motion: return "Motion"
+        case .CloudKit: return "CloudKit"
         }
     }
     
     // Watch out for
-    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion]
+    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, CloudKit]
     
 }
 
