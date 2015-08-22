@@ -71,15 +71,22 @@ import CloudKit
 	public var viewControllerForAlerts : UIViewController?
 
     // Computed variables
-    var allAuthorized: Bool {
-        return getResultsForConfig()
-            .filter { $0.status != .Authorized }
-            .isEmpty
+    func allAuthorized(completion: (Bool) -> Void ) {
+        getResultsForConfig{ (results) -> Void in
+            let result = results
+                .filter { $0.status != .Authorized }
+                .isEmpty
+            completion(result)
+        }
     }
-    var requiredAuthorized: Bool {
-        return getResultsForConfig()
-            .filter { $0.status != .Authorized && $0.demands == .Required }
-            .isEmpty
+    
+    func requiredAuthorized(completion: (Bool) -> Void ) {
+        getResultsForConfig{ (results) -> Void in
+            let result = results
+                .filter { $0.status != .Authorized && $0.demands == .Required }
+                .isEmpty
+            completion(result)
+        }
     }
     
     // use the code we have to see permission status
@@ -415,8 +422,12 @@ import CloudKit
     }
     
     func showingNotificationPermission () {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillResignActiveNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("finishedShowingNotificationPermission"), name: UIApplicationDidBecomeActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self,
+            name: UIApplicationWillResignActiveNotification,
+            object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self,
+            selector: Selector("finishedShowingNotificationPermission"),
+            name: UIApplicationDidBecomeActiveNotification, object: nil)
         notificationTimer?.invalidate()
     }
     
@@ -424,22 +435,31 @@ import CloudKit
 
     func finishedShowingNotificationPermission () {
         
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillResignActiveNotification, object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidBecomeActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self,
+            name: UIApplicationWillResignActiveNotification,
+            object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self,
+            name: UIApplicationDidBecomeActiveNotification,
+            object: nil)
         
         notificationTimer?.invalidate()
         
-        let allResults = getResultsForConfig().filter {
-            $0.type == PermissionType.Notifications
-        }
-        if let notificationResult : PermissionResult = allResults.first {
-            if notificationResult.status == PermissionStatus.Unknown {
-                showDeniedAlert(notificationResult.type)
+        
+        getResultsForConfig { (results) -> Void in
+            let _notificationResult = results
+                .filter {
+                    $0.type == PermissionType.Notifications
+                }
+                .first
+            
+            guard let notificationResult = _notificationResult else { return }
+            
+            if notificationResult.status == .Unknown {
+                self.showDeniedAlert(notificationResult.type)
             } else {
-                detectAndCallback()
+                self.detectAndCallback()
             }
         }
-        
     }
     
     public func requestNotifications() {
@@ -753,24 +773,29 @@ import CloudKit
     }
     
     // MARK: - UI
-
+    
     @objc public func show(authChange: ((finished: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: ((results: [PermissionResult]) -> Void)? = nil) {
         assert(configuredPermissions.count > 0, "Please add at least one permission")
-
+        
         authChangeClosure = authChange
-        cancelClosure = cancelled 
-
+        cancelClosure = cancelled
+        
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            while self.waitingForBluetooth || self.waitingForMotion {}
+            while self.waitingForBluetooth || self.waitingForMotion { }
             // call other methods that need to wait before show
-            dispatch_async(dispatch_get_main_queue()) {
-                // no missing required perms? callback and do nothing
-                if self.requiredAuthorized {
-                    self.authChangeClosure?(true, self.getResultsForConfig())
+            // no missing required perms? callback and do nothing
+            self.requiredAuthorized({ (areAuthorized) -> Void in
+                
+                if areAuthorized {
+                    self.getResultsForConfig({ (results) -> Void in
+                        self.authChangeClosure?(true, results)
+                    })
                 } else {
-                    self.showAlert()
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.showAlert()
+                    }
                 }
-            }
+            })
         }
     }
     
@@ -868,7 +893,9 @@ import CloudKit
         self.hide()
         
         if let cancelClosure = cancelClosure {
-            cancelClosure(getResultsForConfig())
+            getResultsForConfig({ (results) -> Void in
+                cancelClosure(results)
+            })
         }
     }
     
@@ -876,44 +903,70 @@ import CloudKit
         self.hide()
         
         if let authChangeClosure = authChangeClosure {
-            authChangeClosure(true, getResultsForConfig())
+            getResultsForConfig({ (results) -> Void in
+                authChangeClosure(true, results)
+            })
         }
     }
     
     func showDeniedAlert(permission: PermissionType) {
-        if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
-            disabledOrDeniedClosure(self.getResultsForConfig())
+        let group: dispatch_group_t = dispatch_group_create()
+        
+        dispatch_group_async(group,
+            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+                // compile the results and pass them back if necessary
+                if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
+                    self.getResultsForConfig({ (results) -> Void in
+                        disabledOrDeniedClosure(results)
+                    })
+                }
         }
-        let alert = UIAlertController(title: "Permission for \(permission) was denied.",
-            message: "Please enable access to \(permission) in the Settings app",
-            preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "OK",
-            style: .Cancel,
-            handler: nil))
-        alert.addAction(UIAlertAction(title: "Show me",
-            style: .Default,
-            handler: { (action) -> Void in
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("appForegroundedAfterSettings"), name: UIApplicationDidBecomeActiveNotification, object: nil)
-                
-                let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
-                UIApplication.sharedApplication().openURL(settingsUrl!)
-        }))
-        viewControllerForAlerts?.presentViewController(alert,
-            animated: true, completion: nil)
+        
+        dispatch_group_notify(group,
+            dispatch_get_main_queue()) { () -> Void in
+                let alert = UIAlertController(title: "Permission for \(permission) was denied.",
+                    message: "Please enable access to \(permission) in the Settings app",
+                    preferredStyle: .Alert)
+                alert.addAction(UIAlertAction(title: "OK",
+                    style: .Cancel,
+                    handler: nil))
+                alert.addAction(UIAlertAction(title: "Show me",
+                    style: .Default,
+                    handler: { (action) -> Void in
+                        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("appForegroundedAfterSettings"), name: UIApplicationDidBecomeActiveNotification, object: nil)
+                        
+                        let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
+                        UIApplication.sharedApplication().openURL(settingsUrl!)
+                }))
+                self.viewControllerForAlerts?.presentViewController(alert,
+                    animated: true, completion: nil)
+        }
     }
     
     func showDisabledAlert(permission: PermissionType) {
-        if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
-            disabledOrDeniedClosure(self.getResultsForConfig())
+        let group: dispatch_group_t = dispatch_group_create()
+        
+        dispatch_group_async(group,
+            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+                // compile the results and pass them back if necessary
+                if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
+                    self.getResultsForConfig({ (results) -> Void in
+                        disabledOrDeniedClosure(results)
+                    })
+                }
         }
-        let alert = UIAlertController(title: "\(permission) is currently disabled.",
-            message: "Please enable access to \(permission) in Settings",
-            preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "OK",
-            style: .Cancel,
-            handler: nil))
-        viewControllerForAlerts?.presentViewController(alert,
-            animated: true, completion: nil)
+        
+        dispatch_group_notify(group,
+            dispatch_get_main_queue()) { () -> Void in
+                let alert = UIAlertController(title: "\(permission) is currently disabled.",
+                    message: "Please enable access to \(permission) in Settings",
+                    preferredStyle: .Alert)
+                alert.addAction(UIAlertAction(title: "OK",
+                    style: .Cancel,
+                    handler: nil))
+                self.viewControllerForAlerts?.presentViewController(alert,
+                    animated: true, completion: nil)
+        }
     }
 
     // MARK: Helpers
@@ -957,32 +1010,54 @@ import CloudKit
     }
     
     func detectAndCallback() {
-        // compile the results and pass them back if necessary
-        if let authChangeClosure = authChangeClosure {
-            authChangeClosure(allAuthorized, getResultsForConfig())
+        let group: dispatch_group_t = dispatch_group_create()
+        
+        dispatch_group_async(group,
+            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+                // compile the results and pass them back if necessary
+                if let authChangeClosure = self.authChangeClosure {
+                    self.getResultsForConfig({ (results) -> Void in
+                        self.allAuthorized({ (areAuthorized) -> Void in
+                            authChangeClosure(areAuthorized, results)
+                        })
+                    })
+                }
         }
         
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.view.setNeedsLayout()
-            
-            // and hide if we've sucessfully got all permissions
-            if self.allAuthorized {
-                self.hide()
-            }
-        })
+        dispatch_group_notify(group,
+            dispatch_get_main_queue()) { () -> Void in
+                self.view.setNeedsLayout()
+                
+                // and hide if we've sucessfully got all permissions
+                self.allAuthorized({ (areAuthorized) -> Void in
+                    if areAuthorized {
+                        self.hide()
+                    }
+                })
+        }
     }
     
-    func getResultsForConfig() -> [PermissionResult] {
+    typealias resultsForConfigClosure = ([PermissionResult]) -> Void
+    func getResultsForConfig(completionBlock: resultsForConfigClosure) {
         var results: [PermissionResult] = []
+        let group: dispatch_group_t = dispatch_group_create()
         
         for config in configuredPermissions {
-            statusForPermission(config.type, completion: { (status) -> Void in
-                let result = PermissionResult(type: config.type, status: status, demands: config.demands)
-                results.append(result)
-            })
+            dispatch_group_async(group,
+                dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+                    self.statusForPermission(config.type, completion: { (status) -> Void in
+                        let result = PermissionResult(type: config.type,
+                            status: status,
+                            demands: config.demands)
+                        results.append(result)
+                    })
+            }
         }
         
         // FIXME: Return after async calls were executed
-        return results
+        dispatch_group_notify(group,
+            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+                completionBlock(results)
+        }
     }
 }
