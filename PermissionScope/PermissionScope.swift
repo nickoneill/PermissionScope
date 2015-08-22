@@ -149,7 +149,7 @@ import CloudKit
         contentView.addSubview(bodyLabel)
         
         // close button
-        closeButton.setTitle("Close", forState: UIControlState.Normal)
+        closeButton.setTitle("Close", forState: .Normal)
         closeButton.addTarget(self, action: Selector("cancel"), forControlEvents: UIControlEvents.TouchUpInside)
         
         contentView.addSubview(closeButton)
@@ -205,9 +205,9 @@ import CloudKit
         closeButton.frame.offset(dx: 105, dy: -((dialogHeight/2)-20))
         closeButton.frame.offset(dx: self.closeOffset.width, dy: self.closeOffset.height)
         if closeButton.imageView?.image != nil {
-            closeButton.setTitle("", forState: UIControlState.Normal)
+            closeButton.setTitle("", forState: .Normal)
         }
-        closeButton.setTitleColor(tintColor, forState: UIControlState.Normal)
+        closeButton.setTitleColor(tintColor, forState: .Normal)
 
         let baseOffset = 95
         var index = 0
@@ -253,16 +253,14 @@ import CloudKit
         
         if config.type == .Bluetooth && askedBluetooth {
             triggerBluetoothStatusUpdate()
-        }
-        
-        if config.type == .Motion && askedMotion {
+        } else if config.type == .Motion && askedMotion {
             triggerMotionStatusUpdate()
         }
     }
 
     func permissionStyledButton(type: PermissionType) -> UIButton {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 220, height: 40))
-        button.setTitleColor(tintColor, forState: UIControlState.Normal)
+        button.setTitleColor(tintColor, forState: .Normal)
         button.titleLabel?.font = buttonFont
 
         button.layer.borderWidth = 1
@@ -272,12 +270,12 @@ import CloudKit
         // this is a bit of a mess, eh?
         switch type {
         case .LocationAlways, .LocationInUse:
-            button.setTitle("Enable \(type.prettyDescription)".localized.uppercaseString, forState: UIControlState.Normal)
+            button.setTitle("Enable \(type.prettyDescription)".localized.uppercaseString, forState: .Normal)
         default:
-            button.setTitle("Allow \(type)".localized.uppercaseString, forState: UIControlState.Normal)
+            button.setTitle("Allow \(type)".localized.uppercaseString, forState: .Normal)
         }
         
-        button.addTarget(self, action: Selector("request\(type)"), forControlEvents: UIControlEvents.TouchUpInside)
+        button.addTarget(self, action: Selector("request\(type)"), forControlEvents: .TouchUpInside)
         
         return button
     }
@@ -285,20 +283,20 @@ import CloudKit
     func setButtonAuthorizedStyle(button: UIButton) {
         button.layer.borderWidth = 0
         button.backgroundColor = tintColor
-        button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        button.setTitleColor(.whiteColor(), forState: .Normal)
     }
     
     func setButtonUnauthorizedStyle(button: UIButton) {
         button.layer.borderWidth = 0
         button.backgroundColor = tintColor.inverseColor
-        button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        button.setTitleColor(.whiteColor(), forState: .Normal)
     }
 
     func permissionStyledLabel(message: String) -> UILabel {
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 260, height: 50))
         label.font = labelFont
         label.numberOfLines = 2
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = .Center
 
         label.text = message
 //        label.backgroundColor = UIColor.greenColor()
@@ -321,9 +319,9 @@ import CloudKit
         case .Restricted, .Denied:
             return .Unauthorized
         case .AuthorizedWhenInUse:
-            // curious why this happens? Details on upgrading from WhenInUse to Always:
+            // Curious why this happens? Details on upgrading from WhenInUse to Always:
             // https://github.com/nickoneill/PermissionScope/issues/24
-            if defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedInUseToAlwaysUpgrade) == true {
+            if defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedInUseToAlwaysUpgrade) {
                 return .Unauthorized
             } else {
                 return .Unknown
@@ -465,10 +463,6 @@ import CloudKit
     public func requestNotifications() {
         switch statusNotifications() {
         case .Unknown:
-            
-            // There should be only one...
-            let notificationsPermissionSet = self.configuredPermissions.filter { $0.notificationCategories != .None && !$0.notificationCategories!.isEmpty }.first?.notificationCategories
-            
             defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.askedForNotificationsDefaultsKey)
             defaults.synchronize()
             
@@ -476,28 +470,35 @@ import CloudKit
             
             notificationTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("finishedShowingNotificationPermission"), userInfo: nil, repeats: false)
             
-            UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [UIUserNotificationType.Alert, UIUserNotificationType.Sound, UIUserNotificationType.Badge],
-                categories: notificationsPermissionSet))
+            let notificationsPermissionSet = self.configuredPermissions
+                .filter { $0.notificationCategories != .None && !$0.notificationCategories!.isEmpty }
+                .first?
+                .notificationCategories
+            UIApplication.sharedApplication().registerUserNotificationSettings(
+                UIUserNotificationSettings(forTypes: [.Alert, .Sound, .Badge],
+                categories: notificationsPermissionSet)
+            )
             
         case .Unauthorized:
-            
-            showDeniedAlert(PermissionType.Notifications)
-            
-        default:
+            showDeniedAlert(.Notifications)
+        case .Disabled:
+            showDisabledAlert(.Notifications)
+        case .Authorized:
             break
         }
     }
     
     // MARK: Microphone
     public func statusMicrophone() -> PermissionStatus {
-        let status = AVAudioSession.sharedInstance().recordPermission()
-        if status == .Granted {
-            return .Authorized
-        } else if status == .Denied {
-            return .Unauthorized
-        }
         
-        return .Unknown
+        switch AVAudioSession.sharedInstance().recordPermission() {
+        case AVAudioSessionRecordPermission.Denied:
+            return .Unauthorized
+        case AVAudioSessionRecordPermission.Granted:
+            return .Authorized
+        default:
+            return .Unknown
+        }
     }
     
     public func requestMicrophone() {
@@ -507,8 +508,10 @@ import CloudKit
                 self.detectAndCallback()
             })
         case .Unauthorized:
-            self.showDeniedAlert(.Microphone)
-        default:
+            showDeniedAlert(.Microphone)
+        case .Disabled:
+            showDisabledAlert(.Microphone)
+        case .Authorized:
             break
         }
     }
@@ -534,8 +537,10 @@ import CloudKit
                     self.detectAndCallback()
             })
         case .Unauthorized:
-            self.showDeniedAlert(.Camera)
-        default:
+            showDeniedAlert(.Camera)
+        case .Disabled:
+            showDisabledAlert(.Camera)
+        case .Authorized:
             break
         }
     }
@@ -561,14 +566,16 @@ import CloudKit
             })
         case .Unauthorized:
             self.showDeniedAlert(.Photos)
-        default:
+        case .Disabled:
+            showDisabledAlert(.Photos)
+        case .Authorized:
             break
         }
     }
     
     // MARK: Reminders
     public func statusReminders() -> PermissionStatus {
-        let status = EKEventStore.authorizationStatusForEntityType(EKEntityType.Reminder)
+        let status = EKEventStore.authorizationStatusForEntityType(.Reminder)
         switch status {
         case .Authorized:
             return .Authorized
@@ -582,7 +589,7 @@ import CloudKit
     public func requestReminders() {
         switch statusReminders() {
         case .Unknown:
-            EKEventStore().requestAccessToEntityType(EKEntityType.Reminder,
+            EKEventStore().requestAccessToEntityType(.Reminder,
                 completion: { (granted, error) -> Void in
                     self.detectAndCallback()
             })
@@ -595,7 +602,7 @@ import CloudKit
     
     // MARK: Events
     public func statusEvents() -> PermissionStatus {
-        let status = EKEventStore.authorizationStatusForEntityType(EKEntityType.Event)
+        let status = EKEventStore.authorizationStatusForEntityType(.Event)
         switch status {
         case .Authorized:
             return .Authorized
@@ -609,7 +616,7 @@ import CloudKit
     public func requestEvents() {
         switch statusEvents() {
         case .Unknown:
-            EKEventStore().requestAccessToEntityType(EKEntityType.Event,
+            EKEventStore().requestAccessToEntityType(.Event,
                 completion: { (granted, error) -> Void in
                     self.detectAndCallback()
             })
@@ -642,7 +649,6 @@ import CloudKit
         }
 
         switch (bluetoothManager.state, CBPeripheralManager.authorizationStatus()) {
-        
         case (.Unsupported, _), (.PoweredOff, _), (_, .Restricted):
             return .Disabled
         case (.Unauthorized, _), (_, .Denied):
@@ -913,7 +919,7 @@ import CloudKit
         let group: dispatch_group_t = dispatch_group_create()
         
         dispatch_group_async(group,
-            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
                 // compile the results and pass them back if necessary
                 if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
                     self.getResultsForConfig({ (results) -> Void in
@@ -947,7 +953,7 @@ import CloudKit
         let group: dispatch_group_t = dispatch_group_create()
         
         dispatch_group_async(group,
-            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
                 // compile the results and pass them back if necessary
                 if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
                     self.getResultsForConfig({ (results) -> Void in
@@ -1013,7 +1019,7 @@ import CloudKit
         let group: dispatch_group_t = dispatch_group_create()
         
         dispatch_group_async(group,
-            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
                 // compile the results and pass them back if necessary
                 if let authChangeClosure = self.authChangeClosure {
                     self.getResultsForConfig({ (results) -> Void in
@@ -1044,7 +1050,7 @@ import CloudKit
         
         for config in configuredPermissions {
             dispatch_group_async(group,
-                dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+                dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
                     self.statusForPermission(config.type, completion: { (status) -> Void in
                         let result = PermissionResult(type: config.type,
                             status: status,
@@ -1056,7 +1062,7 @@ import CloudKit
         
         // FIXME: Return after async calls were executed
         dispatch_group_notify(group,
-            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
                 completionBlock(results)
         }
     }
