@@ -753,7 +753,7 @@ import CloudKit
                     statusCallback(status: .Unauthorized)
                 case .CouldNotComplete:
                     // Error ocurred.
-                    print(error!.localizedDescription, terminator: "\n")
+                    print(error!.localizedDescription)
                     // TODO: What should we return ? Use throws ?
                     statusCallback(status: .Unknown)
                 }
