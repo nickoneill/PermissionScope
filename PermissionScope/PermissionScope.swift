@@ -429,6 +429,9 @@ import CoreMotion
         
         notificationTimer?.invalidate()
         
+        defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.askedForNotificationsDefaultsKey)
+        defaults.synchronize()
+        
         let allResults = getResultsForConfig().filter {
             $0.type == PermissionType.Notifications
         }
@@ -448,9 +451,6 @@ import CoreMotion
             
             // There should be only one...
             let notificationsPermissionSet = self.configuredPermissions.filter { $0.notificationCategories != .None && !$0.notificationCategories!.isEmpty }.first?.notificationCategories
-            
-            defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.askedForNotificationsDefaultsKey)
-            defaults.synchronize()
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("showingNotificationPermission"), name: UIApplicationWillResignActiveNotification, object: nil)
             
