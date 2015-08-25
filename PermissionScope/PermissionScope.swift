@@ -77,7 +77,7 @@ import CoreMotion
     }
     var requiredAuthorized: Bool {
         return getResultsForConfig()
-            .filter { $0.status != .Authorized && $0.demands == .Required }
+            .filter { $0.status != .Authorized }
             .isEmpty
     }
     
@@ -935,7 +935,7 @@ import CoreMotion
         
         for config in configuredPermissions {
             let status = statusForPermission(config.type)
-            let result = PermissionResult(type: config.type, status: status, demands: config.demands)
+            let result = PermissionResult(type: config.type, status: status)
             results.append(result)
         }
         
