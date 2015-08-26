@@ -720,8 +720,6 @@ import HealthKit
             statusArray.append(HKHealthStore().authorizationStatusForType(elem))
         })
         
-//        print(statusArray)
-        
         // TODO: What to do? If there's 1 .Denied or ND then return such result ?
         // Only Auth if they are all Auth ?
         let typesAuthorized = statusArray
@@ -749,7 +747,7 @@ import HealthKit
             HKHealthStore().requestAuthorizationToShareTypes(healthPermission.healthTypesToShare,
                 readTypes: healthPermission.healthTypesToRead,
                 completion: { (granted, error) -> Void in
-                    print("requestAuthorizationToShareTypes: ", granted, " - error: ", error)
+                    if let error = error { print("error: ", error) }
                     self.detectAndCallback()
             })
         case .Unauthorized:
