@@ -25,10 +25,10 @@ import HealthKit
     public var buttonFont  = UIFont.boldSystemFontOfSize(14)
     public var labelFont   = UIFont.systemFontOfSize(14)
     public var closeButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 32))
-    public var closeOffset = CGSize(width: 0, height: 0)
+    public var closeOffset = CGSizeZero
 
     // MARK: View hierarchy for custom alert
-    let baseView = UIView()
+    let baseView    = UIView()
     let contentView = UIView()
 
     // various managers
@@ -73,28 +73,22 @@ import HealthKit
     // Computed variables
     var allAuthorized: Bool {
         return getResultsForConfig()
-            .filter { $0.status != .Authorized }
-            .isEmpty
+            .first { $0.status != .Authorized }
+            .isNil
     }
     var requiredAuthorized: Bool {
         return getResultsForConfig()
-            .filter { $0.status != .Authorized }
-            .isEmpty
+            .first { $0.status != .Authorized }
+            .isNil
     }
     
     // use the code we have to see permission status
     public func permissionStatuses(permissionTypes: [PermissionType]?) -> Dictionary<PermissionType, PermissionStatus> {
         var statuses: Dictionary<PermissionType, PermissionStatus> = [:]
-        var types = permissionTypes
+        let types = permissionTypes ?? PermissionType.allValues
         
-        if types == nil {
-            types = PermissionType.allValues
-        }
-        
-        if let types = types {
-            for type in types {
-                statuses[type] = self.statusForPermission(type)
-            }
+        for type in types {
+            statuses[type] = self.statusForPermission(type)
         }
         
         return statuses
@@ -434,7 +428,7 @@ import HealthKit
         defaults.synchronize()
         
         let allResults = getResultsForConfig().filter {
-            $0.type == PermissionType.Notifications
+            $0.type == .Notifications
         }
         if let notificationResult : PermissionResult = allResults.first {
             if notificationResult.status == PermissionStatus.Unknown {
@@ -450,8 +444,10 @@ import HealthKit
         switch statusNotifications() {
         case .Unknown:
             
-            // There should be only one...
-            let notificationsPermissionSet = self.configuredPermissions.filter { $0.notificationCategories != .None && !$0.notificationCategories!.isEmpty }.first?.notificationCategories
+            let notificationsPermission = self.configuredPermissions
+                .first { $0 is NotificationsPermissionConfig } as? NotificationsPermissionConfig
+            
+            guard let notificationsPermissionSet = notificationsPermission?.notificationCategories else { return }
 
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("showingNotificationPermission"), name: UIApplicationWillResignActiveNotification, object: nil)
             
@@ -461,9 +457,7 @@ import HealthKit
                 categories: notificationsPermissionSet))
             
         case .Unauthorized:
-            
-            showDeniedAlert(PermissionType.Notifications)
-            
+            showDeniedAlert(.Notifications)
         default:
             break
         }
@@ -715,43 +709,62 @@ import HealthKit
     private var waitingForMotion = false
     
     // MARK: HealthKit
-    public func statusHealthKit() -> PermissionStatus {
+    public func statusHealthKit(typesToShare: Set<HKSampleType>?, typesToRead: Set<HKObjectType>?) -> PermissionStatus {
         guard HKHealthStore.isHealthDataAvailable() else { return .Disabled }
         
-        let status = HKHealthStore().authorizationStatusForType(HKObjectType.workoutType())
-        switch status {
-        case .SharingAuthorized:
-            return .Authorized
-        case .SharingDenied:
-            return .Unauthorized
-        case .NotDetermined:
+        var statusArray:[HKAuthorizationStatus] = []
+        typesToShare?.forEach({ (elem) -> () in
+            statusArray.append(HKHealthStore().authorizationStatusForType(elem))
+        })
+        typesToRead?.forEach({ (elem) -> () in
+            statusArray.append(HKHealthStore().authorizationStatusForType(elem))
+        })
+        
+//        print(statusArray)
+        
+        // TODO: What to do? If there's 1 .Denied or ND then return such result ?
+        // Only Auth if they are all Auth ?
+        let typesAuthorized = statusArray
+            .filter { $0 == .SharingAuthorized }
+        let typesDenied = statusArray
+            .filter { $0 == .SharingDenied }
+        let typesNotDetermined = statusArray
+            .filter { $0 == .NotDetermined }
+        
+        if typesNotDetermined.count == statusArray.count || statusArray.isEmpty {
             return .Unknown
+        } else if !typesDenied.isEmpty {
+            return .Unauthorized
+        } else {
+            return .Authorized
         }
     }
     
     func requestHealthKit() {
-        let aux = self.configuredPermissions.first
-//            .filter { $0.type.isHealthKit }
-//            .first
+        guard let healthPermission = self.configuredPermissions
+            .first({ $0.type == .HealthKit }) as? HealthPermissionConfig else { return }
         
-//        switch statusHealthKit() {
-//        case .Unknown:
-//            HKHealthStore().requestAuthorizationToShareTypes(<#T##typesToShare: Set<HKSampleType>?##Set<HKSampleType>?#>,
-//                readTypes: <#T##Set<HKObjectType>?#>,
-//                completion: { (granted, error) -> Void in
-//                    self.detectAndCallback()
-//            })
-//        case .Unauthorized:
-//            self.showDeniedAlert(.Reminders)
-//        default:
-//            break
-//        }
+        switch statusHealthKit(healthPermission.healthTypesToShare, typesToRead: healthPermission.healthTypesToRead) {
+        case .Unknown:
+            HKHealthStore().requestAuthorizationToShareTypes(healthPermission.healthTypesToShare,
+                readTypes: healthPermission.healthTypesToRead,
+                completion: { (granted, error) -> Void in
+                    print("requestAuthorizationToShareTypes: ", granted, " - error: ", error)
+                    self.detectAndCallback()
+            })
+        case .Unauthorized:
+            self.showDeniedAlert(.HealthKit)
+        case .Disabled:
+            self.showDisabledAlert(.HealthKit)
+        default:
+            break
+        }
     }
     
     // MARK: - UI
 
     @objc public func show(authChange: ((finished: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: ((results: [PermissionResult]) -> Void)? = nil) {
-        assert(configuredPermissions.count > 0, "Please add at least one permission")
+        assert(!configuredPermissions.isEmpty, "Please add at least one permission")
 
         authChangeClosure = authChange
         cancelClosure = cancelled 
@@ -947,7 +960,7 @@ import HealthKit
         case .Motion:
             return statusMotion()
         case .HealthKit:
-            return statusHealthKit()
+            return statusHealthKit(nil, typesToRead: nil)
         }
     }
     

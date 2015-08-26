@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import HealthKit
 
 extension UIColor {
     var inverseColor: UIColor{
@@ -21,5 +22,32 @@ extension UIColor {
 extension String {
     var localized: String {
         return NSLocalizedString(self, comment: "")
+    }
+}
+
+extension SequenceType {
+    // Ty https://bigonotetaking.wordpress.com/2015/08/22/using-higher-order-methods-everywhere/
+    func first(@noescape pred: Generator.Element -> Bool) -> Generator.Element? {
+        for x in self where pred(x) { return x }
+        return nil
+    }
+}
+
+extension Optional {
+    var isNil: Bool {
+        if let _ = self {
+            return false
+        }
+        return true
+    }
+}
+
+extension HKAuthorizationStatus: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case NotDetermined: return "NotDetermined"
+        case SharingDenied: return "SharingDenied"
+        case SharingAuthorized: return "SharingAuthorized"
+        }
     }
 }

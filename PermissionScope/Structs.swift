@@ -9,8 +9,8 @@
 import Foundation
 import HealthKit
 
-@objc public enum PermissionType: Int, Hashable {
-    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit(Set<HKSampleType>?, Set<HKObjectType>?)
+@objc public enum PermissionType: Int, CustomStringConvertible {
+    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit
     
     public var prettyDescription: String {
         switch self {
@@ -18,15 +18,6 @@ import HealthKit
             return "Location"
         default:
             return "\(self)"
-        }
-    }
-    
-    public var hashValue: Int {
-        switch self {
-        case HealthKit(let typesToShare, let typesToRead):
-            return (typesToShare?.hashValue ?? 1) ^ (typesToRead?.hashValue ?? 1)
-        default:
-            return "\(self)".hashValue
         }
     }
     
@@ -50,12 +41,12 @@ import HealthKit
         case .Reminders:        return "Reminders"
         case .Bluetooth:        return "Bluetooth"
         case .Motion:           return "Motion"
-        case .HealthKit(_, _):  return "HealthKit"
+        case .HealthKit:        return "HealthKit"
         }
     }
     
     // Watch out for
-    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion]
+    static let allValues:[PermissionType] = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit]
 }
 
 @objc public enum PermissionStatus: Int, CustomStringConvertible {
@@ -68,23 +59,6 @@ import HealthKit
         case .Unknown:      return "Unknown"
         case .Disabled:     return "Disabled" // System-level
         }
-    }
-}
-
-@objc public class PermissionConfig: NSObject {
-    let type: PermissionType
-    let message: String
-    
-    let notificationCategories: Set<UIUserNotificationCategory>?
-    
-    public init(type: PermissionType, message: String, notificationCategories: Set<UIUserNotificationCategory>? = .None) {
-        if type != .Notifications && notificationCategories != .None {
-            assertionFailure("notificationCategories only apply to the .Notifications permission")
-        }
-        
-        self.type                   = type
-        self.message                = message
-        self.notificationCategories = notificationCategories
     }
 }
 
