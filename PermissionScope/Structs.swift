@@ -10,7 +10,7 @@ import Foundation
 import HealthKit
 
 @objc public enum PermissionType: Int, CustomStringConvertible {
-    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit
+    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit, CloudKit
     
     public var prettyDescription: String {
         switch self {
@@ -42,11 +42,11 @@ import HealthKit
         case .Bluetooth:        return "Bluetooth"
         case .Motion:           return "Motion"
         case .HealthKit:        return "HealthKit"
+        case .CloudKit:         return "CloudKit"
         }
     }
     
-    // Watch out for
-    static let allValues:[PermissionType] = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit]
+    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit, CloudKit]
 }
 
 @objc public enum PermissionStatus: Int, CustomStringConvertible {
