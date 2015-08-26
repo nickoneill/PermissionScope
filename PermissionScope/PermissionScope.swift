@@ -77,7 +77,7 @@ import CoreMotion
     }
     var requiredAuthorized: Bool {
         return getResultsForConfig()
-            .filter { $0.status != .Authorized && $0.demands == .Required }
+            .filter { $0.status != .Authorized }
             .isEmpty
     }
     
@@ -429,6 +429,9 @@ import CoreMotion
         
         notificationTimer?.invalidate()
         
+        defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedNotifications)
+        defaults.synchronize()
+        
         let allResults = getResultsForConfig().filter {
             $0.type == PermissionType.Notifications
         }
@@ -448,10 +451,7 @@ import CoreMotion
             
             // There should be only one...
             let notificationsPermissionSet = self.configuredPermissions.filter { $0.notificationCategories != .None && !$0.notificationCategories!.isEmpty }.first?.notificationCategories
-            
-            defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedNotifications)
-            defaults.synchronize()
-            
+
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("showingNotificationPermission"), name: UIApplicationWillResignActiveNotification, object: nil)
             
             notificationTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("finishedShowingNotificationPermission"), userInfo: nil, repeats: false)
@@ -935,7 +935,7 @@ import CoreMotion
         
         for config in configuredPermissions {
             let status = statusForPermission(config.type)
-            let result = PermissionResult(type: config.type, status: status, demands: config.demands)
+            let result = PermissionResult(type: config.type, status: status)
             results.append(result)
         }
         

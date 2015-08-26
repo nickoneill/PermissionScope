@@ -18,11 +18,11 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        singlePscope.addPermission(PermissionConfig(type: .Notifications, demands: .Required, message: "We use this to send you\r\nspam and love notes", notificationCategories: .None))
+        singlePscope.addPermission(PermissionConfig(type: .Notifications, message: "We use this to send you\r\nspam and love notes", notificationCategories: .None))
         
-        multiPscope.addPermission(PermissionConfig(type: .Contacts, demands: .Required, message: "We use this to steal\r\nyour friends"))
-        multiPscope.addPermission(PermissionConfig(type: .Notifications, demands: .Required, message: "We use this to send you\r\nspam and love notes", notificationCategories: .None))
-        multiPscope.addPermission(PermissionConfig(type: .LocationInUse, demands: .Required, message: "We use this to track\r\nwhere you live"))
+        multiPscope.addPermission(PermissionConfig(type: .Contacts, message: "We use this to steal\r\nyour friends"))
+        multiPscope.addPermission(PermissionConfig(type: .Notifications, message: "We use this to send you\r\nspam and love notes", notificationCategories: .None))
+        multiPscope.addPermission(PermissionConfig(type: .LocationInUse, message: "We use this to track\r\nwhere you live"))
         
         // Other example permissions
         //        multiPscope.addPermission(PermissionConfig(type: .Bluetooth, demands: .Required, message: "We use this to drain your battery"))
