@@ -10,16 +10,16 @@ import Foundation
 
 enum Constants {
     struct UI {
-        static let contentWidth: CGFloat = 280.0
-        static let dialogHeightTwoPermissions: CGFloat = 360
-        static let dialogHeightThreePermissions: CGFloat = 460
-        static let dialogHeightSinglePermission: CGFloat = 260
+        static let contentWidth: CGFloat                 = 280.0
+        static let dialogHeightSinglePermission: CGFloat = 260.0
+        static let dialogHeightTwoPermissions: CGFloat   = 360.0
+        static let dialogHeightThreePermissions: CGFloat = 460.0
     }
     
     struct NSUserDefaultsKeys {
-        static let requestedInUseToAlwaysUpgrade = "requestedInUseToAlwaysUpgrade"
-        static let requestedForBluetooth = "askedForBluetooth"
-        static let requestedForMotion = "askedForMotion"
-        static let askedForNotificationsDefaultsKey = "PermissionScopeAskedForNotificationsDefaultsKey"
+        static let requestedInUseToAlwaysUpgrade = "PS_requestedInUseToAlwaysUpgrade"
+        static let requestedBluetooth            = "PS_requestedBluetooth"
+        static let requestedMotion               = "PS_requestedMotion"
+        static let requestedNotifications        = "PS_requestedNotifications"
     }
 }

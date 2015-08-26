@@ -20,10 +20,10 @@ import HealthKit
 
     // MARK: UI Parameters
     public let headerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
-    public let bodyLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 240, height: 70))
-    public var tintColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
-    public var buttonFont = UIFont.boldSystemFontOfSize(14)
-    public var labelFont = UIFont.systemFontOfSize(14)
+    public let bodyLabel   = UILabel(frame: CGRect(x: 0, y: 0, width: 240, height: 70))
+    public var tintColor   = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
+    public var buttonFont  = UIFont.boldSystemFontOfSize(14)
+    public var labelFont   = UIFont.systemFontOfSize(14)
     public var closeButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 32))
     public var closeOffset = CGSize(width: 0, height: 0)
 
@@ -78,7 +78,7 @@ import HealthKit
     }
     var requiredAuthorized: Bool {
         return getResultsForConfig()
-            .filter { $0.status != .Authorized && $0.demands == .Required }
+            .filter { $0.status != .Authorized }
             .isEmpty
     }
     
@@ -407,7 +407,7 @@ import HealthKit
         if let settingTypes = settings?.types where settingTypes != UIUserNotificationType.None {
             return .Authorized
         } else {
-            if defaults.boolForKey(Constants.NSUserDefaultsKeys.askedForNotificationsDefaultsKey) {
+            if defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedNotifications) {
                 return .Unauthorized
             } else {
                 return .Unknown
@@ -430,6 +430,9 @@ import HealthKit
         
         notificationTimer?.invalidate()
         
+        defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedNotifications)
+        defaults.synchronize()
+        
         let allResults = getResultsForConfig().filter {
             $0.type == PermissionType.Notifications
         }
@@ -449,10 +452,7 @@ import HealthKit
             
             // There should be only one...
             let notificationsPermissionSet = self.configuredPermissions.filter { $0.notificationCategories != .None && !$0.notificationCategories!.isEmpty }.first?.notificationCategories
-            
-            defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.askedForNotificationsDefaultsKey)
-            defaults.synchronize()
-            
+
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("showingNotificationPermission"), name: UIApplicationWillResignActiveNotification, object: nil)
             
             notificationTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("finishedShowingNotificationPermission"), userInfo: nil, repeats: false)
@@ -604,10 +604,10 @@ import HealthKit
     // MARK: Bluetooth
     private var askedBluetooth:Bool {
         get {
-            return defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedForBluetooth)
+            return defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedBluetooth)
         }
         set {
-            defaults.setBool(newValue, forKey: Constants.NSUserDefaultsKeys.requestedForBluetooth)
+            defaults.setBool(newValue, forKey: Constants.NSUserDefaultsKeys.requestedBluetooth)
             defaults.synchronize()
         }
     }
@@ -681,7 +681,7 @@ import HealthKit
     
     private func triggerMotionStatusUpdate() {
         let tmpMotionPermissionStatus = motionPermissionStatus
-        defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedForMotion)
+        defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedMotion)
         defaults.synchronize()
         motionManager.queryActivityStartingFromDate(NSDate(), toDate: NSDate(), toQueue: NSOperationQueue.mainQueue(), withHandler: { (_: [CMMotionActivity]?, error:NSError?) -> Void in
             if (error != nil && error!.code == Int(CMErrorMotionActivityNotAuthorized.rawValue)) {
@@ -704,10 +704,10 @@ import HealthKit
     
     private var askedMotion:Bool {
         get {
-            return defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedForMotion)
+            return defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedMotion)
         }
         set {
-            defaults.setBool(newValue, forKey: Constants.NSUserDefaultsKeys.requestedForMotion)
+            defaults.setBool(newValue, forKey: Constants.NSUserDefaultsKeys.requestedMotion)
             defaults.synchronize()
         }
     }
@@ -972,7 +972,7 @@ import HealthKit
         
         for config in configuredPermissions {
             let status = statusForPermission(config.type)
-            let result = PermissionResult(type: config.type, status: status, demands: config.demands)
+            let result = PermissionResult(type: config.type, status: status)
             results.append(result)
         }
         
