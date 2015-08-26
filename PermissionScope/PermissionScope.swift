@@ -33,7 +33,7 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     let baseView    = UIView()
     let contentView = UIView()
 
-    // various managers
+    // MARK: - Various lazy managers
     lazy var locationManager:CLLocationManager = {
         let lm = CLLocationManager()
         lm.delegate = self
@@ -48,17 +48,20 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         return CMMotionActivityManager()
     }()
     
+    /// NSUserDefaults standardDefaults lazy var
     lazy var defaults:NSUserDefaults = {
         return .standardUserDefaults()
     }()
     
-    // Default status for CoreMotion
+    /// Default status for CoreMotion
     var motionPermissionStatus: PermissionStatus = .Unknown
 
-    // Internal state and resolution
+    // MARK: - Internal state and resolution
+    
+    /// Permissions configured using addPermission(:)
     var configuredPermissions: [PermissionConfig] = []
-    var permissionButtons: [UIButton] = []
-    var permissionLabels: [UILabel] = []
+    var permissionButtons: [UIButton]             = []
+    var permissionLabels: [UILabel]               = []
 	
 	// Useful for direct use of the request* methods
     public var authChangeClosure: authClosureType? = nil
@@ -96,7 +99,6 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         var statuses: Dictionary<PermissionType, PermissionStatus> = [:]
         let types: [PermissionType] = permissionTypes ?? PermissionType.allValues
         
-        // FIXME: Return after async calls were executed
         for type in types {
             statusForPermission(type, completion: { (status) -> Void in
                 statuses[type] = status
@@ -787,7 +789,7 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
             self.showDeniedAlert(.HealthKit)
         case .Disabled:
             self.showDisabledAlert(.HealthKit)
-        default:
+        case .Authorized:
             break
         }
     }
