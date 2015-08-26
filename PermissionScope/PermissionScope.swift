@@ -406,7 +406,7 @@ import CoreMotion
         if let settingTypes = settings?.types where settingTypes != UIUserNotificationType.None {
             return .Authorized
         } else {
-            if defaults.boolForKey(Constants.NSUserDefaultsKeys.askedForNotificationsDefaultsKey) {
+            if defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedNotifications) {
                 return .Unauthorized
             } else {
                 return .Unknown
@@ -449,7 +449,7 @@ import CoreMotion
             // There should be only one...
             let notificationsPermissionSet = self.configuredPermissions.filter { $0.notificationCategories != .None && !$0.notificationCategories!.isEmpty }.first?.notificationCategories
             
-            defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.askedForNotificationsDefaultsKey)
+            defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedNotifications)
             defaults.synchronize()
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("showingNotificationPermission"), name: UIApplicationWillResignActiveNotification, object: nil)
@@ -603,10 +603,10 @@ import CoreMotion
     // MARK: Bluetooth
     private var askedBluetooth:Bool {
         get {
-            return defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedForBluetooth)
+            return defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedBluetooth)
         }
         set {
-            defaults.setBool(newValue, forKey: Constants.NSUserDefaultsKeys.requestedForBluetooth)
+            defaults.setBool(newValue, forKey: Constants.NSUserDefaultsKeys.requestedBluetooth)
             defaults.synchronize()
         }
     }
@@ -680,7 +680,7 @@ import CoreMotion
     
     private func triggerMotionStatusUpdate() {
         let tmpMotionPermissionStatus = motionPermissionStatus
-        defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedForMotion)
+        defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedMotion)
         defaults.synchronize()
         motionManager.queryActivityStartingFromDate(NSDate(), toDate: NSDate(), toQueue: NSOperationQueue.mainQueue(), withHandler: { (_: [CMMotionActivity]?, error:NSError?) -> Void in
             if (error != nil && error!.code == Int(CMErrorMotionActivityNotAuthorized.rawValue)) {
@@ -703,10 +703,10 @@ import CoreMotion
     
     private var askedMotion:Bool {
         get {
-            return defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedForMotion)
+            return defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedMotion)
         }
         set {
-            defaults.setBool(newValue, forKey: Constants.NSUserDefaultsKeys.requestedForMotion)
+            defaults.setBool(newValue, forKey: Constants.NSUserDefaultsKeys.requestedMotion)
             defaults.synchronize()
         }
     }
