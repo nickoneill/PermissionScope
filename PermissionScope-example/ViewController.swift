@@ -52,10 +52,10 @@ class ViewController: UIViewController {
     @IBAction func singlePerm() {
         singlePscope.show(
             { (finished, results) -> Void in
-                print("got results \(results)", appendNewline: true)
+                print("got results \(results)")
             },
             cancelled: { (results) -> Void in
-                print("thing was cancelled", appendNewline: true)
+                print("thing was cancelled")
             }
         )
     }
@@ -63,10 +63,10 @@ class ViewController: UIViewController {
     @IBAction func multiPerms() {
         multiPscope.show(
             { (finished, results) -> Void in
-                print("got results \(results)", appendNewline: true)
+                print("got results \(results)")
             },
             cancelled: { (results) -> Void in
-                print("thing was cancelled", appendNewline: true)
+                print("thing was cancelled")
             }
         )
     }
