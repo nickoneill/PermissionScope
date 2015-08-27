@@ -204,7 +204,7 @@ Enable `HealthKit` under your target's capabilities, **required**.
 
 Enable `CloudKit` under your target's capabilities, **required**.
 
-Also, remember to add an observer and manage [CKAccountChangedNotification](https://developer.apple.com/library/prerelease/ios/documentation/CloudKit/Reference/CKContainer_class/#//apple_ref/c/data/CKAccountChangedNotification).
+Also, remember to add an observer and manage [CKAccountChangedNotification](https://developer.apple.com/library/prerelease/ios/documentation/CloudKit/Reference/CKContainer_class/#//apple_ref/c/data/CKAccountChangedNotification) in your app.
 
 ## projects using PermissionScope
 
