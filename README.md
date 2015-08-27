@@ -171,7 +171,7 @@ pscope.viewControllerForAlerts = pscope as UIViewController
 
 ## issues
 
-* You get "Library not loaded: @rpath/libswiftCoreAudio.dylib", "image not found" errors when your app runs:
+* You get `Library not loaded: @rpath/libswiftCoreAudio.dylib`, `image not found` errors when your app runs:
 
 PermissionScope imports CoreAudio to request microphone access but it's not automatically linked in if your app doesn't `import CoreAudio` somewhere. I'm not sure if this is a bug or a a quirk of how CoreAudio is imported. For now, if you `import CoreAudio` in your top level project it should fix the issue.
 
