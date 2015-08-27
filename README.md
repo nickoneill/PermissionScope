@@ -19,6 +19,16 @@ PermissionScope gives you space to explain your reasons for requesting their pre
 
 Best of all, PermissionScope detects when ([some of](https://github.com/nickoneill/PermissionScope/issues/9)) your permissions have been denied by a user and gives them an easy prompt to go into the system settings page to modify these permissions.
 
+## Table of Contents
+* [Installation](https://github.com/nickoneill/PermissionScope/#-installation)
+* [Dialog Usage](https://github.com/nickoneill/PermissionScope/#-dialog-usage)
+* [Unified Permissions API](https://github.com/nickoneill/PermissionScope/#-unified-permissions-api)
+* [Issues](https://github.com/nickoneill/PermissionScope/#-issues)
+* [Extra Requirements for Permissions](https://github.com/nickoneill/PermissionScope/#-extra-requirements-for-permissions)
+* [Projects using PermissionScope](https://github.com/nickoneill/PermissionScope/#-projects-using-permissionscope)
+* [License](https://github.com/nickoneill/PermissionScope/#-license)
+
+
 ## installation
 
 * requires iOS 8+
@@ -75,7 +85,7 @@ A permission can either have `.Required` or .`Optional` demands. Required permis
 
 A permission with the `.Optional` demand will not cause the dialog to show alone. Users who have accepted all the required permissions but not all optional permissions can tap out to continue without allowing the optional permissions.
 
-### customizability
+### ui customization
 
 You can easily change the colors, label and buttons fonts with PermissionScope.
 
@@ -91,7 +101,7 @@ pscope.labelFont = UIFont...
 
 In addition, the default behavior for tapping the background behind the dialog is to cancel the dialog (which calls the cancel closure you can provide on `show`). You can change this behavior with `backgroundTapCancels` during init.
 
-### unified permissions API
+## unified permissions API
 
 PermissionScope also has an abstracted API for getting the state for a given permission and requesting permissions if you need to do so outside of the normal dialog UI. Think of it as a unified iOS permissions API that can provide some features that even Apple does not (such as detecting denied notification permissions).
 
@@ -159,7 +169,7 @@ If you're also using PermissionScope in the traditional manner, don't forget to 
 pscope.viewControllerForAlerts = pscope as UIViewController
 ```
 
-### issues
+## issues
 
 * You get "Library not loaded: @rpath/libswiftCoreAudio.dylib", "image not found" errors when your app runs:
 
@@ -171,25 +181,29 @@ We're using PermissionScope in [treat](https://gettre.at) and fixing issues as t
 ### PermissionScope registers user notification settings, not remote notifications
 Users will get the prompt to enable notifications when using PermissionScope but it's up to you to watch for results in your app delegate's `didRegisterUserNotificationSettings` and then register for remote notifications independently. This won't alert the user again. You're still responsible for handling the shipment of user notification settings off to your push server.
 
-### notes about location
+## extra requirements for permissions
+
+### location 
 **You must set these Info.plist keys for location to work**
 
 Trickiest part of implementing location permissions? You must implement the proper key in your Info.plist file with a short description of how your app uses location info (shown in the system permissions dialog). Without this, trying to get location  permissions will just silently fail. *Software*!
 
 Use `NSLocationAlwaysUsageDescription` or `NSLocationWhenInUseUsageDescription` where appropriate for your app usage. You can specify which of these location permissions you wish to request with `.LocationAlways` or `.LocationInUse` while configuring PermissionScope.
 
-### notes about bluetooth
+### bluetooth
+**You must set these Info.plist keys for location to work**
+
 The *NSBluetoothPeripheralUsageDescription* key in the Info.plist specifying a short description of why your app needs to act as a bluetooth peripheralin the background is **optional**. 
 
 However, enabling `background-modes` in the capabilities section and checking the `acts as a bluetooth LE accessory` checkbox is **required**.
 
-### projects using PermissionScope
+## projects using PermissionScope
 
 Feel free to add your project in a PR if you're using PermissionScope:
 
 <img src="http://raquo.net/images/icon-round-80.png" width="40" height="40" /><br />
 <a href="https://gettre.at">treat</a>
 
-### license, etc
+## license
 
 PermissionScope uses the MIT license. Please file an issue if you have any questions or if you'd like to share how you're using this tool.
