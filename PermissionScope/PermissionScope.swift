@@ -187,18 +187,18 @@ import CoreMotion
 
         // offset the header from the content center, compensate for the content's offset
         headerLabel.center = contentView.center
-        headerLabel.frame.offsetInPlace(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-        headerLabel.frame.offsetInPlace(dx: 0, dy: -((dialogHeight/2)-50))
+        headerLabel.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
+        headerLabel.frame.offset(dx: 0, dy: -((dialogHeight/2)-50))
 
         // ... same with the body
         bodyLabel.center = contentView.center
-        bodyLabel.frame.offsetInPlace(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-        bodyLabel.frame.offsetInPlace(dx: 0, dy: -((dialogHeight/2)-100))
+        bodyLabel.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
+        bodyLabel.frame.offset(dx: 0, dy: -((dialogHeight/2)-100))
         
         closeButton.center = contentView.center
-        closeButton.frame.offsetInPlace(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-        closeButton.frame.offsetInPlace(dx: 105, dy: -((dialogHeight/2)-20))
-        closeButton.frame.offsetInPlace(dx: self.closeOffset.width, dy: self.closeOffset.height)
+        closeButton.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
+        closeButton.frame.offset(dx: 105, dy: -((dialogHeight/2)-20))
+        closeButton.frame.offset(dx: self.closeOffset.width, dy: self.closeOffset.height)
         if closeButton.imageView?.image != nil {
             closeButton.setTitle("", forState: UIControlState.Normal)
         }
@@ -208,8 +208,8 @@ import CoreMotion
         var index = 0
         for button in permissionButtons {
             button.center = contentView.center
-            button.frame.offsetInPlace(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-            button.frame.offsetInPlace(dx: 0, dy: -((dialogHeight/2)-160) + CGFloat(index * baseOffset))
+            button.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
+            button.frame.offset(dx: 0, dy: -((dialogHeight/2)-160) + CGFloat(index * baseOffset))
             
             let type = configuredPermissions[index].type
             
@@ -228,8 +228,8 @@ import CoreMotion
 
             let label = permissionLabels[index]
             label.center = contentView.center
-            label.frame.offsetInPlace(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
-            label.frame.offsetInPlace(dx: 0, dy: -((dialogHeight/2)-205) + CGFloat(index * baseOffset))
+            label.frame.offset(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
+            label.frame.offset(dx: 0, dy: -((dialogHeight/2)-205) + CGFloat(index * baseOffset))
 
             index++
         }
