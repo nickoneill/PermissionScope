@@ -20,13 +20,13 @@ PermissionScope gives you space to explain your reasons for requesting their pre
 Best of all, PermissionScope detects when ([some of](https://github.com/nickoneill/PermissionScope/issues/9)) your permissions have been denied by a user and gives them an easy prompt to go into the system settings page to modify these permissions.
 
 ## Table of Contents
-* [Installation](https://github.com/nickoneill/PermissionScope/#-installation)
-* [Dialog Usage](https://github.com/nickoneill/PermissionScope/#-dialog-usage)
-* [Unified Permissions API](https://github.com/nickoneill/PermissionScope/#-unified-permissions-api)
-* [Issues](https://github.com/nickoneill/PermissionScope/#-issues)
-* [Extra Requirements for Permissions](https://github.com/nickoneill/PermissionScope/#-extra-requirements-for-permissions)
-* [Projects using PermissionScope](https://github.com/nickoneill/PermissionScope/#-projects-using-permissionscope)
-* [License](https://github.com/nickoneill/PermissionScope/#-license)
+* [Installation](https://github.com/nickoneill/PermissionScope/#installation)
+* [Dialog Usage](https://github.com/nickoneill/PermissionScope/#dialog-usage)
+* [Unified Permissions API](https://github.com/nickoneill/PermissionScope/#unified-permissions-api)
+* [Issues](https://github.com/nickoneill/PermissionScope/#issues)
+* [Extra Requirements for Permissions](https://github.com/nickoneill/PermissionScope/#extra-requirements-for-permissions)
+* [Projects using PermissionScope](https://github.com/nickoneill/PermissionScope/#projects-using-permissionscope)
+* [License](https://github.com/nickoneill/PermissionScope/#license)
 
 
 ## installation
