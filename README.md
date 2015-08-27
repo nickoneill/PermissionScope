@@ -191,11 +191,20 @@ Trickiest part of implementing location permissions? You must implement the prop
 Use `NSLocationAlwaysUsageDescription` or `NSLocationWhenInUseUsageDescription` where appropriate for your app usage. You can specify which of these location permissions you wish to request with `.LocationAlways` or `.LocationInUse` while configuring PermissionScope.
 
 ### bluetooth
-**You must set these Info.plist keys for location to work**
 
 The *NSBluetoothPeripheralUsageDescription* key in the Info.plist specifying a short description of why your app needs to act as a bluetooth peripheralin the background is **optional**. 
 
 However, enabling `background-modes` in the capabilities section and checking the `acts as a bluetooth LE accessory` checkbox is **required**.
+
+### healthkit
+
+Enable `HealthKit` under your target's capabilities, **required**.
+
+### cloudkit
+
+Enable `CloudKit` under your target's capabilities, **required**.
+
+Also, remember to add an observer and manage [CKAccountChangedNotification](https://developer.apple.com/library/prerelease/ios/documentation/CloudKit/Reference/CKContainer_class/#//apple_ref/c/data/CKAccountChangedNotification).
 
 ## projects using PermissionScope
 
