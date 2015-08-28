@@ -983,22 +983,23 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
                 }
         }
         
+        let alert = UIAlertController(title: "Permission for \(permission) was denied.",
+            message: "Please enable access to \(permission) in the Settings app",
+            preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "OK",
+            style: .Cancel,
+            handler: nil))
+        alert.addAction(UIAlertAction(title: "Show me",
+            style: .Default,
+            handler: { (action) -> Void in
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("appForegroundedAfterSettings"), name: UIApplicationDidBecomeActiveNotification, object: nil)
+                
+                let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
+                UIApplication.sharedApplication().openURL(settingsUrl!)
+        }))
+        
         dispatch_group_notify(group,
             dispatch_get_main_queue()) { () -> Void in
-                let alert = UIAlertController(title: "Permission for \(permission) was denied.",
-                    message: "Please enable access to \(permission) in the Settings app",
-                    preferredStyle: .Alert)
-                alert.addAction(UIAlertAction(title: "OK",
-                    style: .Cancel,
-                    handler: nil))
-                alert.addAction(UIAlertAction(title: "Show me",
-                    style: .Default,
-                    handler: { (action) -> Void in
-                        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("appForegroundedAfterSettings"), name: UIApplicationDidBecomeActiveNotification, object: nil)
-                        
-                        let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
-                        UIApplication.sharedApplication().openURL(settingsUrl!)
-                }))
                 self.viewControllerForAlerts?.presentViewController(alert,
                     animated: true, completion: nil)
         }
@@ -1017,14 +1018,15 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
                 }
         }
         
+        let alert = UIAlertController(title: "\(permission) is currently disabled.",
+            message: "Please enable access to \(permission) in Settings",
+            preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "OK",
+            style: .Cancel,
+            handler: nil))
+        
         dispatch_group_notify(group,
             dispatch_get_main_queue()) { () -> Void in
-                let alert = UIAlertController(title: "\(permission) is currently disabled.",
-                    message: "Please enable access to \(permission) in Settings",
-                    preferredStyle: .Alert)
-                alert.addAction(UIAlertAction(title: "OK",
-                    style: .Cancel,
-                    handler: nil))
                 self.viewControllerForAlerts?.presentViewController(alert,
                     animated: true, completion: nil)
         }
