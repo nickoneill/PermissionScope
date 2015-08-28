@@ -25,9 +25,7 @@ import CoreMotion
     public var labelFont = UIFont.systemFontOfSize(14)
     public var closeButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 32))
     public var closeOffset = CGSize(width: 0, height: 0)
-    
     public var authorizedButtonColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
-    
     public var unauthorizedButtonColor:UIColor?
     
 
@@ -288,9 +286,7 @@ import CoreMotion
     
     func setButtonUnauthorizedStyle(button: UIButton) {
         button.layer.borderWidth = 0
-        
         button.backgroundColor = unauthorizedButtonColor ?? authorizedButtonColor.inverseColor
-        
         button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
     }
 
