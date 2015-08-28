@@ -26,17 +26,9 @@ import CoreMotion
     public var closeButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 32))
     public var closeOffset = CGSize(width: 0, height: 0)
     
-    private var authorizedButtonColor : UIColor{
-        get{
-            return tintColor
-        }
-        set(newColor){
-            // think about renaming tintColor. isn't really clear what it does unless you read into the code
-            tintColor = newColor
-        }
-    }
+    public var authorizedButtonColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
     
-    private var unauthorizedButtonColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1).inverseColor
+    public var unauthorizedButtonColor:UIColor?
     
 
     // MARK: View hierarchy for custom alert
@@ -296,7 +288,13 @@ import CoreMotion
     
     func setButtonUnauthorizedStyle(button: UIButton) {
         button.layer.borderWidth = 0
-        button.backgroundColor = unauthorizedButtonColor
+        
+        if let unauthColor = unauthorizedButtonColor{
+            button.backgroundColor = unauthColor
+        }else{
+            button.backgroundColor = authorizedButtonColor.inverseColor
+        }
+        
         button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
     }
 
@@ -888,31 +886,6 @@ import CoreMotion
             handler: nil))
         viewControllerForAlerts?.presentViewController(alert,
             animated: true, completion: nil)
-    }
-    
-    /** sets the color of authorized permission buttons.        
-        useInverse indicates, if unauthorized permission colors should be displayed in the inverse color of the newColor
-    */
-    public func setAuthorizedButtonColor(newColor:UIColor, useInverse:Bool){
-        
-        authorizedButtonColor = newColor
-        
-        if useInverse{
-            unauthorizedButtonColor = newColor.inverseColor
-        }
-    }
-    
-    
-    /** sets the color of unauthorized permission buttons.
-        useInverse indicates, if authorized permission colors should be displayed in the inverse color of the newColor
-    */
-    public func setUnauthorizedButtonColor(newColor:UIColor, useInverse:Bool){
-        
-        unauthorizedButtonColor = newColor
-        
-        if useInverse{
-            authorizedButtonColor = newColor.inverseColor
-        }
     }
 
     // MARK: Helpers
