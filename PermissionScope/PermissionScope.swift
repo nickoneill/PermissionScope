@@ -473,8 +473,7 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         case .Unknown:
             let notificationsPermission = self.configuredPermissions
                 .first { $0 is NotificationsPermissionConfig } as? NotificationsPermissionConfig
-            
-            guard let notificationsPermissionSet = notificationsPermission?.notificationCategories else { return }
+            let notificationsPermissionSet = notificationsPermission?.notificationCategories
 
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("showingNotificationPermission"), name: UIApplicationWillResignActiveNotification, object: nil)
             
@@ -484,7 +483,6 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
                 UIUserNotificationSettings(forTypes: [.Alert, .Sound, .Badge],
                 categories: notificationsPermissionSet)
             )
-            
         case .Unauthorized:
             showDeniedAlert(.Notifications)
         case .Disabled:
