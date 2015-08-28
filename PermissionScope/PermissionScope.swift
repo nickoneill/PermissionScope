@@ -919,12 +919,12 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         guard HKHealthStore.isHealthDataAvailable() else { return .Disabled }
         
         var statusArray:[HKAuthorizationStatus] = []
-        typesToShare?.forEach({ (elem) -> () in
-            statusArray.append(HKHealthStore().authorizationStatusForType(elem))
-        })
-        typesToRead?.forEach({ (elem) -> () in
-            statusArray.append(HKHealthStore().authorizationStatusForType(elem))
-        })
+        typesToShare?.forEach {
+            statusArray.append(HKHealthStore().authorizationStatusForType($0))
+        }
+        typesToRead?.forEach {
+            statusArray.append(HKHealthStore().authorizationStatusForType($0))
+        }
         
         // TODO: What to do? If there's 1 .Denied or ND then return such result ?
         // Only Auth if they are all Auth ?
