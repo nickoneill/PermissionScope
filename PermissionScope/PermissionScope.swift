@@ -18,17 +18,34 @@ import HealthKit
 import CloudKit
 
 public typealias statusRequestClosure = (status: PermissionStatus) -> Void
+public typealias authClosureType      = (finished: Bool, results: [PermissionResult]) -> Void
+public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
+
 @objc public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
 
     // MARK: UI Parameters
-    public let headerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
-    public let bodyLabel   = UILabel(frame: CGRect(x: 0, y: 0, width: 240, height: 70))
-    public var tintColor   = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
-    public var buttonFont  = UIFont.boldSystemFontOfSize(14)
-    public var labelFont   = UIFont.systemFontOfSize(14)
-    public var closeButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 32))
-    public var closeOffset = CGSizeZero
-    public var authorizedButtonColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
+    
+    /// Header UILabel with the message "Hey, listen!" by default.
+    public let headerLabel                 = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
+    /// Header UILabel with the message "We need a couple things\r\nbefore you get started." by default.
+    public let bodyLabel                   = UILabel(frame: CGRect(x: 0, y: 0, width: 240, height: 70))
+    /// Color for the close button's text color.
+    public var closeButtonTextColor        = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
+    /// Color for the permission buttons' text color.
+    public var permissionButtonTextColor   = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
+    /// Color for the permission buttons' border color.
+    public var permissionButtonBorderColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
+    /// Font used for all the UIButtons
+    public var buttonFont                  = UIFont.boldSystemFontOfSize(14)
+    /// Font used for all the UILabels
+    public var labelFont                   = UIFont.systemFontOfSize(14)
+    /// Close button. By default in the top right corner.
+    public var closeButton                 = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 32))
+    /// Offset used to position the Close button.
+    public var closeOffset                 = CGSizeZero
+    /// Color used for permission buttons with authorized status
+    public var authorizedButtonColor       = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
+    /// Color used for permission buttons with unauthorized status. By default, inverse of `authorizedButtonColor`.
     public var unauthorizedButtonColor:UIColor?
 
     // MARK: View hierarchy for custom alert
@@ -60,24 +77,28 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
 
     // MARK: - Internal state and resolution
     
-    /// Permissions configured using addPermission(:)
+    /// Permissions configured using `addPermission(:)`
     var configuredPermissions: [PermissionConfig] = []
     var permissionButtons: [UIButton]             = []
     var permissionLabels: [UILabel]               = []
 	
 	// Useful for direct use of the request* methods
+    
+    /// Callback called when permissions status change.
     public var authChangeClosure: authClosureType? = nil
-    public typealias authClosureType = (Bool, [PermissionResult]) -> Void
-    
+    /// Callback called when the user taps on the close button.
     public var cancelClosure: cancelClosureType? = nil
-	public typealias cancelClosureType = ([PermissionResult]) -> Void
     
-    /** Called when the user has disabled or denied access to notifications, and we're presenting them with a help dialog. */
+    /// Called when the user has disabled or denied access to notifications, and we're presenting them with a help dialog.
     public var disabledOrDeniedClosure: cancelClosureType? = nil
-	/** View controller to be used when presenting alerts. Defaults to self. You'll want to set this if you are calling the `request*` methods directly. */
+	/// View controller to be used when presenting alerts. Defaults to self. You'll want to set this if you are calling the `request*` methods directly.
 	public var viewControllerForAlerts : UIViewController?
 
-    // Computed variables
+    /**
+    Checks whether all the configured permission are authorized or not.
+    
+    - parameter completion: Closure used to send the result of the check.
+    */
     func allAuthorized(completion: (Bool) -> Void ) {
         getResultsForConfig{ (results) -> Void in
             let result = results
@@ -87,6 +108,12 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
     
+    /**
+    Checks whether all the required configured permission are authorized or not.
+    **Deprecated** See issues #50 and #51.
+    
+    - parameter completion: Closure used to send the result of the check.
+    */
     func requiredAuthorized(completion: (Bool) -> Void ) {
         getResultsForConfig{ (results) -> Void in
             let result = results
@@ -110,6 +137,11 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         return statuses
     }
     
+    /**
+    Designated initializer.
+    
+    - parameter backgroundTapCancels: True if a tap on the background should trigger the dialog dismissal.
+    */
     public init(backgroundTapCancels: Bool) {
         super.init(nibName: nil, bundle: nil)
 
@@ -163,6 +195,9 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         self.statusMotion() //Added to check motion status on load
     }
     
+    /**
+    Convenience initializer. Same as `init(backgroundTapCancels: true)`
+    */
     public convenience init() {
         self.init(backgroundTapCancels: true)
     }
@@ -210,10 +245,10 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         closeButton.frame.offsetInPlace(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
         closeButton.frame.offsetInPlace(dx: 105, dy: -((dialogHeight/2)-20))
         closeButton.frame.offsetInPlace(dx: self.closeOffset.width, dy: self.closeOffset.height)
-        if closeButton.imageView?.image != nil {
+        if let _ = closeButton.imageView?.image {
             closeButton.setTitle("", forState: .Normal)
         }
-        closeButton.setTitleColor(tintColor, forState: .Normal)
+        closeButton.setTitleColor(closeButtonTextColor, forState: .Normal)
 
         let baseOffset = 95
         var index = 0
@@ -249,7 +284,12 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     }
 
     // MARK: - Customizing the permissions
-
+    
+    /**
+    Adds a permission configuration to PermissionScope.
+    
+    - parameter config: Configuration for a specific permission.
+    */
     @objc public func addPermission(config: PermissionConfig) {
         assert(!config.message.isEmpty, "Including a message about your permission usage is helpful")
         assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
@@ -264,13 +304,20 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
 
+    /**
+    Permission button factory. Uses the custom style parameters such as `permissionButtonTextColor`, `buttonFont`, etc.
+    
+    - parameter type: Permission type
+    
+    - returns: UIButton instance with a custom style.
+    */
     func permissionStyledButton(type: PermissionType) -> UIButton {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 220, height: 40))
-        button.setTitleColor(tintColor, forState: .Normal)
+        button.setTitleColor(permissionButtonTextColor, forState: .Normal)
         button.titleLabel?.font = buttonFont
 
         button.layer.borderWidth = 1
-        button.layer.borderColor = tintColor.CGColor
+        button.layer.borderColor = permissionButtonBorderColor.CGColor
         button.layer.cornerRadius = 6
 
         // this is a bit of a mess, eh?
@@ -286,18 +333,35 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         return button
     }
 
+    /**
+    Sets the style for permission buttons with authorized status.
+    
+    - parameter button: Permission button
+    */
     func setButtonAuthorizedStyle(button: UIButton) {
         button.layer.borderWidth = 0
         button.backgroundColor = authorizedButtonColor
         button.setTitleColor(.whiteColor(), forState: .Normal)
     }
     
+    /**
+    Sets the style for permission buttons with unauthorized status.
+    
+    - parameter button: Permission button
+    */
     func setButtonUnauthorizedStyle(button: UIButton) {
         button.layer.borderWidth = 0
         button.backgroundColor = unauthorizedButtonColor ?? authorizedButtonColor.inverseColor
         button.setTitleColor(.whiteColor(), forState: .Normal)
     }
 
+    /**
+    Permission label factory, located below the permission buttons.
+    
+    - parameter message: Label's text.
+    
+    - returns: UILabel instance with a custom style.
+    */
     func permissionStyledLabel(message: String) -> UILabel {
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 260, height: 50))
         label.font = labelFont
@@ -305,7 +369,6 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         label.textAlignment = .Center
 
         label.text = message
-//        label.backgroundColor = UIColor.greenColor()
 
         return label
     }
@@ -313,6 +376,12 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     // MARK: - Status and Requests for each permission
     
     // MARK: Location
+    
+    /**
+    Returns the current permission status for accessing LocationAlways.
+    
+    - returns: Permission status for the requested type.
+    */
     public func statusLocationAlways() -> PermissionStatus {
         if !CLLocationManager.locationServicesEnabled() {
             return .Disabled
@@ -337,6 +406,9 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
 
+    /**
+    Requests access to LocationAlways, if necessary.
+    */
     public func requestLocationAlways() {
         switch statusLocationAlways() {
         case .Unknown:
@@ -354,6 +426,11 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
 
+    /**
+    Returns the current permission status for accessing LocationWhileInUse.
+    
+    - returns: Permission status for the requested type.
+    */
     public func statusLocationInUse() -> PermissionStatus {
         if !CLLocationManager.locationServicesEnabled() {
             return .Disabled
@@ -372,6 +449,9 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
 
+    /**
+    Requests access to LocationWhileInUse, if necessary.
+    */
     public func requestLocationInUse() {
         switch statusLocationInUse() {
         case .Unknown:
@@ -386,6 +466,12 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     }
 
     // MARK: Contacts
+    
+    /**
+    Returns the current permission status for accessing Contacts.
+    
+    - returns: Permission status for the requested type.
+    */
     public func statusContacts() -> PermissionStatus {
         let status = ABAddressBookGetAuthorizationStatus()
         switch status {
@@ -398,6 +484,9 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
 
+    /**
+    Requests access to Contacts, if necessary.
+    */
     public func requestContacts() {
         switch statusContacts() {
         case .Unknown:
@@ -412,6 +501,12 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     }
 
     // MARK: Notifications
+    
+    /**
+    Returns the current permission status for accessing Notifications.
+    
+    - returns: Permission status for the requested type.
+    */
     public func statusNotifications() -> PermissionStatus {
         let settings = UIApplication.sharedApplication().currentUserNotificationSettings()
         if let settingTypes = settings?.types where settingTypes != UIUserNotificationType.None {
@@ -468,6 +563,9 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
     
+    /**
+    Requests access to User Notifications, if necessary.
+    */
     public func requestNotifications() {
         switch statusNotifications() {
         case .Unknown:
@@ -493,6 +591,12 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     }
     
     // MARK: Microphone
+    
+    /**
+    Returns the current permission status for accessing the Microphone.
+    
+    - returns: Permission status for the requested type.
+    */
     public func statusMicrophone() -> PermissionStatus {
         
         switch AVAudioSession.sharedInstance().recordPermission() {
@@ -505,6 +609,9 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
     
+    /**
+    Requests access to the Microphone, if necessary.
+    */
     public func requestMicrophone() {
         switch statusMicrophone() {
         case .Unknown:
@@ -521,6 +628,12 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     }
     
     // MARK: Camera
+    
+    /**
+    Returns the current permission status for accessing the Camera.
+    
+    - returns: Permission status for the requested type.
+    */
     public func statusCamera() -> PermissionStatus {
         let status = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
         switch status {
@@ -533,6 +646,9 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
     
+    /**
+    Requests access to the Camera, if necessary.
+    */
     public func requestCamera() {
         switch statusCamera() {
         case .Unknown:
@@ -550,6 +666,12 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     }
 
     // MARK: Photos
+    
+    /**
+    Returns the current permission status for accessing Photos.
+    
+    - returns: Permission status for the requested type.
+    */
     public func statusPhotos() -> PermissionStatus {
         let status = PHPhotoLibrary.authorizationStatus()
         switch status {
@@ -562,6 +684,9 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
     
+    /**
+    Requests access to Photos, if necessary.
+    */
     public func requestPhotos() {
         switch statusPhotos() {
         case .Unknown:
@@ -578,6 +703,12 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     }
     
     // MARK: Reminders
+    
+    /**
+    Returns the current permission status for accessing Reminders.
+    
+    - returns: Permission status for the requested type.
+    */
     public func statusReminders() -> PermissionStatus {
         let status = EKEventStore.authorizationStatusForEntityType(.Reminder)
         switch status {
@@ -590,6 +721,9 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
     
+    /**
+    Requests access to Reminders, if necessary.
+    */
     public func requestReminders() {
         switch statusReminders() {
         case .Unknown:
@@ -605,6 +739,12 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     }
     
     // MARK: Events
+    
+    /**
+    Returns the current permission status for accessing Events.
+    
+    - returns: Permission status for the requested type.
+    */
     public func statusEvents() -> PermissionStatus {
         let status = EKEventStore.authorizationStatusForEntityType(.Event)
         switch status {
@@ -617,6 +757,9 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
     
+    /**
+    Requests access to Events, if necessary.
+    */
     public func requestEvents() {
         switch statusEvents() {
         case .Unknown:
@@ -632,6 +775,8 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     }
     
     // MARK: Bluetooth
+    
+    /// Returns whether Bluetooth access was asked before or not.
     private var askedBluetooth:Bool {
         get {
             return defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedBluetooth)
@@ -642,8 +787,14 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
     
+    /// Returns whether PermissionScope is waiting for the user to enable/disable bluetooth access or not.
     private var waitingForBluetooth = false
     
+    /**
+    Returns the current permission status for accessing Bluetooth.
+    
+    - returns: Permission status for the requested type.
+    */
     public func statusBluetooth() -> PermissionStatus {
         // if already asked for bluetooth before, do a request to get status, else wait for user to request
         if askedBluetooth{
@@ -665,6 +816,9 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         
     }
     
+    /**
+    Requests access to Bluetooth, if necessary.
+    */
     public func requestBluetooth() {
         
         switch statusBluetooth() {
@@ -690,6 +844,12 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     }
     
     // MARK: CoreMotion
+    
+    /**
+    Returns the current permission status for accessing CoreMotion.
+    
+    - returns: Permission status for the requested type.
+    */
     public func statusMotion() -> PermissionStatus {
         if askedMotion{
             triggerMotionStatusUpdate()
@@ -697,6 +857,9 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         return motionPermissionStatus
     }
     
+    /**
+    Requests access to CoreMotion, if necessary.
+    */
     public func requestMotion() {
         switch statusMotion() {
         case .Unauthorized:
@@ -712,17 +875,16 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         let tmpMotionPermissionStatus = motionPermissionStatus
         defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedMotion)
         defaults.synchronize()
+        
         motionManager.queryActivityStartingFromDate(NSDate(), toDate: NSDate(), toQueue: NSOperationQueue.mainQueue(), withHandler: { (_: [CMMotionActivity]?, error:NSError?) -> Void in
-            if (error != nil && error!.code == Int(CMErrorMotionActivityNotAuthorized.rawValue)) {
+            if let error = error where error.code == Int(CMErrorMotionActivityNotAuthorized.rawValue) {
                 self.motionPermissionStatus = .Unauthorized
-                
-            }
-            else{
+            } else {
                 self.motionPermissionStatus = .Authorized
             }
             
             self.motionManager.stopActivityUpdates()
-            if (tmpMotionPermissionStatus != self.motionPermissionStatus){
+            if tmpMotionPermissionStatus != self.motionPermissionStatus {
                 self.waitingForMotion = false
                 self.detectAndCallback()
             }
@@ -744,6 +906,15 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     private var waitingForMotion = false
     
     // MARK: HealthKit
+    
+    /**
+    Returns the current permission status for accessing HealthKit.
+    
+    - parameter typesToShare: HK types to share (write)
+    - parameter typesToRead:  HK types to read
+    
+    - returns: Permission status for the requested type.
+    */
     public func statusHealthKit(typesToShare: Set<HKSampleType>?, typesToRead: Set<HKObjectType>?) -> PermissionStatus {
         guard HKHealthStore.isHealthDataAvailable() else { return .Disabled }
         
@@ -773,6 +944,9 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
     
+    /**
+    Requests access to HealthKit, if necessary.
+    */
     func requestHealthKit() {
         guard let healthPermission = self.configuredPermissions
             .first({ $0.type == .HealthKit }) as? HealthPermissionConfig else { return }
@@ -796,6 +970,11 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     
     // MARK: CloudKit
     
+    /**
+    Returns the current permission status for accessing CloudKit.
+    
+    - returns: Permission status for the requested type.
+    */
     public func statusCloudKit(statusCallback: statusRequestClosure)  {
         CKContainer.defaultContainer().statusForApplicationPermission(.UserDiscoverability)
             { (status, error) -> Void in
@@ -815,6 +994,9 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
     
+    /**
+    Requests access to CloudKit, if necessary.
+    */
     public func requestCloudKit() {
         CKContainer.defaultContainer().accountStatusWithCompletionHandler { (status, error) -> Void in
             // log error?
@@ -835,7 +1017,13 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     
     // MARK: - UI
     
-    @objc public func show(authChange: ((finished: Bool, results: [PermissionResult]) -> Void)? = nil, cancelled: ((results: [PermissionResult]) -> Void)? = nil) {
+    /**
+    Shows the modal viewcontroller for requesting access to the configured permissions and sets up the closures on it.
+    
+    - parameter authChange: Closure called when a status is detected on any of the permissions.
+    - parameter cancelled:  Closure called when the user taps the close button.
+    */
+    @objc public func show(authChange: authClosureType? = nil, cancelled: cancelClosureType? = nil) {
         assert(!configuredPermissions.isEmpty, "Please add at least one permission")
 
         authChangeClosure = authChange
@@ -849,7 +1037,7 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
                 
                 if areAuthorized {
                     self.getResultsForConfig({ (results) -> Void in
-                        self.authChangeClosure?(true, results)
+                        self.authChangeClosure?(finished: true, results: results)
                     })
                 } else {
                     dispatch_async(dispatch_get_main_queue()) {
@@ -860,8 +1048,10 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
     
+    /**
+    Creates the modal viewcontroller and shows it.
+    */
     private func showAlert() {
-
         // add the backing views
         let window = UIApplication.sharedApplication().keyWindow!
         window.addSubview(view)
@@ -905,6 +1095,9 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         })
     }
 
+    /**
+    Hides the modal viewcontroller with an animation.
+    */
     public func hide() {
         let window = UIApplication.sharedApplication().keyWindow!
 
@@ -922,7 +1115,7 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     // MARK: - Delegates
     
     // MARK: Gesture delegate
-
+    
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
 
         // this prevents our tap gesture from firing for subviews of baseview
@@ -934,7 +1127,7 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
     }
 
     // MARK: Location delegate
-
+    
     public func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
 
         detectAndCallback()
@@ -950,12 +1143,15 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
 
     // MARK: - UI Helpers
     
+    /**
+    Called when the users taps on the close button.
+    */
     func cancel() {
         self.hide()
         
         if let cancelClosure = cancelClosure {
             getResultsForConfig({ (results) -> Void in
-                cancelClosure(results)
+                cancelClosure(results: results)
             })
         }
     }
@@ -965,11 +1161,16 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         
         if let authChangeClosure = authChangeClosure {
             getResultsForConfig({ (results) -> Void in
-                authChangeClosure(true, results)
+                authChangeClosure(finished: true, results: results)
             })
         }
     }
     
+    /**
+    Shows an alert for a permission which was Denied.
+    
+    - parameter permission: Permission type.
+    */
     func showDeniedAlert(permission: PermissionType) {
         let group: dispatch_group_t = dispatch_group_create()
         
@@ -978,7 +1179,7 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
                 // compile the results and pass them back if necessary
                 if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
                     self.getResultsForConfig({ (results) -> Void in
-                        disabledOrDeniedClosure(results)
+                        disabledOrDeniedClosure(results: results)
                     })
                 }
         }
@@ -1005,6 +1206,11 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         }
     }
     
+    /**
+    Shows an alert for a permission which was Disabled (system-wide).
+    
+    - parameter permission: Permission type.
+    */
     func showDisabledAlert(permission: PermissionType) {
         let group: dispatch_group_t = dispatch_group_create()
         
@@ -1013,7 +1219,7 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
                 // compile the results and pass them back if necessary
                 if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
                     self.getResultsForConfig({ (results) -> Void in
-                        disabledOrDeniedClosure(results)
+                        disabledOrDeniedClosure(results: results)
                     })
                 }
         }
@@ -1041,6 +1247,12 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
         detectAndCallback()
     }
     
+    /**
+    Requests the status of any permission.
+    
+    - parameter type:       Permission type to be requested
+    - parameter completion: Closure called when the request is done.
+    */
     func statusForPermission(type: PermissionType, completion: statusRequestClosure) {
         // :(
         switch type {
@@ -1082,7 +1294,7 @@ public typealias statusRequestClosure = (status: PermissionStatus) -> Void
                 if let authChangeClosure = self.authChangeClosure {
                     self.getResultsForConfig({ (results) -> Void in
                         self.allAuthorized({ (areAuthorized) -> Void in
-                            authChangeClosure(areAuthorized, results)
+                            authChangeClosure(finished: areAuthorized, results: results)
                         })
                     })
                 }

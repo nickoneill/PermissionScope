@@ -10,34 +10,24 @@ import Foundation
 import HealthKit
 import Accounts
 
+/**
+*  Protocol for permission configurations.
+*/
 @objc public protocol PermissionConfig {
+    /// Permission type
     var type: PermissionType { get }
+    /// Message for the body label of the dialog presented when requesting access.
     var message: String { get }
 }
 
 @objc public class NotificationsPermissionConfig: NSObject, PermissionConfig {
-    public let type: PermissionType
+    public let type: PermissionType = .Notifications
     public let message: String
     public let notificationCategories: Set<UIUserNotificationCategory>?
     
     public init(message: String, notificationCategories: Set<UIUserNotificationCategory>? = .None) {
         self.notificationCategories = notificationCategories
-        self.type                   = .Notifications
         self.message                = message
-    }
-}
-
-@objc public class HealthPermissionConfig: NSObject, PermissionConfig {
-    public let type: PermissionType = .HealthKit
-    public let message: String
-    public let healthTypesToShare: Set<HKSampleType>?
-    public let healthTypesToRead: Set<HKObjectType>?
-    
-    public init(message: String, healthTypesToShare: Set<HKSampleType>?,
-        healthTypesToRead: Set<HKObjectType>?) {
-            self.healthTypesToShare = healthTypesToShare
-            self.healthTypesToRead = healthTypesToRead
-            self.message = message
     }
 }
 
@@ -128,5 +118,28 @@ import Accounts
     
     public init(message: String) {
         self.message = message
+    }
+}
+
+@objc public class CloudKitPermissionConfig: NSObject, PermissionConfig {
+    public let type: PermissionType = .CloudKit
+    public let message: String
+    
+    public init(message: String) {
+            self.message = message
+    }
+}
+
+@objc public class HealthPermissionConfig: NSObject, PermissionConfig {
+    public let type: PermissionType = .HealthKit
+    public let message: String
+    public let healthTypesToShare: Set<HKSampleType>?
+    public let healthTypesToRead: Set<HKObjectType>?
+    
+    public init(message: String, healthTypesToShare: Set<HKSampleType>?,
+        healthTypesToRead: Set<HKObjectType>?) {
+            self.healthTypesToShare = healthTypesToShare
+            self.healthTypesToRead = healthTypesToRead
+            self.message = message
     }
 }

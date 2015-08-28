@@ -9,6 +9,7 @@
 import Foundation
 import HealthKit
 
+/// Permissions currently supportes by PermissionScope
 @objc public enum PermissionType: Int, CustomStringConvertible {
     case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit, CloudKit
     
@@ -19,13 +20,6 @@ import HealthKit
         default:
             return "\(self)"
         }
-    }
-    
-    public var isHealthKit: Bool {
-        if case .HealthKit = self {
-            return true
-        }
-        return false
     }
     
     public var description: String {
@@ -49,6 +43,7 @@ import HealthKit
     static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit, CloudKit]
 }
 
+/// Possible statuses for a permission.
 @objc public enum PermissionStatus: Int, CustomStringConvertible {
     case Authorized, Unauthorized, Unknown, Disabled
     
@@ -62,6 +57,7 @@ import HealthKit
     }
 }
 
+/// Result for a permission status request.
 @objc public class PermissionResult: NSObject {
     public let type: PermissionType
     public let status: PermissionStatus
