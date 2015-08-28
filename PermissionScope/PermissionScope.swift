@@ -27,7 +27,6 @@ import CoreMotion
     public var closeOffset = CGSize(width: 0, height: 0)
     public var authorizedButtonColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
     public var unauthorizedButtonColor:UIColor?
-    
 
     // MARK: View hierarchy for custom alert
     let baseView = UIView()
