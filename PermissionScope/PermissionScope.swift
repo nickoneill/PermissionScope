@@ -289,11 +289,7 @@ import CoreMotion
     func setButtonUnauthorizedStyle(button: UIButton) {
         button.layer.borderWidth = 0
         
-        if let unauthColor = unauthorizedButtonColor{
-            button.backgroundColor = unauthColor
-        }else{
-            button.backgroundColor = authorizedButtonColor.inverseColor
-        }
+        button.backgroundColor = (unauthorizedButtonColor != nil ? unauthorizedButtonColor : authorizedButtonColor.inverseColor)
         
         button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
     }
