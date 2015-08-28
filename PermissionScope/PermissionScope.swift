@@ -25,22 +25,37 @@ import CoreMotion
     public var labelFont = UIFont.systemFontOfSize(14)
     public var closeButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 32))
     public var closeOffset = CGSize(width: 0, height: 0)
+    public var useInverseColorForAuthButtons = true
     
+    ///  If you want to set costum colors to the authorized and unauthorized buttons, you first have to set useInverseColorForAuthButtons to false
     public var authorizedButtonColor : UIColor{
         get{
             return tintColor
         }
         set(newColor){
+            if useInverseColorForAuthButtons{
+                tintColor = newColor
+                unauthorized = newColor.inverseColor
+            }
+            else{
             tintColor = newColor
+            }
         }
     }
     
+    // If you want to set costum colors to the authorized and unauthorized buttons, you first have to set useInverseColorForAuthButtons to false
     public var unauthorizedButtonColor:UIColor{
         get {
             return unauthorized
         }
         set(newColor){
-            unauthorized = newColor
+            if useInverseColorForAuthButtons{
+                unauthorized = newColor
+                tintColor = newColor.inverseColor
+            }
+            else{
+                unauthorized = newColor
+            }
         }
     }
     
