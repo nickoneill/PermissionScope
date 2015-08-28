@@ -1019,6 +1019,8 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
                 self.showDisabledAlert(.CloudKit)
             case .CouldNotDetermine:
                 // Ask user to login to iCloud
+                print(error!.localizedDescription)
+                // TODO: What should we return ? Use throws ?
                 break
             }
         }
