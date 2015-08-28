@@ -135,11 +135,13 @@ import Accounts
     public let message: String
     public let healthTypesToShare: Set<HKSampleType>?
     public let healthTypesToRead: Set<HKObjectType>?
+    public let strictMode: Bool
     
     public init(message: String, healthTypesToShare: Set<HKSampleType>?,
-        healthTypesToRead: Set<HKObjectType>?) {
+        healthTypesToRead: Set<HKObjectType>?, strictMode: Bool = false) {
             self.healthTypesToShare = healthTypesToShare
             self.healthTypesToRead = healthTypesToRead
             self.message = message
+            self.strictMode = strictMode
     }
 }

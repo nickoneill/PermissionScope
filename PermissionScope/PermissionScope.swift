@@ -915,7 +915,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
-    public func statusHealthKit(typesToShare: Set<HKSampleType>?, typesToRead: Set<HKObjectType>?) -> PermissionStatus {
+    public func statusHealthKit(typesToShare: Set<HKSampleType>?, typesToRead: Set<HKObjectType>?, strict: Bool) -> PermissionStatus {
         guard HKHealthStore.isHealthDataAvailable() else { return .Disabled }
         
         var statusArray:[HKAuthorizationStatus] = []
@@ -926,21 +926,30 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
             statusArray.append(HKHealthStore().authorizationStatusForType($0))
         }
         
-        // TODO: What to do? If there's 1 .Denied or ND then return such result ?
-        // Only Auth if they are all Auth ?
-        let typesAuthorized = statusArray
-            .filter { $0 == .SharingAuthorized }
-        let typesDenied = statusArray
-            .filter { $0 == .SharingDenied }
         let typesNotDetermined = statusArray
             .filter { $0 == .NotDetermined }
         
         if typesNotDetermined.count == statusArray.count || statusArray.isEmpty {
             return .Unknown
-        } else if !typesDenied.isEmpty {
-            return .Unauthorized
+        }
+        
+        let typesAuthorized = statusArray
+            .first { $0 == .SharingAuthorized }
+        let typesDenied = statusArray
+            .first { $0 == .SharingDenied }
+        
+        if strict {
+            if let _ = typesDenied {
+                return .Unauthorized
+            } else {
+                return .Authorized
+            }
         } else {
-            return .Authorized
+            if let _ = typesAuthorized {
+                return .Authorized
+            } else {
+                return .Unauthorized
+            }
         }
     }
     
@@ -951,7 +960,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         guard let healthPermission = self.configuredPermissions
             .first({ $0.type == .HealthKit }) as? HealthPermissionConfig else { return }
         
-        switch statusHealthKit(healthPermission.healthTypesToShare, typesToRead: healthPermission.healthTypesToRead) {
+        switch statusHealthKit(healthPermission.healthTypesToShare, typesToRead: healthPermission.healthTypesToRead, strict: healthPermission.strictMode) {
         case .Unknown:
             HKHealthStore().requestAuthorizationToShareTypes(healthPermission.healthTypesToShare,
                 readTypes: healthPermission.healthTypesToRead,
@@ -1279,7 +1288,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         case .Motion:
             completion(status: statusMotion())
         case .HealthKit:
-            completion(status: statusHealthKit(nil, typesToRead: nil))
+            completion(status: statusHealthKit(nil, typesToRead: nil, strict: false))
         case .CloudKit:
             statusCloudKit(completion)
         }
