@@ -7,9 +7,11 @@
 //
 
 import Foundation
+import HealthKit
 
+/// Permissions currently supportes by PermissionScope
 @objc public enum PermissionType: Int, CustomStringConvertible {
-    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion
+    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit, CloudKit
     
     public var prettyDescription: String {
         switch self {
@@ -22,61 +24,46 @@ import Foundation
     
     public var description: String {
         switch self {
-        case .Contacts: return "Contacts"
-        case .Events: return "Events"
-        case .LocationAlways: return "LocationAlways"
-        case .LocationInUse: return "LocationInUse"
-        case .Notifications: return "Notifications"
-        case .Microphone: return "Microphone"
-        case .Camera: return "Camera"
-        case .Photos: return "Photos"
-        case .Reminders: return "Reminders"
-        case .Bluetooth: return "Bluetooth"
-        case .Motion: return "Motion"
+        case .Contacts:         return "Contacts"
+        case .Events:           return "Events"
+        case .LocationAlways:   return "LocationAlways"
+        case .LocationInUse:    return "LocationInUse"
+        case .Notifications:    return "Notifications"
+        case .Microphone:       return "Microphone"
+        case .Camera:           return "Camera"
+        case .Photos:           return "Photos"
+        case .Reminders:        return "Reminders"
+        case .Bluetooth:        return "Bluetooth"
+        case .Motion:           return "Motion"
+        case .HealthKit:        return "HealthKit"
+        case .CloudKit:         return "CloudKit"
         }
     }
     
-    // Watch out for
-    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion]
-    
+    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit, CloudKit]
 }
 
+/// Possible statuses for a permission.
 @objc public enum PermissionStatus: Int, CustomStringConvertible {
     case Authorized, Unauthorized, Unknown, Disabled
     
     public var description: String {
         switch self {
-        case .Authorized: return "Authorized"
-        case .Unauthorized:return "Unauthorized"
-        case .Unknown: return "Unknown"
-        case .Disabled: return "Disabled" // System-level
+        case .Authorized:   return "Authorized"
+        case .Unauthorized: return "Unauthorized"
+        case .Unknown:      return "Unknown"
+        case .Disabled:     return "Disabled" // System-level
         }
     }
 }
 
-@objc public class PermissionConfig: NSObject {
-    let type: PermissionType
-    let message: String
-    
-    let notificationCategories: Set<UIUserNotificationCategory>?
-    
-    public init(type: PermissionType, message: String, notificationCategories: Set<UIUserNotificationCategory>? = .None) {
-        if type != .Notifications && notificationCategories != .None {
-            assertionFailure("notificationCategories only apply to the .Notifications permission")
-        }
-        
-        self.type = type
-        self.message = message
-        self.notificationCategories = notificationCategories
-    }
-}
-
+/// Result for a permission status request.
 @objc public class PermissionResult: NSObject {
     public let type: PermissionType
     public let status: PermissionStatus
     
     internal init(type:PermissionType, status:PermissionStatus) {
-        self.type = type
+        self.type   = type
         self.status = status
     }
     

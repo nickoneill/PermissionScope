@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import CoreAudio
 import PermissionScope
 
 class ViewController: UIViewController {
@@ -18,11 +17,29 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        singlePscope.addPermission(PermissionConfig(type: .Notifications, message: "We use this to send you\r\nspam and love notes", notificationCategories: .None))
+        singlePscope.addPermission(NotificationsPermissionConfig(
+            message: "We use this to send you\r\nspam and love notes",
+            notificationCategories: .None))
         
-        multiPscope.addPermission(PermissionConfig(type: .Contacts, message: "We use this to steal\r\nyour friends"))
-        multiPscope.addPermission(PermissionConfig(type: .Notifications, message: "We use this to send you\r\nspam and love notes", notificationCategories: .None))
-        multiPscope.addPermission(PermissionConfig(type: .LocationInUse, message: "We use this to track\r\nwhere you live"))
+        multiPscope.addPermission(ContactsPermissionConfig(
+            message: "We use this to steal\r\nyour friends"))
+        multiPscope.addPermission(NotificationsPermissionConfig(
+            message: "We use this to send you\r\nspam and love notes",
+            notificationCategories: .None))
+        multiPscope.addPermission(LocationWhileInUsePermissionConfig(
+            message: "We use this to track\r\nwhere you live"))
+//        multiPscope.addPermission(HealthPermissionConfig(message: "We need your health data\r\nto know you better",
+//            healthTypesToShare: [
+//                HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyMassIndex)!,
+//                HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyMass)!,
+//                HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierHeight)!
+//                ],
+//            healthTypesToRead: [
+//                HKObjectType.characteristicTypeForIdentifier(HKCharacteristicTypeIdentifierDateOfBirth)!,
+//                HKObjectType.characteristicTypeForIdentifier(HKCharacteristicTypeIdentifierBiologicalSex)!,
+//                HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyMass)!,
+//                HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierHeight)!
+//                ]))
         
         // Other example permissions
         //        multiPscope.addPermission(PermissionConfig(type: .Bluetooth, demands: .Required, message: "We use this to drain your battery"))
@@ -64,7 +81,6 @@ class ViewController: UIViewController {
         multiPscope.show(
             { (finished, results) -> Void in
                 print("got results \(results)")
-                print("currentNotificationSettings: \(UIApplication.sharedApplication().currentUserNotificationSettings())")
             },
             cancelled: { (results) -> Void in
                 print("thing was cancelled")

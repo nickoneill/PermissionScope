@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		244B5BA81B8D5E7900FFA019 /* PermissionConfigs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244B5BA71B8D5E7900FFA019 /* PermissionConfigs.swift */; settings = {ASSET_TAGS = (); }; };
 		2487CEE11B87B01E00766A1A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2487CEE01B87B01E00766A1A /* Extensions.swift */; };
 		2487CEE31B87B05200766A1A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2487CEE21B87B05200766A1A /* Constants.swift */; };
 		2487CEE51B87B61E00766A1A /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2487CEE41B87B61E00766A1A /* Structs.swift */; };
@@ -73,6 +74,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		244B5BA71B8D5E7900FFA019 /* PermissionConfigs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermissionConfigs.swift; sourceTree = "<group>"; };
 		2487CEE01B87B01E00766A1A /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		2487CEE21B87B05200766A1A /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		2487CEE41B87B61E00766A1A /* Structs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Structs.swift; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 				D092BA381AD1E5A300BFC163 /* PermissionScope.h */,
 				D092BA4F1AD1E67300BFC163 /* PermissionScope.swift */,
 				2487CEE41B87B61E00766A1A /* Structs.swift */,
+				244B5BA71B8D5E7900FFA019 /* PermissionConfigs.swift */,
 				2487CEE01B87B01E00766A1A /* Extensions.swift */,
 				2487CEE21B87B05200766A1A /* Constants.swift */,
 				D092BA361AD1E5A300BFC163 /* Supporting Files */,
@@ -382,6 +385,7 @@
 				2487CEE51B87B61E00766A1A /* Structs.swift in Sources */,
 				D092BA501AD1E67300BFC163 /* PermissionScope.swift in Sources */,
 				2487CEE11B87B01E00766A1A /* Extensions.swift in Sources */,
+				244B5BA81B8D5E7900FFA019 /* PermissionConfigs.swift in Sources */,
 				2487CEE31B87B05200766A1A /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -7,8 +7,10 @@
 //
 
 import Foundation
+import HealthKit
 
 extension UIColor {
+    /// Returns the inverse color
     var inverseColor: UIColor{
         var r:CGFloat = 0.0; var g:CGFloat = 0.0; var b:CGFloat = 0.0; var a:CGFloat = 0.0;
         if self.getRed(&r, green: &g, blue: &b, alpha: &a) {
@@ -19,7 +21,42 @@ extension UIColor {
 }
 
 extension String {
+    /// NSLocalizedString shorthand
     var localized: String {
         return NSLocalizedString(self, comment: "")
+    }
+}
+
+extension SequenceType {
+    /**
+    Returns the first that satisfies the predicate includeElement, or nil. Similar to `filter` but stops when one element is found. Thanks to [bigonotetaking](https://bigonotetaking.wordpress.com/2015/08/22/using-higher-order-methods-everywhere/)
+    
+    - parameter includeElement: Predicate that the Element must satisfy.
+    
+    - returns: First element that satisfies the predicate, or nil.
+    */
+    func first(@noescape includeElement: Generator.Element -> Bool) -> Generator.Element? {
+        for x in self where includeElement(x) { return x }
+        return nil
+    }
+}
+
+extension Optional {
+    /// True if the Optional is .None. Useful when if-let isn't needed.
+    var isNil: Bool {
+        if let _ = self {
+            return false
+        }
+        return true
+    }
+}
+
+extension HKAuthorizationStatus: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case NotDetermined: return "NotDetermined"
+        case SharingDenied: return "SharingDenied"
+        case SharingAuthorized: return "SharingAuthorized"
+        }
     }
 }
