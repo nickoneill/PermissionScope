@@ -50,9 +50,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        pscope.addPermission(PermissionConfig(type: .Contacts, demands: .Required, message: "We use this to steal\r\nyour friends"))
-        pscope.addPermission(PermissionConfig(type: .Notifications, demands: .Optional, message: "We use this to send you\r\nspam and love notes", notificationCategories: .None))
-        pscope.addPermission(PermissionConfig(type: .LocationInUse, demands: .Required, message: "We use this to track\r\nwhere you live"))
+        pscope.addPermission(PermissionConfig(type: .Contacts, message: "We use this to steal\r\nyour friends"))
+        pscope.addPermission(PermissionConfig(type: .Notifications, message: "We use this to send you\r\nspam and love notes", notificationCategories: .None))
+        pscope.addPermission(PermissionConfig(type: .LocationInUse, message: "We use this to track\r\nwhere you live"))
 
         pscope.show()
     }
@@ -70,10 +70,6 @@ class ViewController: UIViewController {
 The permissions view will automatically show if there are permissions to approve and will take no action if permissions are already granted. It will automatically hide when all permissions have been approved.
 
 If you're attempting to block access to a screen in your app without permissions (like, say, the broadcast screen in Periscope), you should watch for the cancel closure and take an appropriate action for your app.
-
-A permission can either have `.Required` or .`Optional` demands. Required permissions (such as access to contacts for a contact picker) are evaluated when you call `show` and, if all required demands are met, the dialog isn't shown!
-
-A permission with the `.Optional` demand will not cause the dialog to show alone. Users who have accepted all the required permissions but not all optional permissions can tap out to continue without allowing the optional permissions.
 
 ### customizability
 
@@ -179,7 +175,7 @@ Trickiest part of implementing location permissions? You must implement the prop
 Use `NSLocationAlwaysUsageDescription` or `NSLocationWhenInUseUsageDescription` where appropriate for your app usage. You can specify which of these location permissions you wish to request with `.LocationAlways` or `.LocationInUse` while configuring PermissionScope.
 
 ### notes about bluetooth
-The *NSBluetoothPeripheralUsageDescription* key in the Info.plist specifying a short description of why your app needs to act as a bluetooth peripheralin the background is **optional**. 
+The *NSBluetoothPeripheralUsageDescription* key in the Info.plist specifying a short description of why your app needs to act as a bluetooth peripheralin the background is **optional**.
 
 However, enabling `background-modes` in the capabilities section and checking the `acts as a bluetooth LE accessory` checkbox is **required**.
 
