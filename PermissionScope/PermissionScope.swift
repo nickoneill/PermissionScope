@@ -25,6 +25,26 @@ import CoreMotion
     public var labelFont = UIFont.systemFontOfSize(14)
     public var closeButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 32))
     public var closeOffset = CGSize(width: 0, height: 0)
+    
+    public var authorizedButtonColor : UIColor{
+        get{
+            return tintColor
+        }
+        set(newColor){
+            tintColor = newColor
+        }
+    }
+    
+    public var unauthorizedButtonColor:UIColor{
+        get {
+            return unauthorized
+        }
+        set(newColor){
+            unauthorized = newColor
+        }
+    }
+    
+    private var unauthorized : UIColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1).inverseColor
 
     // MARK: View hierarchy for custom alert
     let baseView = UIView()
@@ -277,13 +297,13 @@ import CoreMotion
 
     func setButtonAuthorizedStyle(button: UIButton) {
         button.layer.borderWidth = 0
-        button.backgroundColor = tintColor
+        button.backgroundColor = authorizedButtonColor
         button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
     }
     
     func setButtonUnauthorizedStyle(button: UIButton) {
         button.layer.borderWidth = 0
-        button.backgroundColor = tintColor.inverseColor
+        button.backgroundColor = unauthorizedButtonColor
         button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
     }
 
