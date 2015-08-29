@@ -17,18 +17,16 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        singlePscope.addPermission(NotificationsPermissionConfig(
-            message: "We use this to send you\r\nspam and love notes",
-            notificationCategories: .None))
+        singlePscope.addPermission(NotificationsPermission(notificationCategories: nil),
+            message: "We use this to send you\r\nspam and love notes")
         
-        multiPscope.addPermission(ContactsPermissionConfig(
-            message: "We use this to steal\r\nyour friends"))
-        multiPscope.addPermission(NotificationsPermissionConfig(
-            message: "We use this to send you\r\nspam and love notes",
-            notificationCategories: .None))
-        multiPscope.addPermission(LocationWhileInUsePermissionConfig(
-            message: "We use this to track\r\nwhere you live"))
-//        multiPscope.addPermission(HealthPermissionConfig(message: "We need your health data\r\nto know you better",
+        multiPscope.addPermission(ContactsPermission(),
+            message: "We use this to steal\r\nyour friends")
+        multiPscope.addPermission(NotificationsPermission(notificationCategories: nil),
+            message: "We use this to send you\r\nspam and love notes")
+        multiPscope.addPermission(LocationWhileInUsePermission(),
+            message: "We use this to track\r\nwhere you live")
+//        multiPscope.addPermission(HealthPermission(
 //            healthTypesToShare: [
 //                HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyMassIndex)!,
 //                HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyMass)!,
@@ -39,16 +37,11 @@ class ViewController: UIViewController {
 //                HKObjectType.characteristicTypeForIdentifier(HKCharacteristicTypeIdentifierBiologicalSex)!,
 //                HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyMass)!,
 //                HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierHeight)!
-//                ]))
+//                ]), message: "We need your health data\r\nto know you better")
         
         // Other example permissions
-        //        multiPscope.addPermission(PermissionConfig(type: .Bluetooth, demands: .Required, message: "We use this to drain your battery"))
+        //        multiPscope.addPermission(BluetoothPermission(), message: "We use this to drain your battery")
         
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     // an example of how to use the unified permissions API
