@@ -47,7 +47,9 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     public var authorizedButtonColor       = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
     /// Color used for permission buttons with unauthorized status. By default, inverse of `authorizedButtonColor`.
     public var unauthorizedButtonColor:UIColor?
-
+    /// Messages for the body label of the dialog presented when requesting access.
+    lazy var permissionMessages: [PermissionType : String] = [PermissionType : String]()
+    
     // MARK: View hierarchy for custom alert
     let baseView    = UIView()
     let contentView = UIView()
@@ -78,7 +80,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     // MARK: - Internal state and resolution
     
     /// Permissions configured using `addPermission(:)`
-    var configuredPermissions: [PermissionConfig] = []
+    var configuredPermissions: [Permission] = []
     var permissionButtons: [UIButton]             = []
     var permissionLabels: [UILabel]               = []
 	
@@ -290,16 +292,17 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     
     - parameter config: Configuration for a specific permission.
     */
-    @objc public func addPermission(config: PermissionConfig) {
-        assert(!config.message.isEmpty, "Including a message about your permission usage is helpful")
+    @objc public func addPermission(permission: Permission, message: String) {
+        assert(!message.isEmpty, "Including a message about your permission usage is helpful")
         assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
-        assert(configuredPermissions.filter { $0.type == config.type }.isEmpty, "Permission for \(config.type) already set")
+        assert(configuredPermissions.first { $0.type == permission.type }.isNil, "Permission for \(permission.type) already set")
         
-        configuredPermissions.append(config)
+        configuredPermissions.append(permission)
+        permissionMessages[permission.type] = message
         
-        if config.type == .Bluetooth && askedBluetooth {
+        if permission.type == .Bluetooth && askedBluetooth {
             triggerBluetoothStatusUpdate()
-        } else if config.type == .Motion && askedMotion {
+        } else if permission.type == .Motion && askedMotion {
             triggerMotionStatusUpdate()
         }
     }
@@ -358,17 +361,16 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     /**
     Permission label factory, located below the permission buttons.
     
-    - parameter message: Label's text.
+    - parameter type: Permission type
     
     - returns: UILabel instance with a custom style.
     */
-    func permissionStyledLabel(message: String) -> UILabel {
+    func permissionStyledLabel(type: PermissionType) -> UILabel {
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 260, height: 50))
         label.font = labelFont
         label.numberOfLines = 2
         label.textAlignment = .Center
-
-        label.text = message
+        label.text = permissionMessages[type]
 
         return label
     }
@@ -570,7 +572,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         switch statusNotifications() {
         case .Unknown:
             let notificationsPermission = self.configuredPermissions
-                .first { $0 is NotificationsPermissionConfig } as? NotificationsPermissionConfig
+                .first { $0 is NotificationsPermission } as? NotificationsPermission
             let notificationsPermissionSet = notificationsPermission?.notificationCategories
 
             NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("showingNotificationPermission"), name: UIApplicationWillResignActiveNotification, object: nil)
@@ -958,7 +960,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     */
     func requestHealthKit() {
         guard let healthPermission = self.configuredPermissions
-            .first({ $0.type == .HealthKit }) as? HealthPermissionConfig else { return }
+            .first({ $0.type == .HealthKit }) as? HealthPermission else { return }
         
         switch statusHealthKit(healthPermission.healthTypesToShare, typesToRead: healthPermission.healthTypesToRead, strict: healthPermission.strictMode) {
         case .Unknown:
@@ -1080,12 +1082,12 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         permissionLabels = []
 
         // create the buttons
-        for config in configuredPermissions {
-            let button = permissionStyledButton(config.type)
+        for permission in configuredPermissions {
+            let button = permissionStyledButton(permission.type)
             permissionButtons.append(button)
             contentView.addSubview(button)
 
-            let label = permissionStyledLabel(config.message)
+            let label = permissionStyledLabel(permission.type)
             permissionLabels.append(label)
             contentView.addSubview(label)
         }
