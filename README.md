@@ -204,11 +204,11 @@ However, enabling `background-modes` in the capabilities section and checking th
 
 ### healthkit
 
-Enable `HealthKit` under your target's capabilities, **required**.
+Enable `HealthKit` in your target's capabilities, **required**.
 
 ### cloudkit
 
-Enable `CloudKit` under your target's capabilities, **required**.
+Enable `CloudKit` in your target's capabilities, **required**.
 
 Also, remember to add an observer and manage [CKAccountChangedNotification](https://developer.apple.com/library/prerelease/ios/documentation/CloudKit/Reference/CKContainer_class/#//apple_ref/c/data/CKAccountChangedNotification) in your app.
 
