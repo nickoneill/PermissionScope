@@ -91,15 +91,15 @@ You can easily change the colors, label and buttons fonts with PermissionScope b
 Field | Type | Comment
 ----- | ---- | -------
 headerLabel | UILabel | Header UILabel with the message "Hey, listen!" by default.
-bodyLabel | | Header UILabel with the message "We need a couple things\r\nbefore you get started." by default.
-closeButtonTextColor | | Color for the close button's text color.
-permissionButtonTextColor  | | Color for the permission buttons' text color.
-permissionButtonBorderColor | | Color for the permission buttons' border color.
-buttonFont | | Font used for all the UIButtons
-labelFont | | Font used for all the UILabels
-closeButton | | Close button. By default in the top right corner.
-closeOffset | | Offset used to position the Close button.
-authorizedButtonColor | | Color used for permission buttons with authorized status
+bodyLabel | UILabel | Header UILabel with the message "We need a couple things\r\nbefore you get started." by default.
+closeButtonTextColor | UIColor | Color for the close button's text color.
+permissionButtonTextColor  | UIColor | Color for the permission buttons' text color.
+permissionButtonBorderColor | UIColor | Color for the permission buttons' border color.
+buttonFont | UIFont | Font used for all the UIButtons
+labelFont | UIFont | Font used for all the UILabels
+closeButton | UIButton | Close button. By default in the top right corner.
+closeOffset | CGSize | Offset used to position the Close button.
+authorizedButtonColor | UIColor | Color used for permission buttons with authorized status
 unauthorizedButtonColor | UIColor? | Color used for permission buttons with unauthorized status. By default, inverse of `authorizedButtonColor`.
 permissionButtonΒorderWidth | CGFloat | Border width for the permission buttons.
 permissionButtonCornerRadius | CGFloat | Corner radius for the permission buttons.
