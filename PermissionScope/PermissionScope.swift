@@ -74,7 +74,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         return .standardUserDefaults()
     }()
     
-    /// Default status for CoreMotion
+    /// Default status for Core Motion Activity
     var motionPermissionStatus: PermissionStatus = .Unknown
 
     // MARK: - Internal state and resolution
@@ -845,10 +845,10 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         }
     }
     
-    // MARK: CoreMotion
+    // MARK: Core Motion Activity
     
     /**
-    Returns the current permission status for accessing CoreMotion.
+    Returns the current permission status for accessing Core Motion Activity.
     
     - returns: Permission status for the requested type.
     */
@@ -860,7 +860,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     }
     
     /**
-    Requests access to CoreMotion, if necessary.
+    Requests access to Core Motion Activity, if necessary.
     */
     public func requestMotion() {
         switch statusMotion() {
@@ -873,6 +873,9 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         }
     }
     
+    /**
+    Prompts motionManager to request a status update. If permission is not already granted the user will be prompted with the system's permission dialog.
+    */
     private func triggerMotionStatusUpdate() {
         let tmpMotionPermissionStatus = motionPermissionStatus
         defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedMotion)
@@ -895,6 +898,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         waitingForMotion = true
     }
     
+    /// Returns whether Bluetooth access was asked before or not.
     private var askedMotion:Bool {
         get {
             return defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedMotion)
@@ -905,6 +909,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         }
     }
     
+    /// Returns whether PermissionScope is waiting for the user to enable/disable motion access or not.
     private var waitingForMotion = false
     
     // MARK: HealthKit
