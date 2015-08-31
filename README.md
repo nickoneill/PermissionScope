@@ -1,6 +1,7 @@
 # PermissionScope 🔐🔭
 
-[![Language](http://img.shields.io/badge/language-swift-brightgreen.svg?style=flat
+![iOS 8+](https://img.shields.io/badge/ios-8%2B-blue.svg?style=flat
+) [![Language](https://img.shields.io/badge/language-swift2-brightgreen.svg?style=flat
 )](https://developer.apple.com/swift)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Cocoapods compatible](https://cocoapod-badges.herokuapp.com/v/PermissionScope/badge.png)](https://cocoapods.org/pods/PermissionScope)
@@ -22,6 +23,7 @@ Best of all, PermissionScope detects when ([some of](https://github.com/nickonei
 ## Table of Contents
 * [Installation](https://github.com/nickoneill/PermissionScope/#installation)
 * [Dialog Usage](https://github.com/nickoneill/PermissionScope/#dialog-usage)
+* [UI Customization](https://github.com/nickoneill/PermissionScope/#ui-customization)
 * [Unified Permissions API](https://github.com/nickoneill/PermissionScope/#unified-permissions-api)
 * [Issues](https://github.com/nickoneill/PermissionScope/#issues)
 * [Extra Requirements for Permissions](https://github.com/nickoneill/PermissionScope/#extra-requirements-for-permissions)
@@ -31,7 +33,7 @@ Best of all, PermissionScope detects when ([some of](https://github.com/nickonei
 
 ## installation
 
-* requires iOS 8+
+requires iOS 8+
 
 Installation for [Carthage](https://github.com/Carthage/Carthage) is simple enough:
 
@@ -202,11 +204,11 @@ However, enabling `background-modes` in the capabilities section and checking th
 
 ### healthkit
 
-Enable `HealthKit` under your target's capabilities, **required**.
+Enable `HealthKit` in your target's capabilities, **required**.
 
 ### cloudkit
 
-Enable `CloudKit` under your target's capabilities, **required**.
+Enable `CloudKit` in your target's capabilities, **required**.
 
 Also, remember to add an observer and manage [CKAccountChangedNotification](https://developer.apple.com/library/prerelease/ios/documentation/CloudKit/Reference/CKContainer_class/#//apple_ref/c/data/CKAccountChangedNotification) in your app.
 
