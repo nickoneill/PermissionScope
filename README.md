@@ -83,17 +83,25 @@ If you're attempting to block access to a screen in your app without permissions
 
 ### ui customization
 
-You can easily change the colors, label and buttons fonts with PermissionScope.
+You can easily change the colors, label and buttons fonts with PermissionScope by modifying any of these properties:
 
-```swift
-pscope.tintColor = UIColor...
-pscope.headerLabel.text = "..."
-pscope.headerLabel.font = UIFont...
-pscope.bodyLabel.text = "..."
-pscope.bodyLabel.font = UIFont...
-pscope.buttonFont = UIFont...
-pscope.labelFont = UIFont...
-```
+Field | Type | Comment
+----- | ---- | -------
+headerLabel | UILabel | Header UILabel with the message "Hey, listen!" by default.
+bodyLabel | | Header UILabel with the message "We need a couple things\r\nbefore you get started." by default.
+closeButtonTextColor | | Color for the close button's text color.
+permissionButtonTextColor  | | Color for the permission buttons' text color.
+permissionButtonBorderColor | | Color for the permission buttons' border color.
+buttonFont | | Font used for all the UIButtons
+labelFont | | Font used for all the UILabels
+closeButton | | Close button. By default in the top right corner.
+closeOffset | | Offset used to position the Close button.
+authorizedButtonColor | | Color used for permission buttons with authorized status
+unauthorizedButtonColor | UIColor? | Color used for permission buttons with unauthorized status. By default, inverse of `authorizedButtonColor`.
+permissionButtonΒorderWidth | CGFloat | Border width for the permission buttons.
+permissionButtonCornerRadius | CGFloat | Corner radius for the permission buttons.
+permissionLabelColor | UIColor | Color for the permission labels' text color.
+contentView | UIView | Dialog's content view
 
 In addition, the default behavior for tapping the background behind the dialog is to cancel the dialog (which calls the cancel closure you can provide on `show`). You can change this behavior with `backgroundTapCancels` during init.
 
