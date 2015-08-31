@@ -35,6 +35,10 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     public var permissionButtonTextColor   = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
     /// Color for the permission buttons' border color.
     public var permissionButtonBorderColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
+    /// Corner radius for the permission buttons.
+    public var permissionButtonCornerRadius : CGFloat = 6
+    /// Color for the permission labels' text color.
+    public var permissionLabelColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
     /// Font used for all the UIButtons
     public var buttonFont                  = UIFont.boldSystemFontOfSize(14)
     /// Font used for all the UILabels
@@ -52,7 +56,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     
     // MARK: View hierarchy for custom alert
     let baseView    = UIView()
-    let contentView = UIView()
+    public let contentView = UIView()
 
     // MARK: - Various lazy managers
     lazy var locationManager:CLLocationManager = {
@@ -321,7 +325,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
 
         button.layer.borderWidth = 1
         button.layer.borderColor = permissionButtonBorderColor.CGColor
-        button.layer.cornerRadius = 6
+        button.layer.cornerRadius = permissionButtonCornerRadius
 
         // this is a bit of a mess, eh?
         switch type {
@@ -371,7 +375,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         label.numberOfLines = 2
         label.textAlignment = .Center
         label.text = permissionMessages[type]
-
+        label.textColor = permissionLabelColor
         return label
     }
 
