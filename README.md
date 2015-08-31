@@ -61,20 +61,21 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        pscope.addPermission(PermissionConfig(type: .Contacts, message: "We use this to steal\r\nyour friends"))
-        pscope.addPermission(PermissionConfig(type: .Notifications, message: "We use this to send you\r\nspam and love notes", notificationCategories: .None))
-        pscope.addPermission(PermissionConfig(type: .LocationInUse, message: "We use this to track\r\nwhere you live"))
-
-        pscope.show()
-    }
-
-    @IBAction func doAThing() {
+        
+        // Set up permissions
+         pscope.addPermission(ContactsPermission(),
+            message: "We use this to steal\r\nyour friends")
+        pscope.addPermission(NotificationsPermission(notificationCategories: nil),
+            message: "We use this to send you\r\nspam and love notes")
+        pscope.addPermission(LocationWhileInUsePermission(),
+            message: "We use this to track\r\nwhere you live")
+	
+	// Show dialog with callbacks
         pscope.show(authChange: { (finished, results) -> Void in
             println("got results \(results)")
         }, cancelled: { (results) -> Void in
             println("thing was cancelled")
-        })
+        })   
     }
 }
 ```
