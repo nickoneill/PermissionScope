@@ -19,6 +19,7 @@ import HealthKit
 public typealias statusRequestClosure = (status: PermissionStatus) -> Void
 public typealias authClosureType      = (finished: Bool, results: [PermissionResult]) -> Void
 public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
+typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
 
 @objc public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
 
@@ -535,6 +536,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         }
     }
     
+    // TODO: Add doc
     func showingNotificationPermission () {
         NSNotificationCenter.defaultCenter().removeObserver(self,
             name: UIApplicationWillResignActiveNotification,
@@ -545,10 +547,11 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         notificationTimer?.invalidate()
     }
     
+    // TODO: Add doc
     var notificationTimer : NSTimer?
 
+    // TODO: Add doc
     func finishedShowingNotificationPermission () {
-        
         NSNotificationCenter.defaultCenter().removeObserver(self,
             name: UIApplicationWillResignActiveNotification,
             object: nil)
@@ -847,6 +850,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         
     }
     
+    // TODO: Add doc
     private func triggerBluetoothStatusUpdate() {
         if !waitingForBluetooth && bluetoothManager.state == .Unknown {
             bluetoothManager.startAdvertising(nil)
@@ -1000,8 +1004,8 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     /**
     Shows the modal viewcontroller for requesting access to the configured permissions and sets up the closures on it.
     
-    - parameter authChange: Closure called when a status is detected on any of the permissions.
-    - parameter cancelled:  Closure called when the user taps the close button.
+    - parameter authChange: Called when a status is detected on any of the permissions.
+    - parameter cancelled:  Called when the user taps the Close button.
     */
     @objc public func show(authChange: authClosureType? = nil, cancelled: cancelClosureType? = nil) {
         assert(!configuredPermissions.isEmpty, "Please add at least one permission")
@@ -1097,26 +1101,22 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     // MARK: Gesture delegate
     
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-
         // this prevents our tap gesture from firing for subviews of baseview
         if touch.view == baseView {
             return true
         }
-
         return false
     }
 
     // MARK: Location delegate
     
     public func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-
         detectAndCallback()
     }
     
     // MARK: Bluetooth delegate
     
     public func peripheralManagerDidUpdateState(peripheral: CBPeripheralManager) {
-        
         waitingForBluetooth = false
         detectAndCallback()
     }
@@ -1136,6 +1136,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         }
     }
     
+    // TODO: Add doc
     func finish() {
         self.hide()
         
@@ -1220,8 +1221,8 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
 
     // MARK: Helpers
     
-    func appForegroundedAfterSettings (){
-        
+    // TODO: Add doc
+    func appForegroundedAfterSettings() {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidBecomeActiveNotification, object: nil)
         
         detectAndCallback()
@@ -1263,6 +1264,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         }
     }
     
+    // TODO: Add doc
     func detectAndCallback() {
         let group: dispatch_group_t = dispatch_group_create()
         
@@ -1291,7 +1293,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         }
     }
     
-    typealias resultsForConfigClosure = ([PermissionResult]) -> Void
+    // TODO: Add doc
     func getResultsForConfig(completionBlock: resultsForConfigClosure) {
         var results: [PermissionResult] = []
         let group: dispatch_group_t = dispatch_group_create()
@@ -1307,7 +1309,6 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
             }
         }
         
-        // FIXME: Return after async calls were executed
         dispatch_group_notify(group,
             dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
                 completionBlock(results)
