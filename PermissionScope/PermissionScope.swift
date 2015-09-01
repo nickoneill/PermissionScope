@@ -550,9 +550,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         
         getResultsForConfig { (results) -> Void in
             let _notificationResult = results
-                .filter {
-                    $0.type == PermissionType.Notifications
-                }
+                .filter { $0.type == PermissionType.Notifications }
                 .first
             
             guard let notificationResult = _notificationResult else { return }
