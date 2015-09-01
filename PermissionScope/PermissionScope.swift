@@ -34,7 +34,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     public var permissionButtonTextColor   = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
     /// Color for the permission buttons' border color.
     public var permissionButtonBorderColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
-    /// Corner radius for the permission buttons.
+    /// Width for the permission buttons.
     public var permissionButtonΒorderWidth  : CGFloat = 1
     /// Corner radius for the permission buttons.
     public var permissionButtonCornerRadius : CGFloat = 6
