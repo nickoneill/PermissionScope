@@ -1,6 +1,6 @@
 # PermissionScope 🔐🔭
 
-![iOS 8+](https://img.shields.io/badge/ios-8%2B-blue.svg?style=flat
+![iOS 8+](https://img.shields.io/badge/platform-iOS%208%2B-blue.svg?style=flat
 ) [![Language](https://img.shields.io/badge/language-swift2-brightgreen.svg?style=flat
 )](https://developer.apple.com/swift)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
