@@ -418,8 +418,8 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     */
     public func requestLocationAlways() {
     	let hasAlwaysKey:Bool = !NSBundle.mainBundle()
-    		.objectForInfoDictionaryKey("NSLocationAlwaysUsageDescription").isNil
-    	assert(hasAlwaysKey, "NSLocationAlwaysUsageDescription not found in Info.plist.")
+    		.objectForInfoDictionaryKey(Constants.InfoPlistKeys.locationAlways).isNil
+    	assert(hasAlwaysKey, Constants.InfoPlistKeys.locationAlways + " not found in Info.plist.")
     	
         switch statusLocationAlways() {
         case .Unknown:
@@ -465,8 +465,8 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     */
     public func requestLocationInUse() {
     	let hasWhenInUseKey :Bool = !NSBundle.mainBundle()
-    		.objectForInfoDictionaryKey("NSLocationWhenInUseUsageDescription").isNil
-    	assert(hasWhenInUseKey , "NSLocationWhenInUseUsageDescription not found in Info.plist.")
+    		.objectForInfoDictionaryKey(Constants.InfoPlistKeys.locationWhenInUse).isNil
+    	assert(hasWhenInUseKey , Constants.InfoPlistKeys.locationWhenInUse + " not found in Info.plist.")
     	
         switch statusLocationInUse() {
         case .Unknown:
