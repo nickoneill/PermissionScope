@@ -22,4 +22,9 @@ enum Constants {
         static let requestedMotion               = "PS_requestedMotion"
         static let requestedNotifications        = "PS_requestedNotifications"
     }
+    
+    struct InfoPlistKeys {
+        static let locationWhenInUse             = "NSLocationWhenInUseUsageDescription"
+        static let locationAlways                = "NSLocationAlwaysUsageDescription"
+    } 
 }
