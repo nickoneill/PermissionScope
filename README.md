@@ -108,6 +108,8 @@ contentView | UIView | Dialog's content view
 
 In addition, the default behavior for tapping the background behind the dialog is to cancel the dialog (which calls the cancel closure you can provide on `show`). You can change this behavior with `backgroundTapCancels` during init.
 
+If you'd like more control over the button text for a particular permission, you can [use a `.strings` file](https://github.com/nickoneill/PermissionScope/pull/12#issuecomment-96428580) for your intended language and override them that way. Please get in touch if you'd like to contribute a localization file for another language!
+
 ## unified permissions API
 
 PermissionScope also has an abstracted API for getting the state for a given permission and requesting permissions if you need to do so outside of the normal dialog UI. Think of it as a unified iOS permissions API that can provide some features that even Apple does not (such as detecting denied notification permissions).
