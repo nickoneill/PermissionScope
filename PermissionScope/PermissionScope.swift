@@ -15,7 +15,6 @@ import EventKit
 import CoreBluetooth
 import CoreMotion
 import HealthKit
-import CloudKit
 
 public typealias statusRequestClosure = (status: PermissionStatus) -> Void
 public typealias authClosureType      = (finished: Bool, results: [PermissionResult]) -> Void
@@ -984,55 +983,6 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         }
     }
     
-    // MARK: CloudKit
-    
-    /**
-    Returns the current permission status for accessing CloudKit.
-    
-    - returns: Permission status for the requested type.
-    */
-    public func statusCloudKit(statusCallback: statusRequestClosure)  {
-        CKContainer.defaultContainer().statusForApplicationPermission(.UserDiscoverability)
-            { (status, error) -> Void in
-                switch status {
-                case .InitialState:
-                    statusCallback(status: .Unknown)
-                case .Granted:
-                    statusCallback(status: .Authorized)
-                case .Denied:
-                    statusCallback(status: .Unauthorized)
-                case .CouldNotComplete:
-                    // Error ocurred.
-                    print(error!.localizedDescription)
-                    // TODO: What should we return ? Use throws ?
-                    statusCallback(status: .Unknown)
-                }
-        }
-    }
-    
-    /**
-    Requests access to CloudKit, if necessary.
-    */
-    public func requestCloudKit() {
-        CKContainer.defaultContainer().accountStatusWithCompletionHandler { (status, error) -> Void in
-            // log error?
-            switch status {
-            case .Available:
-                CKContainer.defaultContainer().requestApplicationPermission(.UserDiscoverability,
-                    completionHandler: { (status2, error2) -> Void in
-                        self.detectAndCallback()
-                })
-            case .Restricted, .NoAccount:
-                self.showDisabledAlert(.CloudKit)
-            case .CouldNotDetermine:
-                // Ask user to login to iCloud
-                print(error!.localizedDescription)
-                // TODO: What should we return ? Use throws ?
-                break
-            }
-        }
-    }
-    
     // MARK: - UI
     
     /**
@@ -1298,8 +1248,6 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
             completion(status: statusMotion())
         case .HealthKit:
             completion(status: statusHealthKit(nil, typesToRead: nil, strict: false))
-        case .CloudKit:
-            statusCloudKit(completion)
         }
     }
     
