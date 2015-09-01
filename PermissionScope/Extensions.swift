@@ -42,12 +42,12 @@ extension SequenceType {
 }
 
 extension Optional {
-    /// True if the Optional is .None. Useful when if-let isn't needed.
+    /// True if the Optional is .None. Useful to avoid if-let.
     var isNil: Bool {
-        if let _ = self {
-            return false
+        if case .None = self {
+            return true
         }
-        return true
+        return false
     }
 }
 
