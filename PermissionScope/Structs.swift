@@ -11,7 +11,7 @@ import HealthKit
 
 /// Permissions currently supportes by PermissionScope
 @objc public enum PermissionType: Int, CustomStringConvertible {
-    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit, CloudKit
+    case Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit
     
     public var prettyDescription: String {
         switch self {
@@ -36,11 +36,10 @@ import HealthKit
         case .Bluetooth:        return "Bluetooth"
         case .Motion:           return "Motion"
         case .HealthKit:        return "HealthKit"
-        case .CloudKit:         return "CloudKit"
         }
     }
     
-    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit, CloudKit]
+    static let allValues = [Contacts, LocationAlways, LocationInUse, Notifications, Microphone, Camera, Photos, Reminders, Events, Bluetooth, Motion, HealthKit]
 }
 
 /// Possible statuses for a permission.
