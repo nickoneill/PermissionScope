@@ -402,7 +402,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
             return .Unauthorized
         case .AuthorizedWhenInUse:
             // Curious why this happens? Details on upgrading from WhenInUse to Always:
-            // https://github.com/nickoneill/PermissionScope/issues/24
+            // [Check this issue](https://github.com/nickoneill/PermissionScope/issues/24)
             if defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedInUseToAlwaysUpgrade) {
                 return .Unauthorized
             } else {
@@ -417,6 +417,10 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     Requests access to LocationAlways, if necessary.
     */
     public func requestLocationAlways() {
+    	let hasAlwaysKey:Bool = !NSBundle.mainBundle()
+    		.objectForInfoDictionaryKey("NSLocationAlwaysUsageDescription").isNil
+    	assert(hasAlwaysKey, "NSLocationAlwaysUsageDescription not found in Info.plist.")
+    	
         switch statusLocationAlways() {
         case .Unknown:
             if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse {
@@ -460,6 +464,10 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     Requests access to LocationWhileInUse, if necessary.
     */
     public func requestLocationInUse() {
+    	let hasWhenInUseKey :Bool = !NSBundle.mainBundle()
+    		.objectForInfoDictionaryKey("NSLocationWhenInUseUsageDescription").isNil
+    	assert(hasWhenInUseKey , "NSLocationWhenInUseUsageDescription not found in Info.plist.")
+    	
         switch statusLocationInUse() {
         case .Unknown:
             locationManager.requestWhenInUseAuthorization()
