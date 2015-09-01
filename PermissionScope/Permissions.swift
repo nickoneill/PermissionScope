@@ -78,10 +78,6 @@ public typealias requestPermissionShowAlert     = (PermissionType) -> Void
     public let type: PermissionType = .Motion
 }
 
-@objc public class CloudKitPermission: NSObject, Permission {
-    public let type: PermissionType = .CloudKit
-}
-
 @objc public class HealthPermission: NSObject, Permission {
     public let type: PermissionType = .HealthKit
     public let healthTypesToShare: Set<HKSampleType>?

@@ -15,7 +15,6 @@ import EventKit
 import CoreBluetooth
 import CoreMotion
 import HealthKit
-import CloudKit
 
 public typealias statusRequestClosure = (status: PermissionStatus) -> Void
 public typealias authClosureType      = (finished: Bool, results: [PermissionResult]) -> Void
@@ -35,6 +34,12 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     public var permissionButtonTextColor   = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
     /// Color for the permission buttons' border color.
     public var permissionButtonBorderColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
+    /// Width for the permission buttons.
+    public var permissionButtonΒorderWidth  : CGFloat = 1
+    /// Corner radius for the permission buttons.
+    public var permissionButtonCornerRadius : CGFloat = 6
+    /// Color for the permission labels' text color.
+    public var permissionLabelColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
     /// Font used for all the UIButtons
     public var buttonFont                  = UIFont.boldSystemFontOfSize(14)
     /// Font used for all the UILabels
@@ -52,7 +57,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     
     // MARK: View hierarchy for custom alert
     let baseView    = UIView()
-    let contentView = UIView()
+    public let contentView = UIView()
 
     // MARK: - Various lazy managers
     lazy var locationManager:CLLocationManager = {
@@ -74,7 +79,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         return .standardUserDefaults()
     }()
     
-    /// Default status for CoreMotion
+    /// Default status for Core Motion Activity
     var motionPermissionStatus: PermissionStatus = .Unknown
 
     // MARK: - Internal state and resolution
@@ -319,9 +324,9 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         button.setTitleColor(permissionButtonTextColor, forState: .Normal)
         button.titleLabel?.font = buttonFont
 
-        button.layer.borderWidth = 1
+        button.layer.borderWidth = permissionButtonΒorderWidth
         button.layer.borderColor = permissionButtonBorderColor.CGColor
-        button.layer.cornerRadius = 6
+        button.layer.cornerRadius = permissionButtonCornerRadius
 
         // this is a bit of a mess, eh?
         switch type {
@@ -371,7 +376,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         label.numberOfLines = 2
         label.textAlignment = .Center
         label.text = permissionMessages[type]
-
+        label.textColor = permissionLabelColor
         return label
     }
 
@@ -397,7 +402,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
             return .Unauthorized
         case .AuthorizedWhenInUse:
             // Curious why this happens? Details on upgrading from WhenInUse to Always:
-            // https://github.com/nickoneill/PermissionScope/issues/24
+            // [Check this issue](https://github.com/nickoneill/PermissionScope/issues/24)
             if defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedInUseToAlwaysUpgrade) {
                 return .Unauthorized
             } else {
@@ -412,6 +417,10 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     Requests access to LocationAlways, if necessary.
     */
     public func requestLocationAlways() {
+    	let hasAlwaysKey:Bool = !NSBundle.mainBundle()
+    		.objectForInfoDictionaryKey(Constants.InfoPlistKeys.locationAlways).isNil
+    	assert(hasAlwaysKey, Constants.InfoPlistKeys.locationAlways + " not found in Info.plist.")
+    	
         switch statusLocationAlways() {
         case .Unknown:
             if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse {
@@ -455,6 +464,10 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     Requests access to LocationWhileInUse, if necessary.
     */
     public func requestLocationInUse() {
+    	let hasWhenInUseKey :Bool = !NSBundle.mainBundle()
+    		.objectForInfoDictionaryKey(Constants.InfoPlistKeys.locationWhenInUse).isNil
+    	assert(hasWhenInUseKey , Constants.InfoPlistKeys.locationWhenInUse + " not found in Info.plist.")
+    	
         switch statusLocationInUse() {
         case .Unknown:
             locationManager.requestWhenInUseAuthorization()
@@ -843,10 +856,10 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         }
     }
     
-    // MARK: CoreMotion
+    // MARK: Core Motion Activity
     
     /**
-    Returns the current permission status for accessing CoreMotion.
+    Returns the current permission status for accessing Core Motion Activity.
     
     - returns: Permission status for the requested type.
     */
@@ -858,7 +871,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
     }
     
     /**
-    Requests access to CoreMotion, if necessary.
+    Requests access to Core Motion Activity, if necessary.
     */
     public func requestMotion() {
         switch statusMotion() {
@@ -871,6 +884,9 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         }
     }
     
+    /**
+    Prompts motionManager to request a status update. If permission is not already granted the user will be prompted with the system's permission dialog.
+    */
     private func triggerMotionStatusUpdate() {
         let tmpMotionPermissionStatus = motionPermissionStatus
         defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedMotion)
@@ -893,6 +909,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         waitingForMotion = true
     }
     
+    /// Returns whether Bluetooth access was asked before or not.
     private var askedMotion:Bool {
         get {
             return defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedMotion)
@@ -903,6 +920,7 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
         }
     }
     
+    /// Returns whether PermissionScope is waiting for the user to enable/disable motion access or not.
     private var waitingForMotion = false
     
     // MARK: HealthKit
@@ -974,55 +992,6 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
             self.showDisabledAlert(.HealthKit)
         case .Authorized:
             break
-        }
-    }
-    
-    // MARK: CloudKit
-    
-    /**
-    Returns the current permission status for accessing CloudKit.
-    
-    - returns: Permission status for the requested type.
-    */
-    public func statusCloudKit(statusCallback: statusRequestClosure)  {
-        CKContainer.defaultContainer().statusForApplicationPermission(.UserDiscoverability)
-            { (status, error) -> Void in
-                switch status {
-                case .InitialState:
-                    statusCallback(status: .Unknown)
-                case .Granted:
-                    statusCallback(status: .Authorized)
-                case .Denied:
-                    statusCallback(status: .Unauthorized)
-                case .CouldNotComplete:
-                    // Error ocurred.
-                    print(error!.localizedDescription)
-                    // TODO: What should we return ? Use throws ?
-                    statusCallback(status: .Unknown)
-                }
-        }
-    }
-    
-    /**
-    Requests access to CloudKit, if necessary.
-    */
-    public func requestCloudKit() {
-        CKContainer.defaultContainer().accountStatusWithCompletionHandler { (status, error) -> Void in
-            // log error?
-            switch status {
-            case .Available:
-                CKContainer.defaultContainer().requestApplicationPermission(.UserDiscoverability,
-                    completionHandler: { (status2, error2) -> Void in
-                        self.detectAndCallback()
-                })
-            case .Restricted, .NoAccount:
-                self.showDisabledAlert(.CloudKit)
-            case .CouldNotDetermine:
-                // Ask user to login to iCloud
-                print(error!.localizedDescription)
-                // TODO: What should we return ? Use throws ?
-                break
-            }
         }
     }
     
@@ -1291,8 +1260,6 @@ public typealias cancelClosureType    = (results: [PermissionResult]) -> Void
             completion(status: statusMotion())
         case .HealthKit:
             completion(status: statusHealthKit(nil, typesToRead: nil, strict: false))
-        case .CloudKit:
-            statusCloudKit(completion)
         }
     }
     

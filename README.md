@@ -1,6 +1,7 @@
 # PermissionScope 🔐🔭
 
-[![Language](http://img.shields.io/badge/language-swift-brightgreen.svg?style=flat
+![iOS 8+](https://img.shields.io/badge/ios-8%2B-blue.svg?style=flat
+) [![Language](https://img.shields.io/badge/language-swift2-brightgreen.svg?style=flat
 )](https://developer.apple.com/swift)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Cocoapods compatible](https://cocoapod-badges.herokuapp.com/v/PermissionScope/badge.png)](https://cocoapods.org/pods/PermissionScope)
@@ -17,11 +18,12 @@ We should all be more careful about when we request permissions from users, opti
 
 PermissionScope gives you space to explain your reasons for requesting their precious permissions and allows users to tackle the system dialogs at their own pace. It conforms to (what I hope will be) a standard permissions design but is flexible enough to fit in to most UIKit-based apps.
 
-Best of all, PermissionScope detects when ([some of](https://github.com/nickoneill/PermissionScope/issues/9)) your permissions have been denied by a user and gives them an easy prompt to go into the system settings page to modify these permissions.
+Best of all, PermissionScope detects when your app's permissions have been denied by a user and gives them an easy prompt to go into the system settings page to modify these permissions.
 
 ## Table of Contents
 * [Installation](https://github.com/nickoneill/PermissionScope/#installation)
 * [Dialog Usage](https://github.com/nickoneill/PermissionScope/#dialog-usage)
+* [UI Customization](https://github.com/nickoneill/PermissionScope/#ui-customization)
 * [Unified Permissions API](https://github.com/nickoneill/PermissionScope/#unified-permissions-api)
 * [Issues](https://github.com/nickoneill/PermissionScope/#issues)
 * [Extra Requirements for Permissions](https://github.com/nickoneill/PermissionScope/#extra-requirements-for-permissions)
@@ -31,7 +33,7 @@ Best of all, PermissionScope detects when ([some of](https://github.com/nickonei
 
 ## installation
 
-* requires iOS 8+
+requires iOS 8+
 
 Installation for [Carthage](https://github.com/Carthage/Carthage) is simple enough:
 
@@ -59,20 +61,21 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        pscope.addPermission(PermissionConfig(type: .Contacts, message: "We use this to steal\r\nyour friends"))
-        pscope.addPermission(PermissionConfig(type: .Notifications, message: "We use this to send you\r\nspam and love notes", notificationCategories: .None))
-        pscope.addPermission(PermissionConfig(type: .LocationInUse, message: "We use this to track\r\nwhere you live"))
-
-        pscope.show()
-    }
-
-    @IBAction func doAThing() {
+        
+        // Set up permissions
+         pscope.addPermission(ContactsPermission(),
+            message: "We use this to steal\r\nyour friends")
+        pscope.addPermission(NotificationsPermission(notificationCategories: nil),
+            message: "We use this to send you\r\nspam and love notes")
+        pscope.addPermission(LocationWhileInUsePermission(),
+            message: "We use this to track\r\nwhere you live")
+	
+	// Show dialog with callbacks
         pscope.show(authChange: { (finished, results) -> Void in
             println("got results \(results)")
         }, cancelled: { (results) -> Void in
             println("thing was cancelled")
-        })
+        })   
     }
 }
 ```
@@ -83,19 +86,29 @@ If you're attempting to block access to a screen in your app without permissions
 
 ### ui customization
 
-You can easily change the colors, label and buttons fonts with PermissionScope.
+You can easily change the colors, label and buttons fonts with PermissionScope by modifying any of these properties:
 
-```swift
-pscope.tintColor = UIColor...
-pscope.headerLabel.text = "..."
-pscope.headerLabel.font = UIFont...
-pscope.bodyLabel.text = "..."
-pscope.bodyLabel.font = UIFont...
-pscope.buttonFont = UIFont...
-pscope.labelFont = UIFont...
-```
+Field | Type | Comment
+----- | ---- | -------
+headerLabel | UILabel | Header UILabel with the message "Hey, listen!" by default.
+bodyLabel | UILabel | Header UILabel with the message "We need a couple things\r\nbefore you get started." by default.
+closeButtonTextColor | UIColor | Color for the close button's text color.
+permissionButtonTextColor  | UIColor | Color for the permission buttons' text color.
+permissionButtonBorderColor | UIColor | Color for the permission buttons' border color.
+buttonFont | UIFont | Font used for all the UIButtons
+labelFont | UIFont | Font used for all the UILabels
+closeButton | UIButton | Close button. By default in the top right corner.
+closeOffset | CGSize | Offset used to position the Close button.
+authorizedButtonColor | UIColor | Color used for permission buttons with authorized status
+unauthorizedButtonColor | UIColor? | Color used for permission buttons with unauthorized status. By default, inverse of `authorizedButtonColor`.
+permissionButtonΒorderWidth | CGFloat | Border width for the permission buttons.
+permissionButtonCornerRadius | CGFloat | Corner radius for the permission buttons.
+permissionLabelColor | UIColor | Color for the permission labels' text color.
+contentView | UIView | Dialog's content view
 
 In addition, the default behavior for tapping the background behind the dialog is to cancel the dialog (which calls the cancel closure you can provide on `show`). You can change this behavior with `backgroundTapCancels` during init.
+
+If you'd like more control over the button text for a particular permission, you can [use a `.strings` file](https://github.com/nickoneill/PermissionScope/pull/12#issuecomment-96428580) for your intended language and override them that way. Please get in touch if you'd like to contribute a localization file for another language!
 
 ## unified permissions API
 
@@ -194,11 +207,11 @@ However, enabling `background-modes` in the capabilities section and checking th
 
 ### healthkit
 
-Enable `HealthKit` under your target's capabilities, **required**.
+Enable `HealthKit` in your target's capabilities, **required**.
 
 ### cloudkit
 
-Enable `CloudKit` under your target's capabilities, **required**.
+Enable `CloudKit` in your target's capabilities, **required**.
 
 Also, remember to add an observer and manage [CKAccountChangedNotification](https://developer.apple.com/library/prerelease/ios/documentation/CloudKit/Reference/CKContainer_class/#//apple_ref/c/data/CKAccountChangedNotification) in your app.
 

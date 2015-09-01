@@ -19,31 +19,20 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    self.singlePscope = [PermissionScope new];
-    self.multiPscope = [PermissionScope new];
+    self.singlePscope = [[PermissionScope alloc]init];
+    self.multiPscope = [[PermissionScope alloc]init];
     
-    PermissionConfig* configNotifications = [[PermissionConfig alloc] initWithType:PermissionTypeNotifications demands:PermissionDemandsRequired message:@"We use this to send you\r\nspam and love notes" notificationCategories:UIUserNotificationTypeNone];
+    [self.singlePscope addPermission:[[NotificationsPermission alloc]initWithNotificationCategories:nil] message:@"We use this to send you\r\nspam and love notes"];
     
-    PermissionConfig* configContacts = [[PermissionConfig alloc] initWithType:PermissionTypeContacts demands:PermissionDemandsRequired message:@"We use this to steal\r\nyour friends" notificationCategories:UIUserNotificationTypeNone];
-    
-    PermissionConfig* configLocationInUse = [[PermissionConfig alloc] initWithType:PermissionTypeLocationInUse demands:PermissionDemandsRequired message:@"We use this to track\r\nwhere you live" notificationCategories:UIUserNotificationTypeNone];
-    
-//    PermissionConfig* configBluetooth = [[PermissionConfig alloc] initWithType:PermissionTypeBluetooth demands:PermissionDemandsRequired message:@"We use this to drain your battery" notificationCategories:UIUserNotificationTypeNone];
-    
-//    PermissionConfig* configMotion = [[PermissionConfig alloc] initWithType:PermissionTypeMotion demands:PermissionDemandsRequired message:@"We use this to detect if you are\r\nThe Flash" notificationCategories:UIUserNotificationTypeNone];
-    
-    
-    [self.singlePscope addPermission:configNotifications];
-    
-    [self.multiPscope addPermission:configContacts];
-    [self.multiPscope addPermission:configNotifications];
-    [self.multiPscope addPermission:configLocationInUse];
-//    [self.multiPscope addPermission:configBluetooth];
-//    [self.multiPscope addPermission:configMotion];
+    [self.multiPscope addPermission:[[ContactsPermission alloc]init] message:@"We use this to steal\r\nyour friends"];
+    [self.multiPscope addPermission:[[NotificationsPermission alloc]initWithNotificationCategories:nil] message:@"We use this to send you\r\nspam and love notes"];
+    [self.multiPscope addPermission:[[LocationWhileInUsePermission alloc]init] message:@"We use this to track\r\nwhere you live"];
+//    [self.multiPscope addPermission:[[BluetoothPermission alloc]init] message:@"We use this to drain your battery"];
+//    [self.multiPscope addPermission:[[MotionPermission alloc]init] message:@"We use this to detect if you are\r\nThe Flash"];
 }
 
 - (IBAction)single {
-    [self.singlePscope showWithAuthChange:^(BOOL completed, NSArray *results) {
+    [self.singlePscope show:^(BOOL completed, NSArray *results) {
         NSLog(@"Changed: %@ - %@", @(completed), results);
     } cancelled:^(NSArray *x) {
         NSLog(@"cancelled");
@@ -51,7 +40,7 @@
 }
 
 - (IBAction)multiple {
-    [self.multiPscope showWithAuthChange:^(BOOL completed, NSArray *results) {
+    [self.multiPscope show:^(BOOL completed, NSArray *results) {
         NSLog(@"Changed: %@ - %@", @(completed), results);
     } cancelled:^(NSArray *x) {
         NSLog(@"cancelled");
