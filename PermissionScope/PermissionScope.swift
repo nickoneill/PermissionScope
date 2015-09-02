@@ -297,6 +297,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     Adds a permission configuration to PermissionScope.
     
     - parameter config: Configuration for a specific permission.
+    - parameter message: Body label's text on the presented dialog when requesting access.
     */
     @objc public func addPermission(permission: Permission, message: String) {
         assert(!message.isEmpty, "Including a message about your permission usage is helpful")
