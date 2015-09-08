@@ -1103,11 +1103,13 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     public func hide() {
         let window = UIApplication.sharedApplication().keyWindow!
 
-        UIView.animateWithDuration(0.2, animations: {
-            self.baseView.frame.origin.y = window.center.y + 400
-            self.view.alpha = 0
-        }, completion: { finished in
-            self.view.removeFromSuperview()
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            UIView.animateWithDuration(0.2, animations: {
+                self.baseView.frame.origin.y = window.center.y + 400
+                self.view.alpha = 0
+            }, completion: { finished in
+                self.view.removeFromSuperview()
+            })
         })
         
         notificationTimer?.invalidate()
