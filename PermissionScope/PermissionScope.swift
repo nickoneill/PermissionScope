@@ -536,8 +536,17 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         }
     }
     
-    // TODO: Add doc
-    func showingNotificationPermission () {
+    /**
+    To simulate the denied status for a notifications permission,
+    we track when the permission has been asked for and then detect
+    when the app becomes active again. If the permission is not granted
+    immediately after becoming active, the user has cancelled or denied
+    the request.
+    
+    This function is called when we want to show the notifications
+    alert, kicking off the entire process.
+    */
+    func showingNotificationPermission() {
         NSNotificationCenter.defaultCenter().removeObserver(self,
             name: UIApplicationWillResignActiveNotification,
             object: nil)
@@ -547,10 +556,19 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         notificationTimer?.invalidate()
     }
     
-    // TODO: Add doc
+    /**
+    A timer that fires the event to let us know the user has asked for 
+    notifications permission.
+    */
     var notificationTimer : NSTimer?
 
-    // TODO: Add doc
+    /**
+    This function is triggered when the app becomes 'active' again after
+    showing the notification permission dialog.
+    
+    See `showingNotificationPermission` for a more detailed description
+    of the entire process.
+    */
     func finishedShowingNotificationPermission () {
         NSNotificationCenter.defaultCenter().removeObserver(self,
             name: UIApplicationWillResignActiveNotification,
@@ -1136,17 +1154,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         }
     }
     
-    // TODO: Add doc
-    func finish() {
-        self.hide()
-        
-        if let authChangeClosure = authChangeClosure {
-            getResultsForConfig({ (results) -> Void in
-                authChangeClosure(finished: true, results: results)
-            })
-        }
-    }
-    
     /**
     Shows an alert for a permission which was Denied.
     
@@ -1221,7 +1228,12 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
 
     // MARK: Helpers
     
-    // TODO: Add doc
+    /**
+    This notification callback is triggered when the app comes back
+    from the settings page, after a user has tapped the "show me" 
+    button to check on a disabled permission. It calls detectAndCallback
+    to recheck all the permissions and update the UI.
+    */
     func appForegroundedAfterSettings() {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidBecomeActiveNotification, object: nil)
         
@@ -1264,7 +1276,11 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         }
     }
     
-    // TODO: Add doc
+    /**
+    Rechecks the status of each requested permission, updates
+    the PermisisonScope UI in response and calls your authChangeClosure
+    to notifiy the parent app.
+    */
     func detectAndCallback() {
         let group: dispatch_group_t = dispatch_group_create()
         
@@ -1293,7 +1309,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         }
     }
     
-    // TODO: Add doc
+    /**
+    Calculates the status for each configured permissions for the caller
+    */
     func getResultsForConfig(completionBlock: resultsForConfigClosure) {
         var results: [PermissionResult] = []
         let group: dispatch_group_t = dispatch_group_create()
