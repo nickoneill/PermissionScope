@@ -40,7 +40,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /// Corner radius for the permission buttons.
     public var permissionButtonCornerRadius : CGFloat = 6
     /// Color for the permission labels' text color.
-    public var permissionLabelColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
+    public var permissionLabelColor = UIColor.blackColor()
     /// Font used for all the UIButtons
     public var buttonFont                  = UIFont.boldSystemFontOfSize(14)
     /// Font used for all the UILabels
@@ -179,7 +179,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         headerLabel.textColor = UIColor.blackColor()
         headerLabel.textAlignment = NSTextAlignment.Center
         headerLabel.text = "Hey, listen!"
-//        headerLabel.backgroundColor = UIColor.redColor()
 
         contentView.addSubview(headerLabel)
 
@@ -189,8 +188,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         bodyLabel.textAlignment = NSTextAlignment.Center
         bodyLabel.text = "We need a couple things\r\nbefore you get started."
         bodyLabel.numberOfLines = 2
-//        bodyLabel.text = "We need\r\na couple things before you\r\nget started."
-//        bodyLabel.backgroundColor = UIColor.redColor()
 
         contentView.addSubview(bodyLabel)
         
