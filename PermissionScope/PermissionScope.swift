@@ -40,17 +40,17 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /// Corner radius for the permission buttons.
     public var permissionButtonCornerRadius : CGFloat = 6
     /// Color for the permission labels' text color.
-    public var permissionLabelColor = UIColor.blackColor()
+    public var permissionLabelColor:UIColor = .blackColor()
     /// Font used for all the UIButtons
-    public var buttonFont                  = UIFont.boldSystemFontOfSize(14)
+    public var buttonFont:UIFont            = .boldSystemFontOfSize(14)
     /// Font used for all the UILabels
-    public var labelFont                   = UIFont.systemFontOfSize(14)
+    public var labelFont:UIFont             = .systemFontOfSize(14)
     /// Close button. By default in the top right corner.
-    public var closeButton                 = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 32))
+    public var closeButton                  = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 32))
     /// Offset used to position the Close button.
-    public var closeOffset                 = CGSizeZero
+    public var closeOffset                  = CGSizeZero
     /// Color used for permission buttons with authorized status
-    public var authorizedButtonColor       = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
+    public var authorizedButtonColor        = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
     /// Color used for permission buttons with unauthorized status. By default, inverse of `authorizedButtonColor`.
     public var unauthorizedButtonColor:UIColor?
     /// Messages for the body label of the dialog presented when requesting access.
