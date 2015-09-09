@@ -40,7 +40,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /// Corner radius for the permission buttons.
     public var permissionButtonCornerRadius : CGFloat = 6
     /// Color for the permission labels' text color.
-    public var permissionLabelColor = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
+    public var permissionLabelColor = UIColor.blackColor()
     /// Font used for all the UIButtons
     public var buttonFont                  = UIFont.boldSystemFontOfSize(14)
     /// Font used for all the UILabels
@@ -179,7 +179,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         headerLabel.textColor = UIColor.blackColor()
         headerLabel.textAlignment = NSTextAlignment.Center
         headerLabel.text = "Hey, listen!"
-//        headerLabel.backgroundColor = UIColor.redColor()
 
         contentView.addSubview(headerLabel)
 
@@ -189,8 +188,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         bodyLabel.textAlignment = NSTextAlignment.Center
         bodyLabel.text = "We need a couple things\r\nbefore you get started."
         bodyLabel.numberOfLines = 2
-//        bodyLabel.text = "We need\r\na couple things before you\r\nget started."
-//        bodyLabel.backgroundColor = UIColor.redColor()
 
         contentView.addSubview(bodyLabel)
         
@@ -537,8 +534,17 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         }
     }
     
-    // TODO: Add doc
-    func showingNotificationPermission () {
+    /**
+    To simulate the denied status for a notifications permission,
+    we track when the permission has been asked for and then detect
+    when the app becomes active again. If the permission is not granted
+    immediately after becoming active, the user has cancelled or denied
+    the request.
+    
+    This function is called when we want to show the notifications
+    alert, kicking off the entire process.
+    */
+    func showingNotificationPermission() {
         NSNotificationCenter.defaultCenter().removeObserver(self,
             name: UIApplicationWillResignActiveNotification,
             object: nil)
@@ -548,10 +554,19 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         notificationTimer?.invalidate()
     }
     
-    // TODO: Add doc
+    /**
+    A timer that fires the event to let us know the user has asked for 
+    notifications permission.
+    */
     var notificationTimer : NSTimer?
 
-    // TODO: Add doc
+    /**
+    This function is triggered when the app becomes 'active' again after
+    showing the notification permission dialog.
+    
+    See `showingNotificationPermission` for a more detailed description
+    of the entire process.
+    */
     func finishedShowingNotificationPermission () {
         NSNotificationCenter.defaultCenter().removeObserver(self,
             name: UIApplicationWillResignActiveNotification,
@@ -851,7 +866,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         
     }
     
-    // TODO: Add doc
+    /**
+    Start and immediately stop bluetooth advertising to trigger
+    its permission dialog.
+    */
     private func triggerBluetoothStatusUpdate() {
         if !waitingForBluetooth && bluetoothManager.state == .Unknown {
             bluetoothManager.startAdvertising(nil)
@@ -1086,11 +1104,13 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     public func hide() {
         let window = UIApplication.sharedApplication().keyWindow!
 
-        UIView.animateWithDuration(0.2, animations: {
-            self.baseView.frame.origin.y = window.center.y + 400
-            self.view.alpha = 0
-        }, completion: { finished in
-            self.view.removeFromSuperview()
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            UIView.animateWithDuration(0.2, animations: {
+                self.baseView.frame.origin.y = window.center.y + 400
+                self.view.alpha = 0
+            }, completion: { finished in
+                self.view.removeFromSuperview()
+            })
         })
         
         notificationTimer?.invalidate()
@@ -1133,17 +1153,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         if let cancelClosure = cancelClosure {
             getResultsForConfig({ (results) -> Void in
                 cancelClosure(results: results)
-            })
-        }
-    }
-    
-    // TODO: Add doc
-    func finish() {
-        self.hide()
-        
-        if let authChangeClosure = authChangeClosure {
-            getResultsForConfig({ (results) -> Void in
-                authChangeClosure(finished: true, results: results)
             })
         }
     }
@@ -1222,7 +1231,12 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
 
     // MARK: Helpers
     
-    // TODO: Add doc
+    /**
+    This notification callback is triggered when the app comes back
+    from the settings page, after a user has tapped the "show me" 
+    button to check on a disabled permission. It calls detectAndCallback
+    to recheck all the permissions and update the UI.
+    */
     func appForegroundedAfterSettings() {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidBecomeActiveNotification, object: nil)
         
@@ -1265,7 +1279,11 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         }
     }
     
-    // TODO: Add doc
+    /**
+    Rechecks the status of each requested permission, updates
+    the PermisisonScope UI in response and calls your authChangeClosure
+    to notifiy the parent app.
+    */
     func detectAndCallback() {
         let group: dispatch_group_t = dispatch_group_create()
         
@@ -1294,7 +1312,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         }
     }
     
-    // TODO: Add doc
+    /**
+    Calculates the status for each configured permissions for the caller
+    */
     func getResultsForConfig(completionBlock: resultsForConfigClosure) {
         var results: [PermissionResult] = []
         let group: dispatch_group_t = dispatch_group_create()
