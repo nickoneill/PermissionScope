@@ -30,7 +30,7 @@ import Accounts
     public let type: PermissionType = .Notifications
     public let notificationCategories: Set<UIUserNotificationCategory>?
     
-    public init(notificationCategories: Set<UIUserNotificationCategory>? = .None) {
+    public init(notificationCategories: Set<UIUserNotificationCategory>? = nil) {
         self.notificationCategories = notificationCategories
     }
 }
