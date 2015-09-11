@@ -32,23 +32,21 @@ Best of all, PermissionScope detects when your app's permissions have been denie
 
 ## installation
 
-requires iOS 8+
+requires iOS 8+, compatible with both **Swift** and **Objective-C** based projects
 
 Installation for [Carthage](https://github.com/Carthage/Carthage) is simple enough:
 
-`github "nickoneill/PermissionScope" ~> 0.7`
+`github "nickoneill/PermissionScope" ~> 0.9`
 
 As for [Cocoapods](https://cocoapods.org), use this to get the latest code:
 
 ```ruby
 use_frameworks!
 
-pod 'PermissionScope', '~> 0.7'
+pod 'PermissionScope', '~> 0.9'
 ```
 
 And `import PermissionScope` in the files you'd like to use it.
-
-No promises that it works with Obj-C at the moment, I'm using it with a mostly-Swift codebase. Feedback on this would be great though.
 
 ## dialog usage
 
@@ -176,15 +174,6 @@ If you're also using PermissionScope in the traditional manner, don't forget to 
 ```swift
 pscope.viewControllerForAlerts = pscope as UIViewController
 ```
-
-## issues
-
-* You get `Library not loaded: @rpath/libswiftCoreAudio.dylib`, `image not found` errors when your app runs:
-
-PermissionScope imports CoreAudio to request microphone access but it's not automatically linked in if your app doesn't `import CoreAudio` somewhere. I'm not sure if this is a bug or a a quirk of how CoreAudio is imported. For now, if you `import CoreAudio` in your top level project it should fix the issue.
-
-### beta
-We're using PermissionScope in [treat](https://gettre.at) and fixing issues as they arise. Still, there's definitely some beta-ness around and the API can change without warning. Check out what we have planned in [issues](http://github.com/nickoneill/PermissionScope/issues) and contribute a suggestion or some code 😃
 
 ### PermissionScope registers user notification settings, not remote notifications
 Users will get the prompt to enable notifications when using PermissionScope but it's up to you to watch for results in your app delegate's `didRegisterUserNotificationSettings` and then register for remote notifications independently. This won't alert the user again. You're still responsible for handling the shipment of user notification settings off to your push server.
