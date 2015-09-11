@@ -30,9 +30,13 @@ PermissionScope **gives you space to explain your reasons for requesting permiss
 
 Best of all, PermissionScope detects when your app's permissions have been denied by a user and gives them an easy prompt to go into the system settings page to modify these permissions.
 
-## installation
+## compatibility
 
-requires iOS 8+, compatible with both **Swift** and **Objective-C** based projects
+PermissionScope requires iOS 8+, compatible with both **Swift 2** and **Objective-C** based projects
+
+For Swift 1.2 support, please use the swift12 branch. This branch has the basics but is not being maintained.
+
+## installation
 
 Installation for [Carthage](https://github.com/Carthage/Carthage) is simple enough:
 
