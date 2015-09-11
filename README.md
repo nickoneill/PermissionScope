@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="http://raquo.net/images/banner.png">
+    <img src="http://raquo.net/images/banner.png" alt="PermissionScope" />
 </p>
 
 <p align="center">
