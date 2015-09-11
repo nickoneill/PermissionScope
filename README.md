@@ -1,4 +1,6 @@
-# PermissionScope 🔐🔭
+<p align="center">
+    <img src="http://raquo.net/images/banner.png">
+</p>
 
 <p align="center">
 	<img src="https://img.shields.io/badge/platform-iOS%208%2B-blue.svg?style=flat" alt="Platform: iOS 8+" />
