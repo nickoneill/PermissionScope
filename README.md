@@ -3,18 +3,26 @@
 </p>
 
 <p align="center">
-	<img src="https://img.shields.io/badge/platform-iOS%208%2B-blue.svg?style=flat" alt="Platform: iOS 8+" />
-	<a href="https://developer.apple.com/swift"><img src="https://img.shields.io/badge/language-swift2-f48041.svg?style=flat" alt="Language: Swift 2" /></a>
-	<a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage compatible" /></a>
-	<a href="https://cocoapods.org/pods/PermissionScope"><img src="https://cocoapod-badges.herokuapp.com/v/PermissionScope/badge.png" alt="Cocoapods compatible" /></a>
-	<img src="http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat" alt="License: MIT" />
+    <img src="https://img.shields.io/badge/platform-iOS%208%2B-blue.svg?style=flat" alt="Platform: iOS 8+" />
+    <a href="https://developer.apple.com/swift"><img src="https://img.shields.io/badge/language-swift2-f48041.svg?style=flat" alt="Language: Swift 2" /></a>
+    <a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage compatible" /></a>
+    <a href="https://cocoapods.org/pods/PermissionScope"><img src="https://cocoapod-badges.herokuapp.com/v/PermissionScope/badge.png" alt="Cocoapods compatible" /></a>
+    <img src="http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat" alt="License: MIT" />
+</p>
+
+<p align="center">
+    <a href="#installation">Installation</a>
+  • <a href="#dialog-usage">Usage</a>
+  • <a href="#license">License</a>
 </p>
 
 Inspired by (but unrelated to) [Periscope](https://www.periscope.tv)'s permission control, PermissionScope is a Swift framework for intelligently requesting permissions from users. **It contains not only a simple UI to request permissions but also a unified permissions API** that can tell you the status of any given system permission or easily request them.
 
 Some examples of multiple permissions requests, a single permission and the denied alert.
 
-<img src="http://raquo.net/images/permissionscope.gif" alt="permissionscope gif" />
+<p align="center">
+    <img src="http://raquo.net/images/permissionscope.gif" alt="permissionscope gif" />
+</p>
 
 We should all be more careful about when we request permissions from users, opting to request them only when they're needed and definitely not all in one barrage when the user opens the app for the first time.
 
