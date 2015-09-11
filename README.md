@@ -13,6 +13,8 @@
 <p align="center">
     <a href="#installation">Installation</a>
   • <a href="#dialog-usage">Usage</a>
+  • <a href="#customization">Customization</a>
+  • <a href="https://github.com/nickoneill/PermissionScope/issues">Issues</a>
   • <a href="#license">License</a>
 </p>
 
@@ -24,22 +26,9 @@ Some examples of multiple permissions requests, a single permission and the deni
     <img src="http://raquo.net/images/permissionscope.gif" alt="permissionscope gif" />
 </p>
 
-We should all be more careful about when we request permissions from users, opting to request them only when they're needed and definitely not all in one barrage when the user opens the app for the first time.
-
-PermissionScope gives you space to explain your reasons for requesting their precious permissions and allows users to tackle the system dialogs at their own pace. It conforms to (what I hope will be) a standard permissions design but is flexible enough to fit in to most UIKit-based apps.
+PermissionScope **gives you space to explain your reasons for requesting permissions** and **allows users to tackle the system dialogs at their own pace**. It presents a straightforward permissions design and is flexible enough to fit in to most UIKit-based apps.
 
 Best of all, PermissionScope detects when your app's permissions have been denied by a user and gives them an easy prompt to go into the system settings page to modify these permissions.
-
-## Table of Contents
-* [Installation](https://github.com/nickoneill/PermissionScope/#installation)
-* [Dialog Usage](https://github.com/nickoneill/PermissionScope/#dialog-usage)
-* [UI Customization](https://github.com/nickoneill/PermissionScope/#ui-customization)
-* [Unified Permissions API](https://github.com/nickoneill/PermissionScope/#unified-permissions-api)
-* [Issues](https://github.com/nickoneill/PermissionScope/#issues)
-* [Extra Requirements for Permissions](https://github.com/nickoneill/PermissionScope/#extra-requirements-for-permissions)
-* [Projects using PermissionScope](https://github.com/nickoneill/PermissionScope/#projects-using-permissionscope)
-* [License](https://github.com/nickoneill/PermissionScope/#license)
-
 
 ## installation
 
@@ -94,7 +83,7 @@ The permissions view will automatically show if there are permissions to approve
 
 If you're attempting to block access to a screen in your app without permissions (like, say, the broadcast screen in Periscope), you should watch for the cancel closure and take an appropriate action for your app.
 
-### ui customization
+### customization
 
 You can easily change the colors, label and buttons fonts with PermissionScope by modifying any of these properties:
 
