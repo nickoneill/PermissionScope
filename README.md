@@ -140,20 +140,20 @@ let pscope = PermissionScope()
 pscope.viewControllerForAlerts = self
 ```
 
-You will probably also want to set the `authChangeClosure`, `cancelClosure`, and `disabledOrDeniedClosure` closures, which are called at the appropriate times when the `request*` methods are finished, otherwise you won't know when the work has been completed.
+You will probably also want to set the `onAuthChange`, `onCancel`, and `onDisabledOrDenied` closures, which are called at the appropriate times when the `request*` methods are finished, otherwise you won't know when the work has been completed.
 
 ```swift
-pscope.authChangeClosure = { (finished, results) -> Void in
+pscope.onAuthChange = { (finished, results) in
 	println("Request was finished with results \(results)")
 	if results[0].status == .Authorized {
 		println("They've authorized the use of notifications")
 		UIApplication.sharedApplication().registerForRemoteNotifications()
 	}
 }
-pscope.cancelClosure = { (results) -> Void in
+pscope.onCancel = { results in
 	println("Request was cancelled with results \(results)")
 }
-pscope.disabledOrDeniedClosure = { (results) -> Void in
+pscope.onDisabledOrDenied = { results in
 	println("Request was denied or disabled with results \(results)")
 }
 ```
