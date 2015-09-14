@@ -98,7 +98,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     public var cancelClosure: cancelClosureType?   = nil
     
     /// Called when the user has disabled or denied access to notifications, and we're presenting them with a help dialog.
-    public var disabledOrDeniedClosure: cancelClosureType? = nil
+    public var onDisabledOrDenied: cancelClosureType? = nil
 	/// View controller to be used when presenting alerts. Defaults to self. You'll want to set this if you are calling the `request*` methods directly.
 	public var viewControllerForAlerts : UIViewController?
 
@@ -1166,9 +1166,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         dispatch_group_async(group,
             dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 // compile the results and pass them back if necessary
-                if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
+                if let onDisabledOrDenied = self.onDisabledOrDenied {
                     self.getResultsForConfig({ results in
-                        disabledOrDeniedClosure(results: results)
+                        onDisabledOrDenied(results: results)
                     })
                 }
         }
@@ -1206,9 +1206,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         dispatch_group_async(group,
             dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 // compile the results and pass them back if necessary
-                if let disabledOrDeniedClosure = self.disabledOrDeniedClosure {
+                if let onDisabledOrDenied = self.onDisabledOrDenied {
                     self.getResultsForConfig({ results in
-                        disabledOrDeniedClosure(results: results)
+                        onDisabledOrDenied(results: results)
                     })
                 }
         }
