@@ -93,7 +93,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
 	// Useful for direct use of the request* methods
     
     /// Callback called when permissions status change.
-    public var authChangeClosure: authClosureType? = nil
+    public var onAuthChange: authClosureType? = nil
     /// Callback called when the user taps on the close button.
     public var cancelClosure: cancelClosureType?   = nil
     
@@ -1027,8 +1027,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     @objc public func show(authChange: authClosureType? = nil, cancelled: cancelClosureType? = nil) {
         assert(!configuredPermissions.isEmpty, "Please add at least one permission")
 
-        authChangeClosure = authChange
-        cancelClosure = cancelled
+        onAuthChange = authChange
+        onCancel = cancelled
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             while self.waitingForBluetooth || self.waitingForMotion { }
@@ -1038,7 +1038,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
                 
                 if areAuthorized {
                     self.getResultsForConfig({ results in
-                        self.authChangeClosure?(finished: true, results: results)
+                        self.onAuthChange?(finished: true, results: results)
                     })
                 } else {
                     dispatch_async(dispatch_get_main_queue()) {
@@ -1148,7 +1148,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     func cancel() {
         self.hide()
         
-        if let cancelClosure = cancelClosure {
+        if let onCancel = onCancel {
             getResultsForConfig({ results in
                 cancelClosure(results: results)
             })
@@ -1279,7 +1279,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     /**
     Rechecks the status of each requested permission, updates
-    the PermisisonScope UI in response and calls your authChangeClosure
+    the PermisisonScope UI in response and calls your onAuthChange
     to notifiy the parent app.
     */
     func detectAndCallback() {
@@ -1288,10 +1288,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         dispatch_group_async(group,
             dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 // compile the results and pass them back if necessary
-                if let authChangeClosure = self.authChangeClosure {
+                if let onAuthChange = self.onAuthChange {
                     self.getResultsForConfig({ results in
                         self.allAuthorized({ areAuthorized in
-                            authChangeClosure(finished: areAuthorized, results: results)
+                            onAuthChange(finished: areAuthorized, results: results)
                         })
                     })
                 }
