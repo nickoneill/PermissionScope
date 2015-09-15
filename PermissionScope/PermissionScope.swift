@@ -95,7 +95,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /// Callback called when permissions status change.
     public var onAuthChange: authClosureType? = nil
     /// Callback called when the user taps on the close button.
-    public var cancelClosure: cancelClosureType?   = nil
+    public var onCancel: cancelClosureType?   = nil
     
     /// Called when the user has disabled or denied access to notifications, and we're presenting them with a help dialog.
     public var onDisabledOrDenied: cancelClosureType? = nil
@@ -1150,7 +1150,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         
         if let onCancel = onCancel {
             getResultsForConfig({ results in
-                cancelClosure(results: results)
+                onCancel(results: results)
             })
         }
     }
