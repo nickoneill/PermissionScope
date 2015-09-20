@@ -944,78 +944,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /// Returns whether PermissionScope is waiting for the user to enable/disable motion access or not.
     private var waitingForMotion = false
     
-    // MARK: HealthKit
-    
-    /**
-    Returns the current permission status for accessing HealthKit.
-    
-    - parameter typesToShare: HK types to share (write)
-    - parameter typesToRead:  HK types to read
-    
-    - returns: Permission status for the requested type.
-    */
-    public func statusHealthKit(typesToShare: Set<HKSampleType>?, typesToRead: Set<HKObjectType>?, strict: Bool) -> PermissionStatus {
-        guard HKHealthStore.isHealthDataAvailable() else { return .Disabled }
-        
-        var statusArray:[HKAuthorizationStatus] = []
-        typesToShare?.forEach {
-            statusArray.append(HKHealthStore().authorizationStatusForType($0))
-        }
-        typesToRead?.forEach {
-            statusArray.append(HKHealthStore().authorizationStatusForType($0))
-        }
-        
-        let typesNotDetermined = statusArray
-            .filter { $0 == .NotDetermined }
-        
-        if typesNotDetermined.count == statusArray.count || statusArray.isEmpty {
-            return .Unknown
-        }
-        
-        let typesAuthorized = statusArray
-            .first { $0 == .SharingAuthorized }
-        let typesDenied = statusArray
-            .first { $0 == .SharingDenied }
-        
-        if strict {
-            if let _ = typesDenied {
-                return .Unauthorized
-            } else {
-                return .Authorized
-            }
-        } else {
-            if let _ = typesAuthorized {
-                return .Authorized
-            } else {
-                return .Unauthorized
-            }
-        }
-    }
-    
-    /**
-    Requests access to HealthKit, if necessary.
-    */
-    func requestHealthKit() {
-        guard let healthPermission = self.configuredPermissions
-            .first({ $0.type == .HealthKit }) as? HealthPermission else { return }
-        
-        switch statusHealthKit(healthPermission.healthTypesToShare, typesToRead: healthPermission.healthTypesToRead, strict: healthPermission.strictMode) {
-        case .Unknown:
-            HKHealthStore().requestAuthorizationToShareTypes(healthPermission.healthTypesToShare,
-                readTypes: healthPermission.healthTypesToRead,
-                completion: { granted, error in
-                    if let error = error { print("error: ", error) }
-                    self.detectAndCallback()
-            })
-        case .Unauthorized:
-            self.showDeniedAlert(.HealthKit)
-        case .Disabled:
-            self.showDisabledAlert(.HealthKit)
-        case .Authorized:
-            break
-        }
-    }
-    
     // MARK: - UI
     
     /**
@@ -1254,8 +1182,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             completion(status: statusBluetooth())
         case .Motion:
             completion(status: statusMotion())
-        case .HealthKit:
-            completion(status: statusHealthKit(nil, typesToRead: nil, strict: false))
         }
     }
     
