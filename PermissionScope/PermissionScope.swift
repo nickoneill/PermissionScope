@@ -57,7 +57,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     lazy var permissionMessages: [PermissionType : String] = [PermissionType : String]()
     
     // MARK: View hierarchy for custom alert
-    let baseView    = UIView()
+    let baseView           = UIView()
     public let contentView = UIView()
 
     // MARK: - Various lazy managers
@@ -169,31 +169,31 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             baseView.addGestureRecognizer(tap)
         }
         // Content View
-        contentView.backgroundColor = UIColor.whiteColor()
-        contentView.layer.cornerRadius = 10
+        contentView.backgroundColor     = UIColor.whiteColor()
+        contentView.layer.cornerRadius  = 10
         contentView.layer.masksToBounds = true
-        contentView.layer.borderWidth = 0.5
+        contentView.layer.borderWidth   = 0.5
 
         // header label
-        headerLabel.font = UIFont.systemFontOfSize(22)
-        headerLabel.textColor = UIColor.blackColor()
-        headerLabel.textAlignment = NSTextAlignment.Center
-        headerLabel.text = "Hey, listen!"
+        headerLabel.font          = .systemFontOfSize(22)
+        headerLabel.textColor     = .blackColor()
+        headerLabel.textAlignment = .Center
+        headerLabel.text          = "Hey, listen!"
 
         contentView.addSubview(headerLabel)
 
         // body label
-        bodyLabel.font = UIFont.boldSystemFontOfSize(16)
-        bodyLabel.textColor = UIColor.blackColor()
-        bodyLabel.textAlignment = NSTextAlignment.Center
-        bodyLabel.text = "We need a couple things\r\nbefore you get started."
+        bodyLabel.font          = .boldSystemFontOfSize(16)
+        bodyLabel.textColor     = .blackColor()
+        bodyLabel.textAlignment = .Center
+        bodyLabel.text          = "We need a couple things\r\nbefore you get started."
         bodyLabel.numberOfLines = 2
 
         contentView.addSubview(bodyLabel)
         
         // close button
         closeButton.setTitle("Close", forState: .Normal)
-        closeButton.addTarget(self, action: Selector("cancel"), forControlEvents: UIControlEvents.TouchUpInside)
+        closeButton.addTarget(self, action: Selector("cancel"), forControlEvents: .TouchUpInside)
         
         contentView.addSubview(closeButton)
         
@@ -297,9 +297,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     - parameter message: Body label's text on the presented dialog when requesting access.
     */
     @objc public func addPermission(permission: Permission, message: String) {
-        assert(!message.isEmpty, "Including a message about your permission usage is helpful")
-        assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
-        assert(configuredPermissions.first { $0.type == permission.type }.isNil, "Permission for \(permission.type) already set")
+        precondition(!message.isEmpty, "Including a message about your permission usage is helpful")
+        precondition(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
+        precondition(configuredPermissions.first { $0.type == permission.type }.isNil, "Permission for \(permission.type) already set")
         
         configuredPermissions.append(permission)
         permissionMessages[permission.type] = message
@@ -323,8 +323,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         button.setTitleColor(permissionButtonTextColor, forState: .Normal)
         button.titleLabel?.font = buttonFont
 
-        button.layer.borderWidth = permissionButtonΒorderWidth
-        button.layer.borderColor = permissionButtonBorderColor.CGColor
+        button.layer.borderWidth  = permissionButtonΒorderWidth
+        button.layer.borderColor  = permissionButtonBorderColor.CGColor
         button.layer.cornerRadius = permissionButtonCornerRadius
 
         // this is a bit of a mess, eh?
@@ -347,7 +347,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     */
     func setButtonAuthorizedStyle(button: UIButton) {
         button.layer.borderWidth = 0
-        button.backgroundColor = authorizedButtonColor
+        button.backgroundColor   = authorizedButtonColor
         button.setTitleColor(.whiteColor(), forState: .Normal)
     }
     
@@ -370,12 +370,12 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     - returns: UILabel instance with a custom style.
     */
     func permissionStyledLabel(type: PermissionType) -> UILabel {
-        let label  = UILabel(frame: CGRect(x: 0, y: 0, width: 260, height: 50))
-        label.font = labelFont
+        let label           = UILabel(frame: CGRect(x: 0, y: 0, width: 260, height: 50))
+        label.font          = labelFont
         label.numberOfLines = 2
         label.textAlignment = .Center
-        label.text = permissionMessages[type]
-        label.textColor = permissionLabelColor
+        label.text          = permissionMessages[type]
+        label.textColor     = permissionLabelColor
         
         return label
     }
@@ -417,7 +417,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     public func requestLocationAlways() {
     	let hasAlwaysKey:Bool = !NSBundle.mainBundle()
     		.objectForInfoDictionaryKey(Constants.InfoPlistKeys.locationAlways).isNil
-    	assert(hasAlwaysKey, Constants.InfoPlistKeys.locationAlways + " not found in Info.plist.")
+    	precondition(hasAlwaysKey, Constants.InfoPlistKeys.locationAlways + " not found in Info.plist.")
     	
         switch statusLocationAlways() {
         case .Unknown:
@@ -462,7 +462,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     public func requestLocationInUse() {
     	let hasWhenInUseKey :Bool = !NSBundle.mainBundle()
     		.objectForInfoDictionaryKey(Constants.InfoPlistKeys.locationWhenInUse).isNil
-    	assert(hasWhenInUseKey, Constants.InfoPlistKeys.locationWhenInUse + " not found in Info.plist.")
+    	precondition(hasWhenInUseKey, Constants.InfoPlistKeys.locationWhenInUse + " not found in Info.plist.")
     	
         switch statusLocationInUse() {
         case .Unknown:
@@ -1025,7 +1025,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     - parameter cancelled:  Called when the user taps the Close button.
     */
     @objc public func show(authChange: authClosureType? = nil, cancelled: cancelClosureType? = nil) {
-        assert(!configuredPermissions.isEmpty, "Please add at least one permission")
+        precondition(!configuredPermissions.isEmpty, "Please add at least one permission")
 
         onAuthChange = authChange
         onCancel = cancelled
@@ -1101,14 +1101,12 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     */
     public func hide() {
         let window = UIApplication.sharedApplication().keyWindow!
-
-        dispatch_async(dispatch_get_main_queue(), {
-            UIView.animateWithDuration(0.2, animations: {
-                self.baseView.frame.origin.y = window.center.y + 400
-                self.view.alpha = 0
+        
+        UIView.animateWithDuration(0.2, animations: {
+            self.baseView.frame.origin.y = window.center.y + 400
+            self.view.alpha = 0
             }, completion: { finished in
                 self.view.removeFromSuperview()
-            })
         })
         
         notificationTimer?.invalidate()
@@ -1161,16 +1159,11 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     - parameter permission: Permission type.
     */
     func showDeniedAlert(permission: PermissionType) {
-        let group: dispatch_group_t = dispatch_group_create()
-        
-        dispatch_group_async(group,
-            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                // compile the results and pass them back if necessary
-                if let onDisabledOrDenied = self.onDisabledOrDenied {
-                    self.getResultsForConfig({ results in
-                        onDisabledOrDenied(results: results)
-                    })
-                }
+        // compile the results and pass them back if necessary
+        if let onDisabledOrDenied = self.onDisabledOrDenied {
+            self.getResultsForConfig({ results in
+                onDisabledOrDenied(results: results)
+            })
         }
         
         let alert = UIAlertController(title: "Permission for \(permission) was denied.",
@@ -1188,11 +1181,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
                 UIApplication.sharedApplication().openURL(settingsUrl!)
         }))
         
-        dispatch_group_notify(group,
-            dispatch_get_main_queue()) {
-                self.viewControllerForAlerts?.presentViewController(alert,
-                    animated: true, completion: nil)
-        }
+        self.viewControllerForAlerts?.presentViewController(alert,
+            animated: true, completion: nil)
     }
     
     /**
@@ -1201,16 +1191,11 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     - parameter permission: Permission type.
     */
     func showDisabledAlert(permission: PermissionType) {
-        let group: dispatch_group_t = dispatch_group_create()
-        
-        dispatch_group_async(group,
-            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                // compile the results and pass them back if necessary
-                if let onDisabledOrDenied = self.onDisabledOrDenied {
-                    self.getResultsForConfig({ results in
-                        onDisabledOrDenied(results: results)
-                    })
-                }
+        // compile the results and pass them back if necessary
+        if let onDisabledOrDenied = self.onDisabledOrDenied {
+            self.getResultsForConfig({ results in
+                onDisabledOrDenied(results: results)
+            })
         }
         
         let alert = UIAlertController(title: "\(permission) is currently disabled.",
@@ -1220,11 +1205,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             style: .Cancel,
             handler: nil))
         
-        dispatch_group_notify(group,
-            dispatch_get_main_queue()) {
-                self.viewControllerForAlerts?.presentViewController(alert,
-                    animated: true, completion: nil)
-        }
+        self.viewControllerForAlerts?.presentViewController(alert,
+            animated: true, completion: nil)
     }
 
     // MARK: Helpers
@@ -1283,31 +1265,23 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     to notifiy the parent app.
     */
     func detectAndCallback() {
-        let group: dispatch_group_t = dispatch_group_create()
-        
-        dispatch_group_async(group,
-            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                // compile the results and pass them back if necessary
-                if let onAuthChange = self.onAuthChange {
-                    self.getResultsForConfig({ results in
-                        self.allAuthorized({ areAuthorized in
-                            onAuthChange(finished: areAuthorized, results: results)
-                        })
-                    })
-                }
-        }
-        
-        dispatch_group_notify(group,
-            dispatch_get_main_queue()) {
-                self.view.setNeedsLayout()
-                
-                // and hide if we've sucessfully got all permissions
+        // compile the results and pass them back if necessary
+        if let onAuthChange = self.onAuthChange {
+            self.getResultsForConfig({ results in
                 self.allAuthorized({ areAuthorized in
-                    if areAuthorized {
-                        self.hide()
-                    }
+                    onAuthChange(finished: areAuthorized, results: results)
                 })
+            })
         }
+        
+        self.view.setNeedsLayout()
+        
+        // and hide if we've sucessfully got all permissions
+        self.allAuthorized({ areAuthorized in
+            if areAuthorized {
+                self.hide()
+            }
+        })
     }
     
     /**
@@ -1315,22 +1289,15 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     */
     func getResultsForConfig(completionBlock: resultsForConfigClosure) {
         var results: [PermissionResult] = []
-        let group: dispatch_group_t = dispatch_group_create()
         
         for config in configuredPermissions {
-            dispatch_group_async(group,
-                dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                    self.statusForPermission(config.type, completion: { status in
-                        let result = PermissionResult(type: config.type,
-                            status: status)
-                        results.append(result)
-                    })
-            }
+            self.statusForPermission(config.type, completion: { status in
+                let result = PermissionResult(type: config.type,
+                    status: status)
+                results.append(result)
+            })
         }
         
-        dispatch_group_notify(group,
-            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                completionBlock(results)
-        }
+        completionBlock(results)
     }
 }
