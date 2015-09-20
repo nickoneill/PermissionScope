@@ -26,18 +26,6 @@ class ViewController: UIViewController {
             message: "We use this to send you\r\nspam and love notes")
         multiPscope.addPermission(LocationWhileInUsePermission(),
             message: "We use this to track\r\nwhere you live")
-//        multiPscope.addPermission(HealthPermission(
-//            healthTypesToShare: [
-//                HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyMassIndex)!,
-//                HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyMass)!,
-//                HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierHeight)!
-//                ],
-//            healthTypesToRead: [
-//                HKObjectType.characteristicTypeForIdentifier(HKCharacteristicTypeIdentifierDateOfBirth)!,
-//                HKObjectType.characteristicTypeForIdentifier(HKCharacteristicTypeIdentifierBiologicalSex)!,
-//                HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyMass)!,
-//                HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierHeight)!
-//                ]), message: "We need your health data\r\nto know you better")
         
         // Other example permissions
         //        multiPscope.addPermission(BluetoothPermission(), message: "We use this to drain your battery")

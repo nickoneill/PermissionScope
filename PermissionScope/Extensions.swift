@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import HealthKit
 
 extension UIColor {
     /// Returns the inverse color
@@ -48,15 +47,5 @@ extension Optional {
             return true
         }
         return false
-    }
-}
-
-extension HKAuthorizationStatus: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case NotDetermined: return "NotDetermined"
-        case SharingDenied: return "SharingDenied"
-        case SharingAuthorized: return "SharingAuthorized"
-        }
     }
 }

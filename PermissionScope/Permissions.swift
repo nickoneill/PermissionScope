@@ -14,7 +14,6 @@ import Photos
 import EventKit
 import CoreBluetooth
 import CoreMotion
-import HealthKit
 import CloudKit
 import Accounts
 
@@ -76,18 +75,4 @@ public typealias requestPermissionShowAlert     = (PermissionType) -> Void
 
 @objc public class MotionPermission: NSObject, Permission {
     public let type: PermissionType = .Motion
-}
-
-@objc public class HealthPermission: NSObject, Permission {
-    public let type: PermissionType = .HealthKit
-    public let healthTypesToShare: Set<HKSampleType>?
-    public let healthTypesToRead: Set<HKObjectType>?
-    public let strictMode: Bool
-    
-    public init(healthTypesToShare: Set<HKSampleType>?,
-        healthTypesToRead: Set<HKObjectType>?, strictMode: Bool = false) {
-            self.healthTypesToShare = healthTypesToShare
-            self.healthTypesToRead = healthTypesToRead
-            self.strictMode = strictMode
-    }
 }

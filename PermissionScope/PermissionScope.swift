@@ -14,7 +14,6 @@ import Photos
 import EventKit
 import CoreBluetooth
 import CoreMotion
-import HealthKit
 
 public typealias statusRequestClosure = (status: PermissionStatus) -> Void
 public typealias authClosureType      = (finished: Bool, results: [PermissionResult]) -> Void
@@ -944,78 +943,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /// Returns whether PermissionScope is waiting for the user to enable/disable motion access or not.
     private var waitingForMotion = false
     
-    // MARK: HealthKit
-    
-    /**
-    Returns the current permission status for accessing HealthKit.
-    
-    - parameter typesToShare: HK types to share (write)
-    - parameter typesToRead:  HK types to read
-    
-    - returns: Permission status for the requested type.
-    */
-    public func statusHealthKit(typesToShare: Set<HKSampleType>?, typesToRead: Set<HKObjectType>?, strict: Bool) -> PermissionStatus {
-        guard HKHealthStore.isHealthDataAvailable() else { return .Disabled }
-        
-        var statusArray:[HKAuthorizationStatus] = []
-        typesToShare?.forEach {
-            statusArray.append(HKHealthStore().authorizationStatusForType($0))
-        }
-        typesToRead?.forEach {
-            statusArray.append(HKHealthStore().authorizationStatusForType($0))
-        }
-        
-        let typesNotDetermined = statusArray
-            .filter { $0 == .NotDetermined }
-        
-        if typesNotDetermined.count == statusArray.count || statusArray.isEmpty {
-            return .Unknown
-        }
-        
-        let typesAuthorized = statusArray
-            .first { $0 == .SharingAuthorized }
-        let typesDenied = statusArray
-            .first { $0 == .SharingDenied }
-        
-        if strict {
-            if let _ = typesDenied {
-                return .Unauthorized
-            } else {
-                return .Authorized
-            }
-        } else {
-            if let _ = typesAuthorized {
-                return .Authorized
-            } else {
-                return .Unauthorized
-            }
-        }
-    }
-    
-    /**
-    Requests access to HealthKit, if necessary.
-    */
-    func requestHealthKit() {
-        guard let healthPermission = self.configuredPermissions
-            .first({ $0.type == .HealthKit }) as? HealthPermission else { return }
-        
-        switch statusHealthKit(healthPermission.healthTypesToShare, typesToRead: healthPermission.healthTypesToRead, strict: healthPermission.strictMode) {
-        case .Unknown:
-            HKHealthStore().requestAuthorizationToShareTypes(healthPermission.healthTypesToShare,
-                readTypes: healthPermission.healthTypesToRead,
-                completion: { granted, error in
-                    if let error = error { print("error: ", error) }
-                    self.detectAndCallback()
-            })
-        case .Unauthorized:
-            self.showDeniedAlert(.HealthKit)
-        case .Disabled:
-            self.showDisabledAlert(.HealthKit)
-        case .Authorized:
-            break
-        }
-    }
-    
     // MARK: - UI
     
     /**
@@ -1161,16 +1088,11 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     - parameter permission: Permission type.
     */
     func showDeniedAlert(permission: PermissionType) {
-        let group: dispatch_group_t = dispatch_group_create()
-        
-        dispatch_group_async(group,
-            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                // compile the results and pass them back if necessary
-                if let onDisabledOrDenied = self.onDisabledOrDenied {
-                    self.getResultsForConfig({ results in
-                        onDisabledOrDenied(results: results)
-                    })
-                }
+        // compile the results and pass them back if necessary
+        if let onDisabledOrDenied = self.onDisabledOrDenied {
+            self.getResultsForConfig({ results in
+                onDisabledOrDenied(results: results)
+            })
         }
         
         let alert = UIAlertController(title: "Permission for \(permission) was denied.",
@@ -1188,10 +1110,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
                 UIApplication.sharedApplication().openURL(settingsUrl!)
         }))
         
-        dispatch_group_notify(group,
-            dispatch_get_main_queue()) {
-                self.viewControllerForAlerts?.presentViewController(alert,
-                    animated: true, completion: nil)
+        dispatch_async(dispatch_get_main_queue()) {
+            self.viewControllerForAlerts?.presentViewController(alert,
+                animated: true, completion: nil)
         }
     }
     
@@ -1201,16 +1122,11 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     - parameter permission: Permission type.
     */
     func showDisabledAlert(permission: PermissionType) {
-        let group: dispatch_group_t = dispatch_group_create()
-        
-        dispatch_group_async(group,
-            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                // compile the results and pass them back if necessary
-                if let onDisabledOrDenied = self.onDisabledOrDenied {
-                    self.getResultsForConfig({ results in
-                        onDisabledOrDenied(results: results)
-                    })
-                }
+        // compile the results and pass them back if necessary
+        if let onDisabledOrDenied = self.onDisabledOrDenied {
+            self.getResultsForConfig({ results in
+                onDisabledOrDenied(results: results)
+            })
         }
         
         let alert = UIAlertController(title: "\(permission) is currently disabled.",
@@ -1220,10 +1136,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             style: .Cancel,
             handler: nil))
         
-        dispatch_group_notify(group,
-            dispatch_get_main_queue()) {
-                self.viewControllerForAlerts?.presentViewController(alert,
-                    animated: true, completion: nil)
+        dispatch_async(dispatch_get_main_queue()) {
+            self.viewControllerForAlerts?.presentViewController(alert,
+                animated: true, completion: nil)
         }
     }
 
@@ -1272,8 +1187,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             completion(status: statusBluetooth())
         case .Motion:
             completion(status: statusMotion())
-        case .HealthKit:
-            completion(status: statusHealthKit(nil, typesToRead: nil, strict: false))
         }
     }
     
@@ -1283,30 +1196,24 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     to notifiy the parent app.
     */
     func detectAndCallback() {
-        let group: dispatch_group_t = dispatch_group_create()
-        
-        dispatch_group_async(group,
-            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                // compile the results and pass them back if necessary
-                if let onAuthChange = self.onAuthChange {
-                    self.getResultsForConfig({ results in
-                        self.allAuthorized({ areAuthorized in
-                            onAuthChange(finished: areAuthorized, results: results)
-                        })
-                    })
-                }
+        // compile the results and pass them back if necessary
+        if let onAuthChange = self.onAuthChange {
+            self.getResultsForConfig({ results in
+                self.allAuthorized({ areAuthorized in
+                    onAuthChange(finished: areAuthorized, results: results)
+                })
+            })
         }
         
-        dispatch_group_notify(group,
-            dispatch_get_main_queue()) {
-                self.view.setNeedsLayout()
-                
-                // and hide if we've sucessfully got all permissions
-                self.allAuthorized({ areAuthorized in
-                    if areAuthorized {
-                        self.hide()
-                    }
-                })
+        dispatch_async(dispatch_get_main_queue()) {
+            self.view.setNeedsLayout()
+            
+            // and hide if we've sucessfully got all permissions
+            self.allAuthorized({ areAuthorized in
+                if areAuthorized {
+                    self.hide()
+                }
+            })
         }
     }
     
@@ -1315,22 +1222,15 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     */
     func getResultsForConfig(completionBlock: resultsForConfigClosure) {
         var results: [PermissionResult] = []
-        let group: dispatch_group_t = dispatch_group_create()
         
         for config in configuredPermissions {
-            dispatch_group_async(group,
-                dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                    self.statusForPermission(config.type, completion: { status in
-                        let result = PermissionResult(type: config.type,
-                            status: status)
-                        results.append(result)
-                    })
-            }
+            self.statusForPermission(config.type, completion: { status in
+                let result = PermissionResult(type: config.type,
+                    status: status)
+                results.append(result)
+            })
         }
         
-        dispatch_group_notify(group,
-            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                completionBlock(results)
-        }
+        completionBlock(results)
     }
 }
