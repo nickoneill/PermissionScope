@@ -957,7 +957,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         onAuthChange = authChange
         onCancel = cancelled
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        dispatch_async(dispatch_get_main_queue()) {
             while self.waitingForBluetooth || self.waitingForMotion { }
             // call other methods that need to wait before show
             // no missing required perms? callback and do nothing
@@ -968,9 +968,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
                         self.onAuthChange?(finished: true, results: results)
                     })
                 } else {
-                    dispatch_async(dispatch_get_main_queue()) {
                         self.showAlert()
-                    }
                 }
             })
         }
