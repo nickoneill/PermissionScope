@@ -177,7 +177,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         headerLabel.font = UIFont.systemFontOfSize(22)
         headerLabel.textColor = UIColor.blackColor()
         headerLabel.textAlignment = NSTextAlignment.Center
-        headerLabel.text = "Hey, listen!"
+        headerLabel.text = "Hey, listen!".localized
 
         contentView.addSubview(headerLabel)
 
@@ -185,13 +185,13 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         bodyLabel.font = UIFont.boldSystemFontOfSize(16)
         bodyLabel.textColor = UIColor.blackColor()
         bodyLabel.textAlignment = NSTextAlignment.Center
-        bodyLabel.text = "We need a couple things\r\nbefore you get started."
+        bodyLabel.text = "We need a couple things\r\nbefore you get started.".localized
         bodyLabel.numberOfLines = 2
 
         contentView.addSubview(bodyLabel)
         
         // close button
-        closeButton.setTitle("Close", forState: .Normal)
+        closeButton.setTitle("Close".localized, forState: .Normal)
         closeButton.addTarget(self, action: Selector("cancel"), forControlEvents: UIControlEvents.TouchUpInside)
         
         contentView.addSubview(closeButton)
@@ -1093,13 +1093,13 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             })
         }
         
-        let alert = UIAlertController(title: "Permission for \(permission) was denied.",
-            message: "Please enable access to \(permission) in the Settings app",
+        let alert = UIAlertController(title: "Permission for \(permission) was denied.".localized,
+            message: "Please enable access to \(permission) in the Settings app".localized,
             preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "OK",
+        alert.addAction(UIAlertAction(title: "OK".localized,
             style: .Cancel,
             handler: nil))
-        alert.addAction(UIAlertAction(title: "Show me",
+        alert.addAction(UIAlertAction(title: "Show me".localized,
             style: .Default,
             handler: { action in
                 NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("appForegroundedAfterSettings"), name: UIApplicationDidBecomeActiveNotification, object: nil)
@@ -1127,10 +1127,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             })
         }
         
-        let alert = UIAlertController(title: "\(permission) is currently disabled.",
-            message: "Please enable access to \(permission) in Settings",
+        let alert = UIAlertController(title: "\(permission) is currently disabled.".localized,
+            message: "Please enable access to \(permission) in Settings".localized,
             preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "OK",
+        alert.addAction(UIAlertAction(title: "OK".localized,
             style: .Cancel,
             handler: nil))
         
