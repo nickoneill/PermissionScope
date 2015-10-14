@@ -66,10 +66,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         return lm
     }()
 
-    lazy var bluetoothManager:CBPeripheralManager = {
-        return CBPeripheralManager(delegate: self, queue: nil, options: [CBPeripheralManagerOptionShowPowerAlertKey: false])
-    }()
-    
     lazy var motionManager:CMMotionActivityManager = {
         return CMMotionActivityManager()
     }()
@@ -78,7 +74,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     lazy var defaults:NSUserDefaults = {
         return .standardUserDefaults()
     }()
-    
+
+    /// Bluetooth manager, initialized only when we need to check Bluetooth state
+    var bluetoothManager: CBPeripheralManager?
+
     /// Default status for Core Motion Activity
     var motionPermissionStatus: PermissionStatus = .Unknown
 
@@ -812,9 +811,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         }
     }
     
-    /// Returns whether PermissionScope is waiting for the user to enable/disable bluetooth access or not.
-    private var waitingForBluetooth = false
-    
     /**
     Returns the current permission status for accessing Bluetooth.
     
@@ -822,12 +818,14 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     */
     public func statusBluetooth() -> PermissionStatus {
         // if already asked for bluetooth before, do a request to get status, else wait for user to request
-        if askedBluetooth{
+        if askedBluetooth {
             triggerBluetoothStatusUpdate()
         } else {
             return .Unknown
         }
-
+        guard let bluetoothManager = bluetoothManager else {
+            return .Unknown
+        }
         switch (bluetoothManager.state, CBPeripheralManager.authorizationStatus()) {
         case (.Unsupported, _), (.PoweredOff, _), (_, .Restricted):
             return .Disabled
@@ -860,16 +858,14 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     }
     
     /**
-    Start and immediately stop bluetooth advertising to trigger
-    its permission dialog.
+    Trigger Bluetooth permission dialog.
     */
     private func triggerBluetoothStatusUpdate() {
-        if !waitingForBluetooth && bluetoothManager.state == .PoweredOn {
-            bluetoothManager.startAdvertising(nil)
-            bluetoothManager.stopAdvertising()
-            askedBluetooth = true
-            waitingForBluetooth = true
+        guard bluetoothManager == nil else {
+            return
         }
+        bluetoothManager = CBPeripheralManager(delegate: self, queue: nil, options: [CBPeripheralManagerOptionShowPowerAlertKey: false])
+        askedBluetooth = true
     }
     
     // MARK: Core Motion Activity
@@ -958,7 +954,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         onCancel = cancelled
         
         dispatch_async(dispatch_get_main_queue()) {
-            while self.waitingForBluetooth || self.waitingForMotion { }
+            while self.waitingForMotion { }
             // call other methods that need to wait before show
             // no missing required perms? callback and do nothing
             self.requiredAuthorized({ areAuthorized in
@@ -1061,8 +1057,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     // MARK: Bluetooth delegate
     
     public func peripheralManagerDidUpdateState(peripheral: CBPeripheralManager) {
-        waitingForBluetooth = false
-        detectAndCallback()
+        dispatch_async(dispatch_get_main_queue()) {
+            self.detectAndCallback()
+        }
     }
 
     // MARK: - UI Helpers
