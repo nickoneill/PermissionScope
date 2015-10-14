@@ -864,7 +864,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     its permission dialog.
     */
     private func triggerBluetoothStatusUpdate() {
-        if !waitingForBluetooth && bluetoothManager.state == .Unknown {
+        if !waitingForBluetooth && bluetoothManager.state == .PoweredOn {
             bluetoothManager.startAdvertising(nil)
             bluetoothManager.stopAdvertising()
             askedBluetooth = true
