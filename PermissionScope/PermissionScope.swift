@@ -67,7 +67,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     }()
 
     lazy var bluetoothManager:CBPeripheralManager = {
-        return CBPeripheralManager(delegate: self, queue: nil, options:[CBPeripheralManagerOptionShowPowerAlertKey: true])
+        return CBPeripheralManager(delegate: self, queue: nil)
     }()
     
     lazy var motionManager:CMMotionActivityManager = {
