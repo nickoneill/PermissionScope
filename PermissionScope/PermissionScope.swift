@@ -66,10 +66,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         return lm
     }()
 
-    lazy var bluetoothManager:CBPeripheralManager = {
-        return CBPeripheralManager(delegate: self, queue: nil, options:[CBPeripheralManagerOptionShowPowerAlertKey: true])
-    }()
-    
     lazy var motionManager:CMMotionActivityManager = {
         return CMMotionActivityManager()
     }()
@@ -78,7 +74,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     lazy var defaults:NSUserDefaults = {
         return .standardUserDefaults()
     }()
-    
+
+    /// Bluetooth manager, initialized only when we need to check Bluetooth state
+    var bluetoothManager: CBPeripheralManager?
+
     /// Default status for Core Motion Activity
     var motionPermissionStatus: PermissionStatus = .Unknown
 
@@ -398,9 +397,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         case .Restricted, .Denied:
             return .Unauthorized
         case .AuthorizedWhenInUse:
-            // Curious why this happens? Details on upgrading from WhenInUse to Always:
-            // [Check this issue](https://github.com/nickoneill/PermissionScope/issues/24)
-            if defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedInUseToAlwaysUpgrade) {
+            if defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedAlwaysLocation) {
                 return .Unauthorized
             } else {
                 return .Unknown
@@ -417,13 +414,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     	let hasAlwaysKey:Bool = !NSBundle.mainBundle()
     		.objectForInfoDictionaryKey(Constants.InfoPlistKeys.locationAlways).isNil
     	assert(hasAlwaysKey, Constants.InfoPlistKeys.locationAlways + " not found in Info.plist.")
-    	
         switch statusLocationAlways() {
         case .Unknown:
-            if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse {
-                defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedInUseToAlwaysUpgrade)
-                defaults.synchronize()
-            }
+            defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedAlwaysLocation)
+            defaults.synchronize()
             locationManager.requestAlwaysAuthorization()
         case .Unauthorized:
             self.showDeniedAlert(.LocationAlways)
@@ -812,9 +806,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         }
     }
     
-    /// Returns whether PermissionScope is waiting for the user to enable/disable bluetooth access or not.
-    private var waitingForBluetooth = false
-    
     /**
     Returns the current permission status for accessing Bluetooth.
     
@@ -822,12 +813,14 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     */
     public func statusBluetooth() -> PermissionStatus {
         // if already asked for bluetooth before, do a request to get status, else wait for user to request
-        if askedBluetooth{
+        if askedBluetooth {
             triggerBluetoothStatusUpdate()
         } else {
             return .Unknown
         }
-
+        guard let bluetoothManager = bluetoothManager else {
+            return .Unknown
+        }
         switch (bluetoothManager.state, CBPeripheralManager.authorizationStatus()) {
         case (.Unsupported, _), (.PoweredOff, _), (_, .Restricted):
             return .Disabled
@@ -860,16 +853,14 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     }
     
     /**
-    Start and immediately stop bluetooth advertising to trigger
-    its permission dialog.
+    Trigger Bluetooth permission dialog.
     */
     private func triggerBluetoothStatusUpdate() {
-        if !waitingForBluetooth && bluetoothManager.state == .Unknown {
-            bluetoothManager.startAdvertising(nil)
-            bluetoothManager.stopAdvertising()
-            askedBluetooth = true
-            waitingForBluetooth = true
+        guard bluetoothManager == nil else {
+            return
         }
+        bluetoothManager = CBPeripheralManager(delegate: self, queue: nil, options: [CBPeripheralManagerOptionShowPowerAlertKey: false])
+        askedBluetooth = true
     }
     
     // MARK: Core Motion Activity
@@ -958,7 +949,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         onCancel = cancelled
         
         dispatch_async(dispatch_get_main_queue()) {
-            while self.waitingForBluetooth || self.waitingForMotion { }
+            while self.waitingForMotion { }
             // call other methods that need to wait before show
             // no missing required perms? callback and do nothing
             self.requiredAuthorized({ areAuthorized in
@@ -1061,8 +1052,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     // MARK: Bluetooth delegate
     
     public func peripheralManagerDidUpdateState(peripheral: CBPeripheralManager) {
-        waitingForBluetooth = false
-        detectAndCallback()
+        dispatch_async(dispatch_get_main_queue()) {
+            self.detectAndCallback()
+        }
     }
 
     // MARK: - UI Helpers
