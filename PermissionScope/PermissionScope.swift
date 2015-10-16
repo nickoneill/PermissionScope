@@ -397,9 +397,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         case .Restricted, .Denied:
             return .Unauthorized
         case .AuthorizedWhenInUse:
-            // Curious why this happens? Details on upgrading from WhenInUse to Always:
-            // [Check this issue](https://github.com/nickoneill/PermissionScope/issues/24)
-            if defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedInUseToAlwaysUpgrade) {
+            if defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedAlwaysLocation) {
                 return .Unauthorized
             } else {
                 return .Unknown
@@ -416,13 +414,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     	let hasAlwaysKey:Bool = !NSBundle.mainBundle()
     		.objectForInfoDictionaryKey(Constants.InfoPlistKeys.locationAlways).isNil
     	assert(hasAlwaysKey, Constants.InfoPlistKeys.locationAlways + " not found in Info.plist.")
-    	
         switch statusLocationAlways() {
         case .Unknown:
-            if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse {
-                defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedInUseToAlwaysUpgrade)
-                defaults.synchronize()
-            }
+            defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedAlwaysLocation)
+            defaults.synchronize()
             locationManager.requestAlwaysAuthorization()
         case .Unauthorized:
             self.showDeniedAlert(.LocationAlways)
