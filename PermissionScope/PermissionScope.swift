@@ -1161,31 +1161,35 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     - parameter completion: Closure called when the request is done.
     */
     func statusForPermission(type: PermissionType, completion: statusRequestClosure) {
-        // :(
+        // Get permission status
+        let permissionStatus: PermissionStatus
         switch type {
         case .LocationAlways:
-            completion(status: statusLocationAlways())
+            permissionStatus = statusLocationAlways()
         case .LocationInUse:
-            completion(status: statusLocationInUse())
+            permissionStatus = statusLocationInUse()
         case .Contacts:
-            completion(status: statusContacts())
+            permissionStatus = statusContacts()
         case .Notifications:
-            completion(status: statusNotifications())
+            permissionStatus = statusNotifications()
         case .Microphone:
-            completion(status: statusMicrophone())
+            permissionStatus = statusMicrophone()
         case .Camera:
-            completion(status: statusCamera())
+            permissionStatus = statusCamera()
         case .Photos:
-            completion(status: statusPhotos())
+            permissionStatus = statusPhotos()
         case .Reminders:
-            completion(status: statusReminders())
+            permissionStatus = statusReminders()
         case .Events:
-            completion(status: statusEvents())
+            permissionStatus = statusEvents()
         case .Bluetooth:
-            completion(status: statusBluetooth())
+            permissionStatus = statusBluetooth()
         case .Motion:
-            completion(status: statusMotion())
+            permissionStatus = statusMotion()
         }
+        
+        // Perform completion
+        completion(status: permissionStatus)
     }
     
     /**
