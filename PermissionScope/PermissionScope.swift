@@ -14,6 +14,7 @@ import Photos
 import EventKit
 import CoreBluetooth
 import CoreMotion
+import Contacts
 
 public typealias statusRequestClosure = (status: PermissionStatus) -> Void
 public typealias authClosureType      = (finished: Bool, results: [PermissionResult]) -> Void
@@ -485,14 +486,27 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     - returns: Permission status for the requested type.
     */
     public func statusContacts() -> PermissionStatus {
-        let status = ABAddressBookGetAuthorizationStatus()
-        switch status {
+        if #available(iOS 9.0, *) {
+            let status = CNContactStore.authorizationStatusForEntityType(.Contacts)
+            switch status {
             case .Authorized:
                 return .Authorized
             case .Restricted, .Denied:
                 return .Unauthorized
             case .NotDetermined:
                 return .Unknown
+            }
+        } else {
+            // Fallback on earlier versions
+            let status = ABAddressBookGetAuthorizationStatus()
+            switch status {
+            case .Authorized:
+                return .Authorized
+            case .Restricted, .Denied:
+                return .Unauthorized
+            case .NotDetermined:
+                return .Unknown
+            }
         }
     }
 
@@ -503,8 +517,15 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         let status = statusContacts()
         switch status {
         case .Unknown:
-            ABAddressBookRequestAccessWithCompletion(nil) { success, error in
-                self.detectAndCallback()
+            if #available(iOS 9.0, *) {
+                CNContactStore().requestAccessForEntityType(.Contacts, completionHandler: {
+                    success, error in
+                    self.detectAndCallback()
+                })
+            } else {
+                ABAddressBookRequestAccessWithCompletion(nil) { success, error in
+                    self.detectAndCallback()
+                }
             }
         case .Unauthorized:
             self.showDeniedAlert(.Contacts)
