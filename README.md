@@ -64,7 +64,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         // Set up permissions
-         pscope.addPermission(ContactsPermission(),
+        pscope.addPermission(ContactsPermission(),
             message: "We use this to steal\r\nyour friends")
         pscope.addPermission(NotificationsPermission(notificationCategories: nil),
             message: "We use this to send you\r\nspam and love notes")
@@ -73,9 +73,9 @@ class ViewController: UIViewController {
 	
 	// Show dialog with callbacks
         pscope.show(authChange: { (finished, results) -> Void in
-            println("got results \(results)")
+            print("got results \(results)")
         }, cancelled: { (results) -> Void in
-            println("thing was cancelled")
+            print("thing was cancelled")
         })   
     }
 }
@@ -193,7 +193,7 @@ Use `NSLocationAlwaysUsageDescription` or `NSLocationWhenInUseUsageDescription` 
 
 ### bluetooth
 
-The *NSBluetoothPeripheralUsageDescription* key in the Info.plist specifying a short description of why your app needs to act as a bluetooth peripheralin the background is **optional**.
+The *NSBluetoothPeripheralUsageDescription* key in the Info.plist specifying a short description of why your app needs to act as a bluetooth peripheral in the background is **optional**.
 
 However, enabling `background-modes` in the capabilities section and checking the `acts as a bluetooth LE accessory` checkbox is **required**.
 
