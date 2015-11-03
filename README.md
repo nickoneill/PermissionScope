@@ -43,12 +43,12 @@ Installation for [Carthage](https://github.com/Carthage/Carthage) is simple enou
 
 `github "nickoneill/PermissionScope" ~> 1.0`
 
-As for [Cocoapods](https://cocoapods.org), use this to get the latest code:
+As for [Cocoapods](https://cocoapods.org), use this to get the latest release:
 
 ```ruby
 use_frameworks!
 
-pod 'PermissionScope', '~> 1.0'
+pod 'PermissionScope'
 ```
 
 And `import PermissionScope` in the files you'd like to use it.
