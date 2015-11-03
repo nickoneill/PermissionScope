@@ -1226,10 +1226,12 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     /**
     Rechecks the status of each requested permission, updates
-    the PermisisonScope UI in response and calls your onAuthChange
+    the PermissionScope UI in response and calls your onAuthChange
     to notifiy the parent app.
     */
     func detectAndCallback() {
+        dispatch_async(dispatch_get_main_queue()) {
+
         // compile the results and pass them back if necessary
         if let onAuthChange = self.onAuthChange {
             self.getResultsForConfig({ results in
@@ -1239,14 +1241,13 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             })
         }
         
-        dispatch_async(dispatch_get_main_queue()) {
-            self.view.setNeedsLayout()
+         self.view.setNeedsLayout()
             
-            // and hide if we've sucessfully got all permissions
-            self.allAuthorized({ areAuthorized in
-                if areAuthorized {
-                    self.hide()
-                }
+         // and hide if we've sucessfully got all permissions
+         self.allAuthorized({ areAuthorized in
+             if areAuthorized {
+                self.hide()
+             }
             })
         }
     }
