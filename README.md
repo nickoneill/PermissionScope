@@ -14,6 +14,7 @@
     <a href="#installation">Installation</a>
   • <a href="#dialog-usage">Usage</a>
   • <a href="#customization">Customization</a>
+  • <a href="#known-bugs">Known bugs</a>
   • <a href="https://github.com/nickoneill/PermissionScope/issues">Issues</a>
   • <a href="#license">License</a>
 </p>
@@ -215,6 +216,13 @@ Feel free to add your project in a PR if you're using PermissionScope:
 <a href="https://gettre.at">treat</a><br /><br />
 <img src="http://lootapp.io/assets/img/loot-app-icon.png" width="40" height="40" /><br />
 <a href="https://lootapp.io">Loot</a>
+
+## Known bugs
+
+* Link "**Show me**" does not work on denied a permission (#61)
+
+Solution: Run your app without the debugger.
+
 
 ## license
 
