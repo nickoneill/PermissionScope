@@ -217,7 +217,7 @@ Feel free to add your project in a PR if you're using PermissionScope:
 <img src="http://lootapp.io/assets/img/loot-app-icon.png" width="40" height="40" /><br />
 <a href="https://lootapp.io">Loot</a>
 
-## Known bugs
+## known bugs
 
 * Link "**Show me**" does not work on denied a permission (#61)
 
