@@ -213,6 +213,8 @@ Feel free to add your project in a PR if you're using PermissionScope:
 
 <img src="http://raquo.net/images/icon-round-80.png" width="40" height="40" /><br />
 <a href="https://gettre.at">treat</a>
+<img src="https://lootapp.io/assets/img/loot-app-icon.png" width="40" height="40" /><br />
+<a href="https://lootapp.io">Loot</a>
 
 ## license
 
