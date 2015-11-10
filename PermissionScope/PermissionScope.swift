@@ -105,14 +105,14 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /**
     Checks whether all the configured permission are authorized or not.
     
-    - parameter completion: Closure used to send the result of the check.
+    - parameter completion: Closure used to send the result of the check and the current status for each configured permission.
     */
-    func allAuthorized(completion: (Bool) -> Void ) {
+    func allAuthorized(completion: (Bool, [PermissionResult]) -> Void ) {
         getResultsForConfig{ results in
             let result = results
                 .first { $0.status != .Authorized }
                 .isNil
-            completion(result)
+            completion(result, results)
         }
     }
     
@@ -1232,10 +1232,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     func detectAndCallback() {
         // compile the results and pass them back if necessary
         if let onAuthChange = self.onAuthChange {
-            self.getResultsForConfig({ results in
-                self.allAuthorized({ areAuthorized in
-                    onAuthChange(finished: areAuthorized, results: results)
-                })
+            self.allAuthorized({ (areAuthorized, results) in
+                onAuthChange(finished: areAuthorized, results: results)
             })
         }
         
@@ -1243,7 +1241,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             self.view.setNeedsLayout()
             
             // and hide if we've sucessfully got all permissions
-            self.allAuthorized({ areAuthorized in
+            self.allAuthorized({ (areAuthorized, results) in
                 if areAuthorized {
                     self.hide()
                 }
