@@ -108,11 +108,12 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     - parameter completion: Closure used to send the result of the check and the current status for each configured permission.
     */
     func allAuthorized(completion: (Bool, [PermissionResult]) -> Void ) {
-        getResultsForConfig{ results in
-            let result = results
+        getResultsForConfig { results in
+            let allPermissionsAuthorized = results
                 .first { $0.status != .Authorized }
                 .isNil
-            completion(result, results)
+            
+            completion(allPermissionsAuthorized, results)
         }
     }
     
@@ -1106,9 +1107,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         self.hide()
         
         if let onCancel = onCancel {
-            getResultsForConfig({ results in
-                onCancel(results: results)
-            })
+            getResultsForConfig(onCancel)
         }
     }
     
@@ -1232,7 +1231,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     func detectAndCallback() {
         // compile the results and pass them back if necessary
         if let onAuthChange = self.onAuthChange {
-            self.allAuthorized(onAuthChange)
+            allAuthorized(onAuthChange)
         }
         
         dispatch_async(dispatch_get_main_queue()) {
