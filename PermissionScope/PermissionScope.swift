@@ -1232,9 +1232,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     func detectAndCallback() {
         // compile the results and pass them back if necessary
         if let onAuthChange = self.onAuthChange {
-            self.allAuthorized({ (areAuthorized, results) in
-                onAuthChange(finished: areAuthorized, results: results)
-            })
+            self.allAuthorized(onAuthChange)
         }
         
         dispatch_async(dispatch_get_main_queue()) {
