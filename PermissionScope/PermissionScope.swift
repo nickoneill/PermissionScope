@@ -1250,16 +1250,26 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     Calculates the status for each configured permissions for the caller
     */
     func getResultsForConfig(completionBlock: resultsForConfigClosure) {
+        let group: dispatch_group_t = dispatch_group_create()
         var results: [PermissionResult] = []
         
         for config in configuredPermissions {
-            self.statusForPermission(config.type, completion: { status in
-                let result = PermissionResult(type: config.type,
-                    status: status)
-                results.append(result)
-            })
+            dispatch_group_enter(group)
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                self.statusForPermission(config.type, completion: { status in
+                    let result = PermissionResult(type: config.type,
+                        status: status)
+                    results.append(result)
+                    dispatch_group_leave(group)
+                })
+            }
         }
         
-        completionBlock(results)
+        dispatch_group_notify(group,
+            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                print("returned results \(results)")
+                completionBlock(results)
+        }
     }
 }
