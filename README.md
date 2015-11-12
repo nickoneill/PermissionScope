@@ -7,7 +7,7 @@
     <a href="https://developer.apple.com/swift"><img src="https://img.shields.io/badge/language-swift2-f48041.svg?style=flat" alt="Language: Swift 2" /></a>
     <a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage compatible" /></a>
     <a href="https://cocoapods.org/pods/PermissionScope"><img src="https://cocoapod-badges.herokuapp.com/v/PermissionScope/badge.png" alt="Cocoapods compatible" /></a>
-    <img src="http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat" alt="License: MIT" />
+    <img src="https://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat" alt="License: MIT" />
 </p>
 
 <p align="center">
@@ -213,7 +213,7 @@ Also, remember to add an observer and manage [CKAccountChangedNotification](http
 Feel free to add your project in a PR if you're using PermissionScope:
 
 <img src="http://raquo.net/images/icon-round-80.png" width="40" height="40" /><br />
-<a href="https://gettre.at">treat</a><br /><br />
+<a href="https://treathq.com">treat</a><br /><br />
 <img src="http://lootapp.io/assets/img/loot-app-icon.png" width="40" height="40" /><br />
 <a href="https://lootapp.io">Loot</a>
 
