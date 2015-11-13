@@ -105,14 +105,15 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /**
     Checks whether all the configured permission are authorized or not.
     
-    - parameter completion: Closure used to send the result of the check.
+    - parameter completion: Closure used to send the result of the check and the current status for each configured permission.
     */
-    func allAuthorized(completion: (Bool) -> Void ) {
-        getResultsForConfig{ results in
-            let result = results
+    func allAuthorized(completion: (Bool, [PermissionResult]) -> Void ) {
+        getResultsForConfig { results in
+            let allPermissionsAuthorized = results
                 .first { $0.status != .Authorized }
                 .isNil
-            completion(result)
+            
+            completion(allPermissionsAuthorized, results)
         }
     }
     
@@ -1106,9 +1107,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         self.hide()
         
         if let onCancel = onCancel {
-            getResultsForConfig({ results in
-                onCancel(results: results)
-            })
+            getResultsForConfig(onCancel)
         }
     }
     
@@ -1232,18 +1231,14 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     func detectAndCallback() {
         // compile the results and pass them back if necessary
         if let onAuthChange = self.onAuthChange {
-            self.getResultsForConfig({ results in
-                self.allAuthorized({ areAuthorized in
-                    onAuthChange(finished: areAuthorized, results: results)
-                })
-            })
+            allAuthorized(onAuthChange)
         }
         
         dispatch_async(dispatch_get_main_queue()) {
             self.view.setNeedsLayout()
             
             // and hide if we've sucessfully got all permissions
-            self.allAuthorized({ areAuthorized in
+            self.allAuthorized({ (areAuthorized, results) in
                 if areAuthorized {
                     self.hide()
                 }
@@ -1255,16 +1250,26 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     Calculates the status for each configured permissions for the caller
     */
     func getResultsForConfig(completionBlock: resultsForConfigClosure) {
+        let group: dispatch_group_t = dispatch_group_create()
         var results: [PermissionResult] = []
         
         for config in configuredPermissions {
-            self.statusForPermission(config.type, completion: { status in
-                let result = PermissionResult(type: config.type,
-                    status: status)
-                results.append(result)
-            })
+            dispatch_group_enter(group)
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                self.statusForPermission(config.type, completion: { status in
+                    let result = PermissionResult(type: config.type,
+                        status: status)
+                    results.append(result)
+                    dispatch_group_leave(group)
+                })
+            }
         }
         
-        completionBlock(results)
+        dispatch_group_notify(group,
+            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                print("returned results \(results)")
+                completionBlock(results)
+        }
     }
 }
