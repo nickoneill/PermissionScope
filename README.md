@@ -215,8 +215,9 @@ Feel free to add your project in a PR if you're using PermissionScope:
 <img src="http://raquo.net/images/icon-round-80.png" width="40" height="40" /><br />
 <a href="https://treathq.com">treat</a><br /><br />
 <img src="http://lootapp.io/assets/img/loot-app-icon.png" width="40" height="40" /><br />
-<a href="https://lootapp.io">Loot</a>
-
+<a href="https://lootapp.io">Loot</a><br/><br/>
+<img src="http://a4.mzstatic.com/us/r30/Purple4/v4/7b/d5/32/7bd532c6-1d81-2c90-5132-62f920cd0a15/icon175x175.png" width="40" height="40" /><br />
+<a href="https://www.umwho.com">umwho</a>
 ## known bugs
 
 * Link "**Show me**" does not work on denied a permission (#61)
