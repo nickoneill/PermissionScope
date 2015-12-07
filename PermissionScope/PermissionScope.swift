@@ -68,7 +68,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     }()
 
     lazy var bluetoothManager:CBPeripheralManager = {
-        return CBPeripheralManager(delegate: self, queue: nil, options:[CBPeripheralManagerOptionShowPowerAlertKey: true])
+        return CBPeripheralManager(delegate: self, queue: nil, options:[CBPeripheralManagerOptionShowPowerAlertKey: false])
     }()
     
     lazy var motionManager:CMMotionActivityManager = {
@@ -1125,8 +1125,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             })
         }
         
-        let alert = UIAlertController(title: "Permission for \(permission) was denied.".localized,
-            message: "Please enable access to \(permission) in the Settings app".localized,
+        let alert = UIAlertController(title: "Permission for \(permission.prettyDescription) was denied.".localized,
+            message: "Please enable access to \(permission.prettyDescription) in the Settings app".localized,
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK".localized,
             style: .Cancel,
@@ -1159,8 +1159,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             })
         }
         
-        let alert = UIAlertController(title: "\(permission) is currently disabled.".localized,
-            message: "Please enable access to \(permission) in Settings".localized,
+        let alert = UIAlertController(title: "\(permission.prettyDescription) is currently disabled.".localized,
+            message: "Please enable access to \(permission.prettyDescription) in Settings".localized,
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "OK".localized,
             style: .Cancel,
@@ -1226,22 +1226,22 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     /**
     Rechecks the status of each requested permission, updates
-    the PermisisonScope UI in response and calls your onAuthChange
+    the PermissionScope UI in response and calls your onAuthChange
     to notifiy the parent app.
     */
     func detectAndCallback() {
-        // compile the results and pass them back if necessary
-        if let onAuthChange = self.onAuthChange {
-            self.getResultsForConfig({ results in
-                self.allAuthorized({ areAuthorized in
-                    onAuthChange(finished: areAuthorized, results: results)
-                })
-            })
-        }
-        
         dispatch_async(dispatch_get_main_queue()) {
-            self.view.setNeedsLayout()
+            // compile the results and pass them back if necessary
+            if let onAuthChange = self.onAuthChange {
+                self.getResultsForConfig({ results in
+                    self.allAuthorized({ areAuthorized in
+                        onAuthChange(finished: areAuthorized, results: results)
+                    })
+                })
+            }
             
+            self.view.setNeedsLayout()
+
             // and hide if we've sucessfully got all permissions
             self.allAuthorized({ areAuthorized in
                 if areAuthorized {

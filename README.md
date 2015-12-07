@@ -7,13 +7,14 @@
     <a href="https://developer.apple.com/swift"><img src="https://img.shields.io/badge/language-swift2-f48041.svg?style=flat" alt="Language: Swift 2" /></a>
     <a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage compatible" /></a>
     <a href="https://cocoapods.org/pods/PermissionScope"><img src="https://cocoapod-badges.herokuapp.com/v/PermissionScope/badge.png" alt="Cocoapods compatible" /></a>
-    <img src="http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat" alt="License: MIT" />
+    <img src="https://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat" alt="License: MIT" />
 </p>
 
 <p align="center">
     <a href="#installation">Installation</a>
   • <a href="#dialog-usage">Usage</a>
   • <a href="#customization">Customization</a>
+  • <a href="#known-bugs">Known bugs</a>
   • <a href="https://github.com/nickoneill/PermissionScope/issues">Issues</a>
   • <a href="#license">License</a>
 </p>
@@ -42,12 +43,12 @@ Installation for [Carthage](https://github.com/Carthage/Carthage) is simple enou
 
 `github "nickoneill/PermissionScope" ~> 1.0`
 
-As for [Cocoapods](https://cocoapods.org), use this to get the latest code:
+As for [Cocoapods](https://cocoapods.org), use this to get the latest release:
 
 ```ruby
 use_frameworks!
 
-pod 'PermissionScope', '~> 1.0'
+pod 'PermissionScope'
 ```
 
 And `import PermissionScope` in the files you'd like to use it.
@@ -201,20 +202,23 @@ However, enabling `background-modes` in the capabilities section and checking th
 
 Enable `HealthKit` in your target's capabilities, **required**.
 
-### cloudkit
-
-Enable `CloudKit` in your target's capabilities, **required**.
-
-Also, remember to add an observer and manage [CKAccountChangedNotification](https://developer.apple.com/library/prerelease/ios/documentation/CloudKit/Reference/CKContainer_class/#//apple_ref/c/data/CKAccountChangedNotification) in your app.
-
 ## projects using PermissionScope
 
 Feel free to add your project in a PR if you're using PermissionScope:
 
 <img src="http://raquo.net/images/icon-round-80.png" width="40" height="40" /><br />
-<a href="https://gettre.at">treat</a><br /><br />
+<a href="https://treathq.com">treat</a><br /><br />
 <img src="http://lootapp.io/assets/img/loot-app-icon.png" width="40" height="40" /><br />
-<a href="https://lootapp.io">Loot</a>
+<a href="https://lootapp.io">Loot</a><br /><br />
+<img src="http://a4.mzstatic.com/us/r30/Purple4/v4/7b/d5/32/7bd532c6-1d81-2c90-5132-62f920cd0a15/icon175x175.png" width="40" height="40" /><br />
+<a href="https://www.umwho.com">umwho</a><br /><br />
+
+## known bugs
+
+* Link "**Show me**" does not work on denied a permission ([#61](https://github.com/nickoneill/PermissionScope/issues/#61))
+
+Solution: Run your app without the debugger.
+
 
 ## license
 
