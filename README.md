@@ -73,7 +73,7 @@ class ViewController: UIViewController {
             message: "We use this to track\r\nwhere you live")
 	
 	// Show dialog with callbacks
-        pscope.show(authChange: { (finished, results) -> Void in
+        pscope.show({ finished, results in
             print("got results \(results)")
         }, cancelled: { (results) -> Void in
             print("thing was cancelled")
