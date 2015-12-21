@@ -911,7 +911,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     - returns: Permission status for the requested type.
     */
     public func statusMotion() -> PermissionStatus {
-        if askedMotion{
+        if askedMotion {
             triggerMotionStatusUpdate()
         }
         return motionPermissionStatus

@@ -59,8 +59,7 @@
 "We need a couple things\r\nbefore you get started." = "";
 "Permission for Contacts was denied." = "";
 "Permission for Events was denied." = "";
-"Permission for LocationAlways was denied." = "";
-"Permission for LocationInUse was denied." = "";
+"Permission for Location was denied." = "";
 "Permission for Notifications was denied." = "";
 "Permission for Microphone was denied." = "";
 "Permission for Camera was denied." = "";
@@ -71,8 +70,7 @@
 //
 "Please enable access to Contacts in the Settings app" = "";
 "Please enable access to Events in the Settings app" = "";
-"Please enable access to LocationAlways in the Settings app" = "";
-"Please enable access to LocationInUse in the Settings app" = "";
+"Please enable access to Location in the Settings app" = "";
 "Please enable access to Notifications in the Settings app" = "";
 "Please enable access to Microphone in the Settings app" = "";
 "Please enable access to Camera in the Settings app" = "";
@@ -86,8 +84,7 @@
 //
 "Contacts is currently disabled." = "";
 "Events is currently disabled." = "";
-"LocationAlways is currently disabled." = "";
-"LocationInUse is currently disabled." = "";
+"Location is currently disabled." = "";
 "Notifications is currently disabled." = "";
 "Microphone is currently disabled." = "";
 "Camera is currently disabled." = "";
@@ -98,8 +95,7 @@
 //
 "Please enable access to Contacts in Settings" = "";
 "Please enable access to Events in Settings" = "";
-"Please enable access to LocationAlways in Settings" = "";
-"Please enable access to LocationInUse in Settings" = "";
+"Please enable access to Location in Settings" = "";
 "Please enable access to Notifications in Settings" = "";
 "Please enable access to Microphone in Settings" = "";
 "Please enable access to Camera in Settings" = "";
