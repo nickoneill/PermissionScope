@@ -636,7 +636,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         case .Disabled:
             showDisabledAlert(.Notifications)
         case .Authorized:
-            break
+            detectAndCallback()
         }
     }
     
