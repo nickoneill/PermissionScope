@@ -219,6 +219,9 @@ Feel free to add your project in a PR if you're using PermissionScope:
 
 Solution: Run your app without the debugger.
 
+* When using **Carthage**, the following error occurs: *Module file was created by an older version of the compiler*.
+
+Solution: Use `carthage bootstrap --no-use-binaries` instead.
 
 ## license
 
