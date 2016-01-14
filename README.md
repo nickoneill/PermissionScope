@@ -73,7 +73,7 @@ class ViewController: UIViewController {
             message: "We use this to track\r\nwhere you live")
 	
 	// Show dialog with callbacks
-        pscope.show(authChange: { (finished, results) -> Void in
+        pscope.show({ finished, results in
             print("got results \(results)")
         }, cancelled: { (results) -> Void in
             print("thing was cancelled")
@@ -202,12 +202,6 @@ However, enabling `background-modes` in the capabilities section and checking th
 
 Enable `HealthKit` in your target's capabilities, **required**.
 
-### cloudkit
-
-Enable `CloudKit` in your target's capabilities, **required**.
-
-Also, remember to add an observer and manage [CKAccountChangedNotification](https://developer.apple.com/library/prerelease/ios/documentation/CloudKit/Reference/CKContainer_class/#//apple_ref/c/data/CKAccountChangedNotification) in your app.
-
 ## projects using PermissionScope
 
 Feel free to add your project in a PR if you're using PermissionScope:
@@ -215,14 +209,19 @@ Feel free to add your project in a PR if you're using PermissionScope:
 <img src="http://raquo.net/images/icon-round-80.png" width="40" height="40" /><br />
 <a href="https://treathq.com">treat</a><br /><br />
 <img src="http://lootapp.io/assets/img/loot-app-icon.png" width="40" height="40" /><br />
-<a href="https://lootapp.io">Loot</a>
+<a href="https://loot.io">Loot</a><br /><br />
+<img src="http://a4.mzstatic.com/us/r30/Purple4/v4/7b/d5/32/7bd532c6-1d81-2c90-5132-62f920cd0a15/icon175x175.png" width="40" height="40" /><br />
+<a href="https://www.umwho.com">umwho</a><br /><br />
 
 ## known bugs
 
-* Link "**Show me**" does not work on denied a permission (#61)
+* Link "**Show me**" does not work on denied a permission ([#61](https://github.com/nickoneill/PermissionScope/issues/#61))
 
 Solution: Run your app without the debugger.
 
+* When using **Carthage**, the following error occurs: *Module file was created by an older version of the compiler*.
+
+Solution: Use `carthage bootstrap --no-use-binaries` instead.
 
 ## license
 

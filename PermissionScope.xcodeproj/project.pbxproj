@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		244B5BA81B8D5E7900FFA019 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244B5BA71B8D5E7900FFA019 /* Permissions.swift */; settings = {ASSET_TAGS = (); }; };
+		244B5BA81B8D5E7900FFA019 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244B5BA71B8D5E7900FFA019 /* Permissions.swift */; };
 		2487CEE11B87B01E00766A1A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2487CEE01B87B01E00766A1A /* Extensions.swift */; };
 		2487CEE31B87B05200766A1A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2487CEE21B87B05200766A1A /* Constants.swift */; };
 		2487CEE51B87B61E00766A1A /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2487CEE41B87B61E00766A1A /* Structs.swift */; };
@@ -545,7 +545,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_NS_ASSERTIONS = NO;

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="xBn-zd-ZG0">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="xBn-zd-ZG0">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <scenes>
         <!--view controller-->
@@ -46,12 +47,29 @@
                                     <action selector="singlePerm" destination="BYZ-38-t0r" eventType="touchUpInside" id="SoH-j6-hTO"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9DH-lH-uup">
+                                <rect key="frame" x="200" y="395" width="200" height="33"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="Gj5-X0-lpN"/>
+                                    <constraint firstAttribute="height" constant="33" id="zil-Qs-VNv"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
+                                <state key="normal" title="UI-less Permissions">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="noUIPerm" destination="BYZ-38-t0r" eventType="touchUpInside" id="zkt-X0-IC7"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.4823529412" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="centerY" secondItem="Caz-ES-oJ2" secondAttribute="centerY" constant="0.5" id="3vu-t3-QA9"/>
                             <constraint firstAttribute="centerX" secondItem="Caz-ES-oJ2" secondAttribute="centerX" id="8O9-3g-0Ll"/>
+                            <constraint firstItem="9DH-lH-uup" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Uys-NO-iP4"/>
                             <constraint firstAttribute="centerX" secondItem="bRV-Y8-Fit" secondAttribute="centerX" constant="-2" id="a5B-q8-xub"/>
+                            <constraint firstItem="9DH-lH-uup" firstAttribute="top" secondItem="bRV-Y8-Fit" secondAttribute="bottom" constant="40" id="tae-sJ-i4E"/>
                             <constraint firstItem="bRV-Y8-Fit" firstAttribute="top" secondItem="Caz-ES-oJ2" secondAttribute="bottom" constant="42" id="wpe-ep-4fb"/>
                             <constraint firstItem="Caz-ES-oJ2" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="183" id="xUZ-nL-1Wn"/>
                         </constraints>
