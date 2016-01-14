@@ -992,7 +992,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         onCancel = cancelled
         
         dispatch_async(dispatch_get_main_queue()) {
-            while self.waitingForBluetooth || self.waitingForMotion { }
             // call other methods that need to wait before show
             // no missing required perms? callback and do nothing
             self.requiredAuthorized({ areAuthorized in
@@ -1062,7 +1061,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         let window = UIApplication.sharedApplication().keyWindow!
 
         dispatch_async(dispatch_get_main_queue(), {
-            UIView.animateWithDuration(0.2, animations: {
+            UIView.animateWithDuration(0.2, delay: 0.0, options:.BeginFromCurrentState, animations: {
                 self.baseView.frame.origin.y = window.center.y + 400
                 self.view.alpha = 0
             }, completion: { finished in
@@ -1098,7 +1097,12 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         waitingForBluetooth = false
         detectAndCallback()
     }
-
+    
+    public func peripheralManagerDidStartAdvertising(peripheral: CBPeripheralManager, error: NSError?) {
+        if let _ = error {
+            triggerBluetoothStatusUpdate()
+        }
+    }
     // MARK: - UI Helpers
     
     /**
@@ -1225,8 +1229,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         case .Events:
             permissionStatus = statusEvents()
         case .Bluetooth:
+            while waitingForBluetooth {}
             permissionStatus = statusBluetooth()
         case .Motion:
+            while waitingForMotion {}
             permissionStatus = statusMotion()
         }
         
@@ -1267,14 +1273,17 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     func getResultsForConfig(completionBlock: resultsForConfigClosure) {
         var results: [PermissionResult] = []
         
-        for config in configuredPermissions {
-            self.statusForPermission(config.type, completion: { status in
-                let result = PermissionResult(type: config.type,
-                    status: status)
-                results.append(result)
-            })
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)){
+            for config in self.configuredPermissions {
+                self.statusForPermission(config.type, completion: { status in
+                    let result = PermissionResult(type: config.type,
+                        status: status)
+                    results.append(result)
+                })
+            }
+            dispatch_async(dispatch_get_main_queue()) {
+                completionBlock(results)
+            }
         }
-        
-        completionBlock(results)
     }
 }
