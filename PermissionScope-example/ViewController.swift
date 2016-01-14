@@ -20,7 +20,7 @@ class ViewController: UIViewController {
         
         singlePscope.addPermission(NotificationsPermission(notificationCategories: nil),
             message: "We use this to send you\r\nspam and love notes")
-        
+
         multiPscope.addPermission(ContactsPermission(),
             message: "We use this to steal\r\nyour friends")
         multiPscope.addPermission(NotificationsPermission(notificationCategories: nil),

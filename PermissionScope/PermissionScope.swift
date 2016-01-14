@@ -599,15 +599,17 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         
         defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedNotifications)
         defaults.synchronize()
-        
-        getResultsForConfig { results in
-            guard let notificationResult = results
-                .first({ $0.type == .Notifications }) else { return }
-            
-            if notificationResult.status == .Unknown {
-                self.showDeniedAlert(notificationResult.type)
-            } else {
-                self.detectAndCallback()
+
+        dispatch_async(dispatch_get_main_queue()) {
+            self.getResultsForConfig { results in
+                guard let notificationResult = results
+                    .first({ $0.type == .Notifications }) else { return }
+                
+                if notificationResult.status == .Unknown {
+                    self.showDeniedAlert(notificationResult.type)
+                } else {
+                    self.detectAndCallback()
+                }
             }
         }
     }
@@ -994,13 +996,13 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             // call other methods that need to wait before show
             // no missing required perms? callback and do nothing
             self.requiredAuthorized({ areAuthorized in
-                
                 if areAuthorized {
                     self.getResultsForConfig({ results in
+
                         self.onAuthChange?(finished: true, results: results)
                     })
                 } else {
-                        self.showAlert()
+                    self.showAlert()
                 }
             })
         }
