@@ -1167,6 +1167,14 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         alert.addAction(UIAlertAction(title: "OK".localized,
             style: .Cancel,
             handler: nil))
+        alert.addAction(UIAlertAction(title: "Show me".localized,
+            style: .Default,
+            handler: { action in
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("appForegroundedAfterSettings"), name: UIApplicationDidBecomeActiveNotification, object: nil)
+                
+                let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
+                UIApplication.sharedApplication().openURL(settingsUrl!)
+        }))
         
         dispatch_async(dispatch_get_main_queue()) {
             self.viewControllerForAlerts?.presentViewController(alert,
