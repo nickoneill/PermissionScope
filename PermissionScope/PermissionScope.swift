@@ -600,18 +600,20 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         defaults.setBool(true, forKey: Constants.NSUserDefaultsKeys.requestedNotifications)
         defaults.synchronize()
 
-        dispatch_async(dispatch_get_main_queue()) {
+        // callback after a short delay, otherwise notifications don't report proper auth
+        dispatch_after(
+            dispatch_time(DISPATCH_TIME_NOW,Int64(0.1 * Double(NSEC_PER_SEC))),
+            dispatch_get_main_queue(), {
             self.getResultsForConfig { results in
                 guard let notificationResult = results
                     .first({ $0.type == .Notifications }) else { return }
-                
                 if notificationResult.status == .Unknown {
                     self.showDeniedAlert(notificationResult.type)
                 } else {
                     self.detectAndCallback()
                 }
             }
-        }
+        })
     }
     
     /**
