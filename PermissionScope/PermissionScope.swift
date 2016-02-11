@@ -26,9 +26,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     // MARK: UI Parameters
     
     /// Header UILabel with the message "Hey, listen!" by default.
-    public let headerLabel                 = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
+    public var headerLabel                 = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
     /// Header UILabel with the message "We need a couple things\r\nbefore you get started." by default.
-    public let bodyLabel                   = UILabel(frame: CGRect(x: 0, y: 0, width: 240, height: 70))
+    public var bodyLabel                   = UILabel(frame: CGRect(x: 0, y: 0, width: 240, height: 70))
     /// Color for the close button's text color.
     public var closeButtonTextColor        = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
     /// Color for the permission buttons' text color.
