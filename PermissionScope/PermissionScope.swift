@@ -1016,6 +1016,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     private func showAlert() {
         // add the backing views
         let window = UIApplication.sharedApplication().keyWindow!
+        
+        //hide KB if it is shown
+        window.endEditing(true)
+        
         window.addSubview(view)
         view.frame = window.bounds
         baseView.frame = window.bounds
