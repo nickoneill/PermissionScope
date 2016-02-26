@@ -75,10 +75,11 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         return CMMotionActivityManager()
     }()
     
-    /// NSUserDefaults standardDefaults lazy var
-    lazy var defaults:NSUserDefaults = {
-        return .standardUserDefaults()
-    }()
+    /// NSUserDefaults standardDefaults static var and convenience computed instance var
+    static let defaults = NSUserDefaults.standardUserDefaults()
+    var defaults: NSUserDefaults {
+        return PermissionScope.defaults
+    }
     
     /// Default status for Core Motion Activity
     var motionPermissionStatus: PermissionStatus = .Unknown
@@ -389,7 +390,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
-    public func statusLocationAlways() -> PermissionStatus {
+    public static func statusLocationAlways() -> PermissionStatus {
         guard CLLocationManager.locationServicesEnabled() else { return .Disabled }
 
         let status = CLLocationManager.authorizationStatus()
@@ -409,6 +410,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         case .NotDetermined:
             return .Unknown
         }
+    }
+    
+    public func statusLocationAlways() -> PermissionStatus {
+        return PermissionScope.statusLocationAlways()
     }
 
     /**
@@ -438,10 +443,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
 
     /**
     Returns the current permission status for accessing LocationWhileInUse.
-    
+
     - returns: Permission status for the requested type.
     */
-    public func statusLocationInUse() -> PermissionStatus {
+    public static func statusLocationInUse() -> PermissionStatus {
         guard CLLocationManager.locationServicesEnabled() else { return .Disabled }
         
         let status = CLLocationManager.authorizationStatus()
@@ -455,6 +460,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         case .NotDetermined:
             return .Unknown
         }
+    }
+    
+    public func statusLocationInUse() -> PermissionStatus {
+        return PermissionScope.statusLocationInUse()
     }
 
     /**
@@ -485,7 +494,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
-    public func statusContacts() -> PermissionStatus {
+    public static func statusContacts() -> PermissionStatus {
         if #available(iOS 9.0, *) {
             let status = CNContactStore.authorizationStatusForEntityType(.Contacts)
             switch status {
@@ -508,6 +517,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
                 return .Unknown
             }
         }
+    }
+    
+    public func statusContacts() -> PermissionStatus {
+        return PermissionScope.statusContacts()
     }
 
     /**
@@ -541,7 +554,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
-    public func statusNotifications() -> PermissionStatus {
+    public static func statusNotifications() -> PermissionStatus {
         let settings = UIApplication.sharedApplication().currentUserNotificationSettings()
         if let settingTypes = settings?.types where settingTypes != .None {
             return .Authorized
@@ -552,6 +565,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
                 return .Unknown
             }
         }
+    }
+    
+    public func statusNotifications() -> PermissionStatus {
+        return PermissionScope.statusNotifications()
     }
     
     /**
@@ -651,7 +668,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
-    public func statusMicrophone() -> PermissionStatus {
+    public static func statusMicrophone() -> PermissionStatus {
         let recordPermission = AVAudioSession.sharedInstance().recordPermission()
         switch recordPermission {
         case AVAudioSessionRecordPermission.Denied:
@@ -661,6 +678,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         default:
             return .Unknown
         }
+    }
+    
+    public func statusMicrophone() -> PermissionStatus {
+        return PermissionScope.statusMicrophone()
     }
     
     /**
@@ -689,7 +710,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
-    public func statusCamera() -> PermissionStatus {
+    public static func statusCamera() -> PermissionStatus {
         let status = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
         switch status {
         case .Authorized:
@@ -699,6 +720,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         case .NotDetermined:
             return .Unknown
         }
+    }
+    
+    public func statusCamera() -> PermissionStatus {
+        return PermissionScope.statusCamera()
     }
     
     /**
@@ -728,7 +753,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
-    public func statusPhotos() -> PermissionStatus {
+    public static func statusPhotos() -> PermissionStatus {
         let status = PHPhotoLibrary.authorizationStatus()
         switch status {
         case .Authorized:
@@ -738,6 +763,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         case .NotDetermined:
             return .Unknown
         }
+    }
+    
+    public func statusPhotos() -> PermissionStatus {
+        return PermissionScope.statusPhotos()
     }
     
     /**
@@ -766,7 +795,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
-    public func statusReminders() -> PermissionStatus {
+    public static func statusReminders() -> PermissionStatus {
         let status = EKEventStore.authorizationStatusForEntityType(.Reminder)
         switch status {
         case .Authorized:
@@ -776,6 +805,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         case .NotDetermined:
             return .Unknown
         }
+    }
+    
+    public func statusReminders() -> PermissionStatus {
+        return PermissionScope.statusReminders()
     }
     
     /**
@@ -803,7 +836,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
-    public func statusEvents() -> PermissionStatus {
+    public static func statusEvents() -> PermissionStatus {
         let status = EKEventStore.authorizationStatusForEntityType(.Event)
         switch status {
         case .Authorized:
@@ -813,6 +846,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         case .NotDetermined:
             return .Unknown
         }
+    }
+    
+    public func statusEvents() -> PermissionStatus {
+        return PermissionScope.statusEvents()
     }
     
     /**
