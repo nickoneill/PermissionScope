@@ -210,7 +210,7 @@ Solution: Run your app without the debugger.
 
 * When using **Carthage**, the following error occurs: *Module file was created by an older version of the compiler*.
 
-Solution: Use `carthage bootstrap --no-use-binaries` instead.
+Solution: Use the `--no-use-binaries` flag (e.g:  `carthage update --no-use-binaries`).
 
 ## license
 
