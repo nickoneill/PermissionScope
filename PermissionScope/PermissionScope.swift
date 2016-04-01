@@ -956,9 +956,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
                 
                 self.motionManager.stopActivityUpdates()
                 if tmpMotionPermissionStatus != self.motionPermissionStatus {
-                    self.waitingForMotion = false
                     self.detectAndCallback()
                 }
+                self.waitingForMotion = false
         }
         
         askedMotion = true
