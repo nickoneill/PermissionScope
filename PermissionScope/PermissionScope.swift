@@ -186,8 +186,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         bodyLabel.font = UIFont.boldSystemFontOfSize(16)
         bodyLabel.textColor = UIColor.blackColor()
         bodyLabel.textAlignment = NSTextAlignment.Center
-        bodyLabel.text = "We need a couple things\r\nbefore you get started.".localized
-        bodyLabel.numberOfLines = 2
+        bodyLabel.text = "We need a couple things, before you get started.".localized
+        bodyLabel.numberOfLines = 0
 
         contentView.addSubview(bodyLabel)
         
@@ -245,6 +245,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         bodyLabel.center = contentView.center
         bodyLabel.frame.offsetInPlace(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
         bodyLabel.frame.offsetInPlace(dx: 0, dy: -((dialogHeight/2)-100))
+		bodyLabel.adjustsFontSizeToFitWidth = true
+		bodyLabel.minimumScaleFactor = 0.75
         
         closeButton.center = contentView.center
         closeButton.frame.offsetInPlace(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
@@ -372,7 +374,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     func permissionStyledLabel(type: PermissionType) -> UILabel {
         let label  = UILabel(frame: CGRect(x: 0, y: 0, width: 260, height: 50))
         label.font = labelFont
-        label.numberOfLines = 2
+        label.numberOfLines = 0
+		label.adjustsFontSizeToFitWidth = true
+		label.minimumScaleFactor = 0.75
         label.textAlignment = .Center
         label.text = permissionMessages[type]
         label.textColor = permissionLabelColor
