@@ -56,7 +56,7 @@
 //
 "Close" = "Aus";
 "Hey, listen!" = "Hey, du!";
-"We need a couple things\r\nbefore you get started." = "Wir brauchen noch etwas,\r\n bevor du starten kannst!";
+"We need a couple things before you get started." = "Wir brauchen noch etwas, bevor du starten kannst!";
 "Permission for Contacts was denied." = "Genehmigung für Kontakte wurde abgelehnt.";
 "Permission for Events was denied." = "Erlaubnis für Kalender wurde abgelehnt.";
 "Permission for Location was denied." = "Genehmigung für Standort verweigert wurde.";

@@ -19,14 +19,14 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         singlePscope.addPermission(NotificationsPermission(notificationCategories: nil),
-            message: "We use this to send you\r\nspam and love notes")
+            message: "We use this to send you spam and love notes")
 
         multiPscope.addPermission(ContactsPermission(),
-            message: "We use this to steal\r\nyour friends")
+            message: "We use this to steal your friends")
         multiPscope.addPermission(NotificationsPermission(notificationCategories: nil),
-            message: "We use this to send you\r\nspam and love notes")
+            message: "We use this to send you spam and love notes")
         multiPscope.addPermission(LocationWhileInUsePermission(),
-            message: "We use this to track\r\nwhere you live")
+            message: "We use this to track where you live")
 
         // Other example permissions
 //        multiPscope.addPermission(MicrophonePermission(),message: "We can hear you")
