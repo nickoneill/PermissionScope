@@ -66,11 +66,11 @@ class ViewController: UIViewController {
         
         // Set up permissions
         pscope.addPermission(ContactsPermission(),
-            message: "We use this to steal\r\nyour friends")
+            message: "We use this to steal your friends")
         pscope.addPermission(NotificationsPermission(notificationCategories: nil),
-            message: "We use this to send you\r\nspam and love notes")
+            message: "We use this to send you spam and love notes")
         pscope.addPermission(LocationWhileInUsePermission(),
-            message: "We use this to track\r\nwhere you live")
+            message: "We use this to track where you live")
 	
 	// Show dialog with callbacks
         pscope.show({ finished, results in
@@ -93,7 +93,7 @@ You can easily change the colors, label and buttons fonts with PermissionScope b
 Field | Type | Comment
 ----- | ---- | -------
 headerLabel | UILabel | Header UILabel with the message "Hey, listen!" by default.
-bodyLabel | UILabel | Header UILabel with the message "We need a couple things\r\nbefore you get started." by default.
+bodyLabel | UILabel | Header UILabel with the message "We need a couple things before you get started." by default.
 closeButtonTextColor | UIColor | Color for the close button's text color.
 permissionButtonTextColor  | UIColor | Color for the permission buttons' text color.
 permissionButtonBorderColor | UIColor | Color for the permission buttons' border color.
