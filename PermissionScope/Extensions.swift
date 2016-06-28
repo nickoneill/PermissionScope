@@ -28,6 +28,7 @@ extension String {
 }
 
 extension Sequence {
+    /*
     /**
     Returns the first that satisfies the predicate includeElement, or nil. Similar to `filter` but stops when one element is found. Thanks to [bigonotetaking](https://bigonotetaking.wordpress.com/2015/08/22/using-higher-order-methods-everywhere/)
     
@@ -39,6 +40,7 @@ extension Sequence {
         for x in self where includeElement(x) { return x }
         return nil
     }
+    */
 }
 
 extension Optional {
