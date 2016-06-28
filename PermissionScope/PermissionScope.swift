@@ -608,7 +608,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
 
         // callback after a short delay, otherwise notifications don't report proper auth
         DispatchQueue.main.after(
-            when: DispatchTime.now() + Double(Int64(0.1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {
+            when: DispatchTime.now() + .milliseconds(100), execute: {
             self.getResultsForConfig { results in
                 guard let notificationResult = results
                     .first({ $0.type == .notifications }) else { return }
