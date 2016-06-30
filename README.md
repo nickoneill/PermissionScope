@@ -19,6 +19,18 @@
   • <a href="#license">License</a>
 </p>
 
+
+
+
+I've added a new translation Class "Localization.swift", that set translation on base of the application language and change it if you change your language in app. You also can use this class to translate your application.
+
+Added Italian translation file.
+
+
+
+
+
+
 Inspired by (but unrelated to) [Periscope](https://www.periscope.tv)'s permission control, PermissionScope is a Swift framework for intelligently requesting permissions from users. **It contains not only a simple UI to request permissions but also a unified permissions API** that can tell you the status of any given system permission or easily request them.
 
 Some examples of multiple permissions requests, a single permission and the denied alert.
