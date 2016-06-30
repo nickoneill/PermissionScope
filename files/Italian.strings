@@ -1,0 +1,107 @@
+// 
+"Allow Contacts" = "Consenti Contatta";
+"Allow Events" = "Consenti Eventi";
+"Enable Location" = "Abilita Localizzazione";
+"Allow Notifications" = "Consenti Notifiche";
+"Allow Microphone" = "Consenti Microfono";
+"Allow Camera" = "Consenti Fotocamera";
+"Allow Photos" = "Consenti Galleria fotografica";
+"Allow Reminders" = "Consenti Promemoria";
+"Allow Bluetooth" = "Consenti Bluetooth";
+"Allow Motion" = "Consenti Monitoraggio attività fisica";
+//
+"Contacts" = "Contatti";
+"Events" = "Eventi";
+"LocationAlways" = "Localizzazione";
+"LocationInUse" = "Localizzazione";
+"Notifications" = "Notifiche";
+"Microphone" = "Microfono";
+"Camera" = "Fotocamera";
+"Photos" = "Galleria fotografica";
+"Reminders" = "Promemoria";
+"Bluetooth" = "Bluetooth";
+"Motion" = "Monitoraggio attività fisica";
+//
+"Allowed Contacts" = "Contatti Abilitati";
+"Allowed Events" = "Eventi Abilitati";
+"Allowed Location" = "Localizzazione Abilitata";
+"Allowed Notifications" = "Notifiche Abilitate";
+"Allowed Microphone" = "Microfono Abilitato";
+"Allowed Camera" = "Fotocamera Abilitata";
+"Allowed Photos" = "Galleria fotografica Abilitata";
+"Allowed Reminders" = "Promemoria Abilitati";
+"Allowed Bluetooth" = "Bluetooth Abilitato";
+"Allowed Motion" = "Monitoraggio attività fisica Abilitato";
+//
+"Denied Contacts" = "Contatti negati";
+"Denied Events" = "Eventi negati";
+"Denied Location" = "Localizzaione negata";
+"Denied Notifications" = "Notifiche negate";
+"Denied Microphone" = "Microfono  negato";
+"Denied Camera" = "Fotocamera negata";
+"Denied Photos" = "Galleria fotografica negata";
+"Denied Reminders" = "Promemoria negati";
+"Denied Bluetooth" = "Bluetooth gesperrt";
+"Denied Motion" = "Monitoraggio attività fisica Negata";
+//
+"Contacts Disabled" = "Contatti disabilitati";
+"Events Disabled" = "Eventi disabilitati";
+"Location Disabled" = "Localizzazione disabilitata";
+"Notifications Disabled" = "Notifiche disabilitate";
+"Microphone Disabled" = "Microfono disabilitato";
+"Camera Disabled" = "Fotocamera disabilitata";
+"Photos Disabled" = "Galleria fotografica disabilitata";
+"Reminders Disabled" = "Promemoria disabilitati";
+"Bluetooth Disabled" = "Bluetooth disabilitato";
+"Motion Disabled" = "Monitoraggio attività fisica disabilitata";
+//
+"Close" = "Chiudi";
+"Hey, listen!" = "Ciao, ascolta!";
+"We need a couple things\r\nbefore you get started." = "Ci servirebbero un paio di cose prima di iniziare!";
+"Permission for Contacts was denied." = "Permessi negati per i Contatti.";
+"Permission for Events was denied." = "Permessi negati per gli Eventi.";
+"Permission for Location was denied." = "Permessi negati per la Localizzazione.";
+"Permission for Notifications was denied." = "Permessi negati per le Notifiche.";
+"Permission for Microphone was denied." = "Permessi negati per il Microfono.";
+"Permission for Camera was denied." = "Permessi negati per la Fotocamera.";
+"Permission for Photos was denied." = "Permessi negati per la Galleria fotografica.";
+"Permission for Reminders was denied." = "Permessi negati per i Promemoria.";
+"Permission for Bluetooth was denied." = "Permessi negati per il Bluetooth.";
+"Permission for Motion was denied." = "Permessi negati per il Monitoraggio attività fisica.";
+//
+"Please enable access to Contacts in the Settings app" = "Abilita i permessi per i Contatti nelle Impostazioni dell'App";
+"Please enable access to Events in the Settings app" = "Abilita i permessi per gli Eventi nelle Impostazioni dell'App";
+"Please enable access to Location in the Settings app" = "Abilita i permessi per la Localizzazione nelle Impostazioni dell'App";
+"Please enable access to Notifications in the Settings app" = "Abilita i permessi per le Notifiche nelle Impostazioni dell'App";
+"Please enable access to Microphone in the Settings app" = "Abilita i permessi per il Microfono nelle Impostazioni dell'App";
+"Please enable access to Camera in the Settings app" = "Abilita i permessi per la Fotocamera nelle Impostazioni dell'App";
+"Please enable access to Photos in the Settings app" = "Abilita i permessi per la Galleria fotografica nelle Impostazioni dell'App";
+"Please enable access to Reminders in the Settings app" = "Abilita i permessi per i Promomoria nelle Impostazioni dell'App";
+"Please enable access to Bluetooth in the Settings app" = "Abilita i permessi per il Bluetooth nelle Impostazioni dell'App";
+"Please enable access to Motion in the Settings app" = "Abilita i permessi per il Monitoraggio attività fisica nelle Impostazioni dell'App";
+//
+"OK" = "Ok";
+"Show me" = "Visualizza";
+//
+"Contacts is currently disabled." = "Contatti disabilitati";
+"Events is currently disabled." = "Eventi disabilitati";
+"Location is currently disabled." = "Localizzazione disabilitata";
+"Notifications is currently disabled." = "Notifiche disabilitate";
+"Microphone is currently disabled." = "Microfono disabilitato";
+"Camera is currently disabled." = "Fotocamera disabilitata";
+"Photos is currently disabled." = "Galleria fotografica disabilitata";
+"Reminders is currently disabled." = "Promemoria disabilitati";
+"Bluetooth is currently disabled." = "Bluetooth spento";
+"Motion is currently disabled." = "Monitoraggio attività fisica disabilitata";
+//
+"Please enable access to Contacts in Settings" = "Abilita i permessi per i Contatti nelle Impostazioni del telefono";
+"Please enable access to Events in Settings" = "Abilita i permessi per gli Eventi nelle Impostazioni del telefono";
+"Please enable access to Location in Settings" = "Abilita i permessi per la Localizzazione nelle Impostazioni del telefono";
+"Please enable access to Notifications in Settings" = "Abilita i permessi per le Notifiche nelle Impostazioni del telefono";
+"Please enable access to Microphone in Settings" = "Abilita i permessi per il Microfono nelle Impostazioni del telefono";
+"Please enable access to Camera in Settings" = "Abilita i permessi per la Fotocamera nelle Impostazioni del telefono";
+"Please enable access to Photos in Settings" = "Abilita i permessi per la Galleria fotografica nelle Impostazioni del telefono";
+"Please enable access to Reminders in Settings" = "Abilita i permessi per i Promemoria nelle Impostazioni del telefono";
+"Please enable access to Bluetooth in Settings" = "Accendi il Bluetooth nelle Impostazioni del telefono";
+"Please enable access to Motion in Settings" = "Abilita i permessi per il Monitoraggio attività fisica nelle Impostazioni";
+
