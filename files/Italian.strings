@@ -41,19 +41,19 @@
 "Denied Camera" = "Fotocamera negata";
 "Denied Photos" = "Galleria fotografica negata";
 "Denied Reminders" = "Promemoria negati";
-"Denied Bluetooth" = "Bluetooth gesperrt";
+"Denied Bluetooth" = "Bluetooth negato";
 "Denied Motion" = "Monitoraggio attività fisica Negata";
 //
-"Contacts Disabled" = "Contatti disabilitati";
-"Events Disabled" = "Eventi disabilitati";
-"Location Disabled" = "Localizzazione disabilitata";
-"Notifications Disabled" = "Notifiche disabilitate";
-"Microphone Disabled" = "Microfono disabilitato";
-"Camera Disabled" = "Fotocamera disabilitata";
-"Photos Disabled" = "Galleria fotografica disabilitata";
-"Reminders Disabled" = "Promemoria disabilitati";
-"Bluetooth Disabled" = "Bluetooth disabilitato";
-"Motion Disabled" = "Monitoraggio attività fisica disabilitata";
+"Contacts Disabled" = "Contatti Disabilitati";
+"Events Disabled" = "Eventi Disabilitati";
+"Location Disabled" = "Localizzazione Disabilitata";
+"Notifications Disabled" = "Notifiche Disabilitate";
+"Microphone Disabled" = "Microfono Disabilitato";
+"Camera Disabled" = "Fotocamera Disabilitata";
+"Photos Disabled" = "Galleria Fotografica Disabilitata";
+"Reminders Disabled" = "Promemoria Disabilitati";
+"Bluetooth Disabled" = "Bluetooth Spento";
+"Motion Disabled" = "Monitoraggio Attività Fisica Disabilitata";
 //
 "Close" = "Chiudi";
 "Hey, listen!" = "Ciao, ascolta!";
