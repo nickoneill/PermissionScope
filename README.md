@@ -22,7 +22,7 @@
 
 
 
-I've added a new translation Class "Localization.swift", that set translation on base of the application language and change it if you change your language in app. You also can use this class to translate your application.
+I've added a new translation Class "LocalizeMe.swift", that set translation on base of the application language and change it if you change your language in app.
 
 Added Italian translation file.
 
