@@ -25,54 +25,54 @@ import Accounts
     var type: PermissionType { get }
 }
 
-@objc public class NotificationsPermission: NSObject, Permission {
-    public let type: PermissionType = .Notifications
-    public let notificationCategories: Set<UIUserNotificationCategory>?
+@objc open class NotificationsPermission: NSObject, Permission {
+    open let type: PermissionType = .notifications
+    open let notificationCategories: Set<UIUserNotificationCategory>?
     
     public init(notificationCategories: Set<UIUserNotificationCategory>? = nil) {
         self.notificationCategories = notificationCategories
     }
 }
 
-@objc public class LocationWhileInUsePermission: NSObject, Permission {
-    public let type: PermissionType = .LocationInUse
+@objc open class LocationWhileInUsePermission: NSObject, Permission {
+    open let type: PermissionType = .locationInUse
 }
 
-@objc public class LocationAlwaysPermission: NSObject, Permission {
-    public let type: PermissionType = .LocationAlways
+@objc open class LocationAlwaysPermission: NSObject, Permission {
+    open let type: PermissionType = .locationAlways
 }
 
-@objc public class ContactsPermission: NSObject, Permission {
-    public let type: PermissionType = .Contacts
+@objc open class ContactsPermission: NSObject, Permission {
+    open let type: PermissionType = .contacts
 }
 
 public typealias requestPermissionUnknownResult = () -> Void
 public typealias requestPermissionShowAlert     = (PermissionType) -> Void
 
-@objc public class EventsPermission: NSObject, Permission {
-    public let type: PermissionType = .Events
+@objc open class EventsPermission: NSObject, Permission {
+    open let type: PermissionType = .events
 }
 
-@objc public class MicrophonePermission: NSObject, Permission {
-    public let type: PermissionType = .Microphone
+@objc open class MicrophonePermission: NSObject, Permission {
+    open let type: PermissionType = .microphone
 }
 
-@objc public class CameraPermission: NSObject, Permission {
-    public let type: PermissionType = .Camera
+@objc open class CameraPermission: NSObject, Permission {
+    open let type: PermissionType = .camera
 }
 
-@objc public class PhotosPermission: NSObject, Permission {
-    public let type: PermissionType = .Photos
+@objc open class PhotosPermission: NSObject, Permission {
+    open let type: PermissionType = .photos
 }
 
-@objc public class RemindersPermission: NSObject, Permission {
-    public let type: PermissionType = .Reminders
+@objc open class RemindersPermission: NSObject, Permission {
+    open let type: PermissionType = .reminders
 }
 
-@objc public class BluetoothPermission: NSObject, Permission {
-    public let type: PermissionType = .Bluetooth
+@objc open class BluetoothPermission: NSObject, Permission {
+    open let type: PermissionType = .bluetooth
 }
 
-@objc public class MotionPermission: NSObject, Permission {
-    public let type: PermissionType = .Motion
+@objc open class MotionPermission: NSObject, Permission {
+    open let type: PermissionType = .motion
 }
