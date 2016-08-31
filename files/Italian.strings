@@ -1,26 +1,26 @@
 // 
-"Allow Contacts" = "Consenti Contatta";
+"Allow Contacts" = "Consenti Contatti";
 "Allow Events" = "Consenti Eventi";
 "Enable Location" = "Abilita Localizzazione";
 "Allow Notifications" = "Consenti Notifiche";
 "Allow Microphone" = "Consenti Microfono";
 "Allow Camera" = "Consenti Fotocamera";
-"Allow Photos" = "Consenti Galleria fotografica";
+"Allow Photos" = "Consenti Galleria Fotografica";
 "Allow Reminders" = "Consenti Promemoria";
 "Allow Bluetooth" = "Consenti Bluetooth";
-"Allow Motion" = "Consenti Monitoraggio attività fisica";
+"Allow Motion" = "Consenti Monitoraggio Attività Fisica";
 //
 "Contacts" = "Contatti";
 "Events" = "Eventi";
-"LocationAlways" = "Localizzazione";
-"LocationInUse" = "Localizzazione";
+"LocationAlways" = "Localizzazione Sempre Attiva";
+"LocationInUse" = "Localizzazione Quando in Uso";
 "Notifications" = "Notifiche";
 "Microphone" = "Microfono";
 "Camera" = "Fotocamera";
-"Photos" = "Galleria fotografica";
+"Photos" = "Galleria Fotografica";
 "Reminders" = "Promemoria";
 "Bluetooth" = "Bluetooth";
-"Motion" = "Monitoraggio attività fisica";
+"Motion" = "Monitoraggio Attività Fisica";
 //
 "Allowed Contacts" = "Contatti Abilitati";
 "Allowed Events" = "Eventi Abilitati";
@@ -28,21 +28,21 @@
 "Allowed Notifications" = "Notifiche Abilitate";
 "Allowed Microphone" = "Microfono Abilitato";
 "Allowed Camera" = "Fotocamera Abilitata";
-"Allowed Photos" = "Galleria fotografica Abilitata";
+"Allowed Photos" = "Galleria Fotografica Abilitata";
 "Allowed Reminders" = "Promemoria Abilitati";
 "Allowed Bluetooth" = "Bluetooth Abilitato";
-"Allowed Motion" = "Monitoraggio attività fisica Abilitato";
+"Allowed Motion" = "Monitoraggio Attività Fisica Abilitato";
 //
-"Denied Contacts" = "Contatti negati";
-"Denied Events" = "Eventi negati";
-"Denied Location" = "Localizzaione negata";
-"Denied Notifications" = "Notifiche negate";
-"Denied Microphone" = "Microfono  negato";
-"Denied Camera" = "Fotocamera negata";
-"Denied Photos" = "Galleria fotografica negata";
-"Denied Reminders" = "Promemoria negati";
-"Denied Bluetooth" = "Bluetooth negato";
-"Denied Motion" = "Monitoraggio attività fisica Negata";
+"Denied Contacts" = "Contatti Negati";
+"Denied Events" = "Eventi Negati";
+"Denied Location" = "Localizzaione Negata";
+"Denied Notifications" = "Notifiche Negate";
+"Denied Microphone" = "Microfono  Negato";
+"Denied Camera" = "Fotocamera Negata";
+"Denied Photos" = "Galleria Fotografica Negata";
+"Denied Reminders" = "Promemoria Negati";
+"Denied Bluetooth" = "Bluetooth Negato";
+"Denied Motion" = "Monitoraggio Attività Fisica Negata";
 //
 "Contacts Disabled" = "Contatti Disabilitati";
 "Events Disabled" = "Eventi Disabilitati";
@@ -58,16 +58,16 @@
 "Close" = "Chiudi";
 "Hey, listen!" = "Ciao, ascolta!";
 "We need a couple things\r\nbefore you get started." = "Ci servirebbero un paio di cose prima di iniziare!";
-"Permission for Contacts was denied." = "Permessi negati per i Contatti.";
-"Permission for Events was denied." = "Permessi negati per gli Eventi.";
-"Permission for Location was denied." = "Permessi negati per la Localizzazione.";
-"Permission for Notifications was denied." = "Permessi negati per le Notifiche.";
-"Permission for Microphone was denied." = "Permessi negati per il Microfono.";
-"Permission for Camera was denied." = "Permessi negati per la Fotocamera.";
-"Permission for Photos was denied." = "Permessi negati per la Galleria fotografica.";
-"Permission for Reminders was denied." = "Permessi negati per i Promemoria.";
-"Permission for Bluetooth was denied." = "Permessi negati per il Bluetooth.";
-"Permission for Motion was denied." = "Permessi negati per il Monitoraggio attività fisica.";
+"Permission for Contacts was denied." = "Permessi Negati per i Contatti.";
+"Permission for Events was denied." = "Permessi Negati per gli Eventi.";
+"Permission for Location was denied." = "Permessi Negati per la Localizzazione.";
+"Permission for Notifications was denied." = "Permessi Negati per le Notifiche.";
+"Permission for Microphone was denied." = "Permessi Negati per il Microfono.";
+"Permission for Camera was denied." = "Permessi Negati per la Fotocamera.";
+"Permission for Photos was denied." = "Permessi Negati per la Galleria fotografica.";
+"Permission for Reminders was denied." = "Permessi Negati per i Promemoria.";
+"Permission for Bluetooth was denied." = "Permessi Negati per il Bluetooth.";
+"Permission for Motion was denied." = "Permessi Negati per il Monitoraggio Attività Fisica.";
 //
 "Please enable access to Contacts in the Settings app" = "Abilita i permessi per i Contatti nelle Impostazioni dell'App";
 "Please enable access to Events in the Settings app" = "Abilita i permessi per gli Eventi nelle Impostazioni dell'App";
@@ -83,16 +83,16 @@
 "OK" = "Ok";
 "Show me" = "Visualizza";
 //
-"Contacts is currently disabled." = "Contatti disabilitati";
-"Events is currently disabled." = "Eventi disabilitati";
-"Location is currently disabled." = "Localizzazione disabilitata";
-"Notifications is currently disabled." = "Notifiche disabilitate";
-"Microphone is currently disabled." = "Microfono disabilitato";
-"Camera is currently disabled." = "Fotocamera disabilitata";
-"Photos is currently disabled." = "Galleria fotografica disabilitata";
-"Reminders is currently disabled." = "Promemoria disabilitati";
-"Bluetooth is currently disabled." = "Bluetooth spento";
-"Motion is currently disabled." = "Monitoraggio attività fisica disabilitata";
+"Contacts is currently disabled." = "Contatti Disabilitati";
+"Events is currently disabled." = "Eventi Disabilitati";
+"Location is currently disabled." = "Localizzazione Disabilitata";
+"Notifications is currently disabled." = "Notifiche Disabilitate";
+"Microphone is currently disabled." = "Microfono Disabilitato";
+"Camera is currently disabled." = "Fotocamera Disabilitata";
+"Photos is currently disabled." = "Galleria Fotografica Disabilitata";
+"Reminders is currently disabled." = "Promemoria Disabilitati";
+"Bluetooth is currently disabled." = "Bluetooth Spento";
+"Motion is currently disabled." = "Monitoraggio Attività Fisica Disabilitata";
 //
 "Please enable access to Contacts in Settings" = "Abilita i permessi per i Contatti nelle Impostazioni del telefono";
 "Please enable access to Events in Settings" = "Abilita i permessi per gli Eventi nelle Impostazioni del telefono";
