@@ -204,11 +204,11 @@ Enable `HealthKit` in your target's capabilities, **required**.
 
 ## known bugs
 
-* Crash when going back from the Settings.app after permissions were changed ([#160](https://github.com/nickoneill/PermissionScope/issues/#160))
+* When the user is taken to the Settings.app, if any of the app's permissions are changed (whilst the app was in the background), the app will crash. ([#160](https://github.com/nickoneill/PermissionScope/issues/160))
 
-Solution: None. Works as intended.
+Solution: None. Works as intended by the OS.
 
-* Link "**Show me**" does not work on denied a permission ([#61](https://github.com/nickoneill/PermissionScope/issues/#61))
+* Link "**Show me**" does not work on denied a permission ([#61](https://github.com/nickoneill/PermissionScope/issues/61))
 
 Solution: Run your app without the debugger.
 
