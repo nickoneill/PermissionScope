@@ -33,9 +33,9 @@ Best of all, PermissionScope detects when your app's permissions have been denie
 
 ## compatibility
 
-PermissionScope requires iOS 8+, compatible with both **Swift 2** and **Objective-C** based projects
+PermissionScope requires iOS 8+, compatible with both **Swift 3** and **Objective-C** based projects
 
-For Swift 1.2 support, please use the swift12 branch. This branch has the basics but is not being maintained.
+For Swift 2.x support, please use the swift2 branch or the 1.0.2 release version. This branch was up-to-date on 9/6/16 but is not being maintained. All future efforts will go towards Swift 3 development.
 
 ## installation
 
