@@ -302,6 +302,7 @@
 				TargetAttributes = {
 					D05F103D1AD1EBF6000F8267 = {
 						CreatedOnToolsVersion = 6.2;
+						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -466,6 +467,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.thatthinginswift.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "PermissionScope-example";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -479,6 +481,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.thatthinginswift.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "PermissionScope-example";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
