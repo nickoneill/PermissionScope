@@ -43,13 +43,13 @@ class ViewController: UIViewController {
     // an example of how to use the unified permissions API
     func checkContacts() {
         switch PermissionScope().statusContacts() {
-        case .Unknown:
+        case .unknown:
             // ask
             PermissionScope().requestContacts()
-        case .Unauthorized, .Disabled:
+        case .unauthorized, .disabled:
             // bummer
             return
-        case .Authorized:
+        case .authorized:
             // thanks!
             return
         }
