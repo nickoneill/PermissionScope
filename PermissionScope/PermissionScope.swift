@@ -1232,35 +1232,38 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     */
     func statusForPermission(type: PermissionType, completion: statusRequestClosure) {
         // Get permission status
-        let permissionStatus: PermissionStatus
-        switch type {
-        case .LocationAlways:
-            permissionStatus = statusLocationAlways()
-        case .LocationInUse:
-            permissionStatus = statusLocationInUse()
-        case .Contacts:
-            permissionStatus = statusContacts()
-        case .Microphone:
-            permissionStatus = statusMicrophone()
-        case .Notifications:
-            permissionStatus = .Unknown
+        if(type == .Notifications) {
             statusNotifications() { completion(status: $0) }
-        case .Camera:
-            permissionStatus = statusCamera()
-        case .Photos:
-            permissionStatus = statusPhotos()
-        case .Reminders:
-            permissionStatus = statusReminders()
-        case .Events:
-            permissionStatus = statusEvents()
-        case .Bluetooth:
-            permissionStatus = statusBluetooth()
-        case .Motion:
-            permissionStatus = statusMotion()
+        } else {
+            let permissionStatus: PermissionStatus
+            switch type {
+            case .LocationAlways:
+                permissionStatus = statusLocationAlways()
+            case .LocationInUse:
+                permissionStatus = statusLocationInUse()
+            case .Contacts:
+                permissionStatus = statusContacts()
+            case .Microphone:
+                permissionStatus = statusMicrophone()
+            case .Notifications:
+                permissionStatus = .Unknown
+            case .Camera:
+                permissionStatus = statusCamera()
+            case .Photos:
+                permissionStatus = statusPhotos()
+            case .Reminders:
+                permissionStatus = statusReminders()
+            case .Events:
+                permissionStatus = statusEvents()
+            case .Bluetooth:
+                permissionStatus = statusBluetooth()
+            case .Motion:
+                permissionStatus = statusMotion()
+            }
+            
+            // Perform completion
+            completion(status: permissionStatus)
         }
-        
-        // Perform completion
-        completion(status: permissionStatus)
     }
     
     /**
