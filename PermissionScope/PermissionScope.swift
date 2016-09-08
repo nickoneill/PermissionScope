@@ -15,6 +15,7 @@ import EventKit
 import CoreBluetooth
 import CoreMotion
 import Contacts
+import UserNotifications
 
 public typealias statusRequestClosure = (status: PermissionStatus) -> Void
 public typealias authClosureType      = (finished: Bool, results: [PermissionResult]) -> Void
@@ -541,15 +542,27 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
-    public func statusNotifications() -> PermissionStatus {
-        let settings = UIApplication.sharedApplication().currentUserNotificationSettings()
-        if let settingTypes = settings?.types where settingTypes != .None {
-            return .Authorized
+    public func statusNotifications(completionHandler: (status: PermissionStatus) -> Void) {
+        if #available(iOS 10.0, *) {
+            UNUserNotificationCenter.currentNotificationCenter().getNotificationSettingsWithCompletionHandler({ (settings) in
+                if settings.authorizationStatus == .Authorized {
+                    completionHandler(status: PermissionStatus.Authorized)
+                } else if settings.authorizationStatus == .Denied {
+                    completionHandler(status: PermissionStatus.Unauthorized)
+                } else if settings.authorizationStatus == .NotDetermined {
+                    completionHandler(status: PermissionStatus.Unknown)
+                }
+            })
         } else {
-            if defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedNotifications) {
-                return .Unauthorized
+            let settings = UIApplication.sharedApplication().currentUserNotificationSettings()
+            if let settingTypes = settings?.types where settingTypes != .None {
+                completionHandler(status: PermissionStatus.Authorized)
             } else {
-                return .Unknown
+                if defaults.boolForKey(Constants.NSUserDefaultsKeys.requestedNotifications) {
+                    completionHandler(status: PermissionStatus.Unauthorized)
+                } else {
+                    completionHandler(status: PermissionStatus.Unknown)
+                }
             }
         }
     }
@@ -624,27 +637,32 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     Requests access to User Notifications, if necessary.
     */
     public func requestNotifications() {
-        let status = statusNotifications()
-        switch status {
-        case .Unknown:
-            let notificationsPermission = self.configuredPermissions
-                .first { $0 is NotificationsPermission } as? NotificationsPermission
-            let notificationsPermissionSet = notificationsPermission?.notificationCategories
-
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(showingNotificationPermission), name: UIApplicationWillResignActiveNotification, object: nil)
-            
-            notificationTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(finishedShowingNotificationPermission), userInfo: nil, repeats: false)
-            
-            UIApplication.sharedApplication().registerUserNotificationSettings(
-                UIUserNotificationSettings(forTypes: [.Alert, .Sound, .Badge],
-                categories: notificationsPermissionSet)
-            )
-        case .Unauthorized:
-            showDeniedAlert(.Notifications)
-        case .Disabled:
-            showDisabledAlert(.Notifications)
-        case .Authorized:
-            detectAndCallback()
+        statusNotifications() { status in
+            switch status {
+            case .Unknown:
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.showingNotificationPermission), name: UIApplicationWillResignActiveNotification, object: nil)
+                
+                self.notificationTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(self.finishedShowingNotificationPermission), userInfo: nil, repeats: false)
+                
+                if #available(iOS 10.0, *) {
+                    UNUserNotificationCenter.currentNotificationCenter().requestAuthorizationWithOptions([.Alert, .Badge, .Sound], completionHandler: { (success, error) in
+                        self.detectAndCallback()
+                    })
+                } else {
+                    let notificationsPermission = self.configuredPermissions
+                        .first { $0 is NotificationsPermission } as? NotificationsPermission
+                    let notificationsPermissionSet = notificationsPermission?.notificationCategories
+                    UIApplication.sharedApplication().registerUserNotificationSettings(
+                        UIUserNotificationSettings(forTypes: [.Alert, .Sound, .Badge],
+                            categories: notificationsPermissionSet))
+                }
+            case .Unauthorized:
+                self.showDeniedAlert(.Notifications)
+            case .Disabled:
+                self.showDisabledAlert(.Notifications)
+            case .Authorized:
+                self.detectAndCallback()
+            }
         }
     }
     
@@ -1222,10 +1240,11 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             permissionStatus = statusLocationInUse()
         case .Contacts:
             permissionStatus = statusContacts()
-        case .Notifications:
-            permissionStatus = statusNotifications()
         case .Microphone:
             permissionStatus = statusMicrophone()
+        case .Notifications:
+            permissionStatus = .Unknown
+            statusNotifications() { completion(status: $0) }
         case .Camera:
             permissionStatus = statusCamera()
         case .Photos:
