@@ -179,6 +179,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         headerLabel.textColor = UIColor.blackColor()
         headerLabel.textAlignment = NSTextAlignment.Center
         headerLabel.text = "Hey, listen!".localized
+        headerLabel.accessibilityIdentifier = "permissionscope.headerlabel"
 
         contentView.addSubview(headerLabel)
 
@@ -188,12 +189,14 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         bodyLabel.textAlignment = NSTextAlignment.Center
         bodyLabel.text = "We need a couple things\r\nbefore you get started.".localized
         bodyLabel.numberOfLines = 2
+        bodyLabel.accessibilityIdentifier = "permissionscope.bodylabel"
 
         contentView.addSubview(bodyLabel)
         
         // close button
         closeButton.setTitle("Close".localized, forState: .Normal)
         closeButton.addTarget(self, action: #selector(cancel), forControlEvents: .TouchUpInside)
+        closeButton.accessibilityIdentifier = "permissionscope.closeButton"
         
         contentView.addSubview(closeButton)
         
@@ -336,6 +339,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         }
         
         button.addTarget(self, action: Selector("request\(type)"), forControlEvents: .TouchUpInside)
+        
+        button.accessibilityIdentifier = "permissionscope.button.\(type)".lowercaseString
         
         return button
     }
