@@ -204,6 +204,10 @@ Enable `HealthKit` in your target's capabilities, **required**.
 
 ## known bugs
 
+* ITC app rejection with the following reason: "*This app attempts to access privacy-sensitive data without a usage description*". ([#194](https://github.com/nickoneill/PermissionScope/issues/194))
+
+Solution: TBD
+
 * When the user is taken to the Settings.app, if any of the app's permissions are changed (whilst the app was in the background), the app will crash. ([#160](https://github.com/nickoneill/PermissionScope/issues/160))
 
 Solution: None. Works as intended by the OS.
