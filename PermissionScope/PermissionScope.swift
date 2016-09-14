@@ -192,7 +192,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         contentView.addSubview(bodyLabel)
         
         // close button
-        closeButton.setTitle("Close".localized, for: UIControlState())
+        closeButton.setTitle("Close".localized, for: .normal)
         closeButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         
         contentView.addSubview(closeButton)
@@ -251,9 +251,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         closeButton.frame.offsetInPlace(dx: 105, dy: -((dialogHeight/2)-20))
         closeButton.frame.offsetInPlace(dx: self.closeOffset.width, dy: self.closeOffset.height)
         if let _ = closeButton.imageView?.image {
-            closeButton.setTitle("", for: UIControlState())
+            closeButton.setTitle("", for: .normal)
         }
-        closeButton.setTitleColor(closeButtonTextColor, for: UIControlState())
+        closeButton.setTitleColor(closeButtonTextColor, for: .normal)
 
         let baseOffset = 95
         var index = 0
@@ -269,13 +269,13 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
                     let prettyDescription = type.prettyDescription
                     if currentStatus == .authorized {
                         self.setButtonAuthorizedStyle(button)
-                        button.setTitle("Allowed \(prettyDescription)".localized.uppercased(), for: UIControlState())
+                        button.setTitle("Allowed \(prettyDescription)".localized.uppercased(), for: .normal)
                     } else if currentStatus == .unauthorized {
                         self.setButtonUnauthorizedStyle(button)
-                        button.setTitle("Denied \(prettyDescription)".localized.uppercased(), for: UIControlState())
+                        button.setTitle("Denied \(prettyDescription)".localized.uppercased(), for: .normal)
                     } else if currentStatus == .disabled {
                         //                setButtonDisabledStyle(button)
-                        button.setTitle("\(prettyDescription) Disabled".localized.uppercased(), for: UIControlState())
+                        button.setTitle("\(prettyDescription) Disabled".localized.uppercased(), for: .normal)
                     }
                     
                     let label = self.permissionLabels[index]
@@ -320,7 +320,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     */
     func permissionStyledButton(_ type: PermissionType) -> UIButton {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 220, height: 40))
-        button.setTitleColor(permissionButtonTextColor, for: UIControlState())
+        button.setTitleColor(permissionButtonTextColor, for: .normal)
         button.titleLabel?.font = buttonFont
 
         button.layer.borderWidth = permissionButtonΒorderWidth
@@ -330,9 +330,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         // this is a bit of a mess, eh?
         switch type {
         case .locationAlways, .locationInUse:
-            button.setTitle("Enable \(type.prettyDescription)".localized.uppercased(), for: UIControlState())
+            button.setTitle("Enable \(type.prettyDescription)".localized.uppercased(), for: .normal)
         default:
-            button.setTitle("Allow \(type)".localized.uppercased(), for: UIControlState())
+            button.setTitle("Allow \(type)".localized.uppercased(), for: .normal)
         }
         
         button.addTarget(self, action: Selector("request\(type)"), for: .touchUpInside)
@@ -348,7 +348,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     func setButtonAuthorizedStyle(_ button: UIButton) {
         button.layer.borderWidth = 0
         button.backgroundColor = authorizedButtonColor
-        button.setTitleColor(.white, for: UIControlState())
+        button.setTitleColor(.white, for: .normal)
     }
     
     /**
@@ -359,7 +359,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     func setButtonUnauthorizedStyle(_ button: UIButton) {
         button.layer.borderWidth = 0
         button.backgroundColor = unauthorizedButtonColor ?? authorizedButtonColor.inverseColor
-        button.setTitleColor(.white, for: UIControlState())
+        button.setTitleColor(.white, for: .normal)
     }
 
     /**
