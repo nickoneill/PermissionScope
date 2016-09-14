@@ -55,16 +55,16 @@ import Foundation
 }
 
 /// Result for a permission status request.
-@objc open class PermissionResult: NSObject {
-    open let type: PermissionType
-    open let status: PermissionStatus
+@objc public class PermissionResult: NSObject {
+    public let type: PermissionType
+    public let status: PermissionStatus
     
     internal init(type:PermissionType, status:PermissionStatus) {
         self.type   = type
         self.status = status
     }
     
-    override open var description: String {
+    override public var description: String {
         return "\(type) \(status)"
     }
 }
