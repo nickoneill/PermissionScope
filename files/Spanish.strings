@@ -1,0 +1,109 @@
+"Allow Contacts" = "Permitir Contactos";
+"Allow Events" = "Permitir Eventos";
+"Enable Location" = "Habilitar Localización";
+"Allow Notifications" = "Permitir Notificaciones";
+"Allow Microphone" = "Permitir Micrófono";
+"Allow Camera" = "Permitir Cámara";
+"Allow Photos" = "Permitir Fotos";
+"Allow Reminders" = "Permitir Recordatorios";
+"Allow Bluetooth" = "Permitir Bluetooth";
+"Allow Motion" = "Permitir Movimiento";
+//
+"Contacts" = "Contactos";
+"Events" = "Eventos";
+"LocationAlways" = "UbicaciónSiempre";
+"LocationInUse" = "UbicaciónAlUsarse";
+"Notifications" = "Notificaciones";
+"Microphone" = "Micrófono";
+"Camera" = "Cámara";
+"Photos" = "Fotos";
+"Reminders" = "Recordatorios";
+"Bluetooth" = "Bluetooth";
+"Motion" = "Movimiento";
+//
+"Allowed Contacts" = "Contactos Permitidos";
+"Allowed Events" = "Eventos Permitidos";
+"Allowed Location" = "Localización Permitida";
+"Allowed Notifications" = "Notificaciones Permitidas";
+"Allowed Microphone" = "Micrófono Permitido";
+"Allowed Camera" = "Cámara Permitida";
+"Allowed Photos" = "Fotos Permitidas";
+"Allowed Reminders" = "Recordatorios Permitidos";
+"Allowed Bluetooth" = "Bluetooth Permitido";
+"Allowed Motion" = "Movimiento Permitido";
+//
+"Denied Contacts" = "Contactos Denegados";
+"Denied Events" = "Eventos Denegados";
+"Denied Location" = "Localización Denegada";
+"Denied Notifications" = "Notificaciones Denegadas";
+"Denied Microphone" = "Micrófono Denegado";
+"Denied Camera" = "Cámara Denegada";
+"Denied Photos" = "Fotos Denegadas";
+"Denied Reminders" = "Recordatorios Denegados";
+"Denied Bluetooth" = "Bluetooth Denegado";
+"Denied Motion" = "Movimiento Denegado";
+//
+// Nótese que se recomienda el uso del verbo "Inhabilitar",
+// pero "Deshabilitar" también se considera correcto y se ocupa más en lenguaje técnico.
+// Por ejemplo, "Deshabilitar" no aparece en el diccionario de la Real Academia Española;
+// sin embargo, en la "Política de privacidad" de su sitio, ocupan esta palabra.
+"Contacts Disabled" = "Contactos Deshabilitados";
+"Events Disabled" = "Eventos Deshabilitados";
+"Location Disabled" = "Localización Deshabilitada";
+"Notifications Disabled" = "Notificaciones Deshabilitadas";
+"Microphone Disabled" = "Micrófono Deshabilitado";
+"Camera Disabled" = "Cámara Deshabilitada";
+"Photos Disabled" = "Fotos Deshabilitadas";
+"Reminders Disabled" = "Recordatorios Deshabilitados";
+"Bluetooth Disabled" = "Bluetooth Deshabilitado";
+"Motion Disabled" = "Movimiento Deshabilitado";
+//
+"Close" = "Cerrar";
+"Hey, listen!" = "¡Oye, tú!";
+"We need a couple things\r\nbefore you get started." = "Necesitamos algunas cosas\r\nantes de empezar.";
+"Permission for Contacts was denied." = "El acceso a los Contactos fue denegado.";
+"Permission for Events was denied." = "El acceso a los Eventos fue denegado.";
+"Permission for Location was denied." = "El acceso a la Localización fue denegado.";
+"Permission for Notifications was denied." = "El acceso a las Notificaciones fue denegado.";
+"Permission for Microphone was denied." = "El acceso al Micrófono fue denegado.";
+"Permission for Camera was denied." = "El acceso a la Cámara fue denegado.";
+"Permission for Photos was denied." = "El acceso a las Fotos fue denegado.";
+"Permission for Reminders was denied." = "El acceso a los Recordatorios fue denegado.";
+"Permission for Bluetooth was denied." = "El acceso al Bluetooth fue denegado.";
+"Permission for Motion was denied." = "El acceso a los Movimientos fue denegado.";
+//
+"Please enable access to Contacts in the Settings app" = "Por favor, habilita el acceso a los Contactos en la aplicación de Ajustes";
+"Please enable access to Events in the Settings app" = "Por favor, habilita el acceso a los Eventos en la aplicación de Ajustes";
+"Please enable access to Location in the Settings app" = "Por favor, habilita el acceso a la Localización en la aplicación de Ajustes";
+"Please enable access to Notifications in the Settings app" = "Por favor, habilita el acceso a las Notificaciones en la aplicación de Ajustes";
+"Please enable access to Microphone in the Settings app" = "Por favor, habilita el acceso al Micrófono en la aplicación de Ajustes";
+"Please enable access to Camera in the Settings app" = "Por favor, habilita el acceso a la Cámara en la aplicación de Ajustes";
+"Please enable access to Photos in the Settings app" = "Por favor, habilita el acceso a las Fotos en la aplicación de Ajustes";
+"Please enable access to Reminders in the Settings app" = "Por favor, habilita el acceso a los Recordatorios en la aplicación de Ajustes";
+"Please enable access to Bluetooth in the Settings app" = "Por favor, habilita el acceso al Bluetooth en la aplicación de Ajustes";
+"Please enable access to Motion in the Settings app" = "Por favor, habilita el acceso a los Movimientos en la aplicación de Ajustes";
+//
+"OK" = "OK";
+"Show me" = "Muéstrame";
+//
+"Contacts is currently disabled." = "El acceso los Contactos está actualmente deshabilitado.";
+"Events is currently disabled." = "El acceso los Eventos está actualmente deshabilitado.";
+"Location is currently disabled." = "El acceso la Localización está actualmente deshabilitado.";
+"Notifications is currently disabled." = "El acceso las Notificaciones está actualmente deshabilitado.";
+"Microphone is currently disabled." = "El acceso al Micrófono está actualmente deshabilitado.";
+"Camera is currently disabled." = "El acceso la Cámara está actualmente deshabilitado.";
+"Photos is currently disabled." = "El acceso las Fotos está actualmente deshabilitado.";
+"Reminders is currently disabled." = "El acceso los Recordatorios está actualmente deshabilitado.";
+"Bluetooth is currently disabled." = "El acceso al Bluetooth está actualmente deshabilitado.";
+"Motion is currently disabled." = "El acceso los Movimientos está actualmente deshabilitado.";
+//
+"Please enable access to Contacts in Settings" = "Por favor, habilita el acceso a los Contactos en los Ajustes";
+"Please enable access to Events in Settings" = "Por favor, habilita el acceso a los Eventos en los Ajustes";
+"Please enable access to Location in Settings" = "Por favor, habilita el acceso a la Localización en los Ajustes";
+"Please enable access to Notifications in Settings" = "Por favor, habilita el acceso a las Notificaciones en los Ajustes";
+"Please enable access to Microphone in Settings" = "Por favor, habilita el acceso al Micrófono en los Ajustes";
+"Please enable access to Camera in Settings" = "Por favor, habilita el acceso a la Cámara en los Ajustes";
+"Please enable access to Photos in Settings" = "Por favor, habilita el acceso a las Fotos en los Ajustes";
+"Please enable access to Reminders in Settings" = "Por favor, habilita el acceso a los Recordatorios en los Ajustes";
+"Please enable access to Bluetooth in Settings" = "Por favor, habilita el acceso al Bluetooth en los Ajustes";
+"Please enable access to Motion in Settings" = "Por favor, habilita el acceso a los Movimientos en los Ajustes";
