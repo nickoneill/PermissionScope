@@ -339,8 +339,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         }
         
         button.addTarget(self, action: Selector("request\(type)"), for: .touchUpInside)
-        
-        button.accessibilityIdentifier = "permissionscope.button.\(type)".lowercaseString
+
+        button.accessibilityIdentifier = "permissionscope.button.\(type)".lowercased()
         
         return button
     }
