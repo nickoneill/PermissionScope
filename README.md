@@ -31,9 +31,21 @@ PermissionScope **gives you space to explain your reasons for requesting permiss
 
 Best of all, PermissionScope detects when your app's permissions have been denied by a user and gives them an easy prompt to go into the system settings page to modify these permissions.
 
+Supported permissions:
+* Notifications
+* Location (WhileInUse, Always)
+* Contacts
+* Events
+* Microphone
+* Camera
+* Photos
+* Reminders
+* Bluetooth
+* Motion
+
 ## compatibility
 
-PermissionScope requires iOS 8+, compatible with both **Swift 3** and **Objective-C** based projects
+PermissionScope requires iOS 8+, compatible with both **Swift 3** and **Objective-C** based projects.
 
 For Swift 2.x support, please use the swift2 branch or the 1.0.2 release version. This branch was up-to-date on 9/6/16 but is not being maintained. All future efforts will go towards Swift 3 development.
 
@@ -197,10 +209,6 @@ Use `NSLocationAlwaysUsageDescription` or `NSLocationWhenInUseUsageDescription` 
 The *NSBluetoothPeripheralUsageDescription* key in the Info.plist specifying a short description of why your app needs to act as a bluetooth peripheral in the background is **optional**.
 
 However, enabling `background-modes` in the capabilities section and checking the `acts as a bluetooth LE accessory` checkbox is **required**.
-
-### healthkit
-
-Enable `HealthKit` in your target's capabilities, **required**.
 
 ## known bugs
 
