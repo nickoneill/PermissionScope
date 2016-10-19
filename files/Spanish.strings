@@ -8,6 +8,7 @@
 "Allow Reminders" = "Permitir Recordatorios";
 "Allow Bluetooth" = "Permitir Bluetooth";
 "Allow Motion" = "Permitir Movimiento";
+"Allow Speech" = "Permitir Habla";
 //
 "Contacts" = "Contactos";
 "Events" = "Eventos";
@@ -20,6 +21,7 @@
 "Reminders" = "Recordatorios";
 "Bluetooth" = "Bluetooth";
 "Motion" = "Movimiento";
+"Speech" = "Habla";
 //
 "Allowed Contacts" = "Contactos Permitidos";
 "Allowed Events" = "Eventos Permitidos";
@@ -31,6 +33,7 @@
 "Allowed Reminders" = "Recordatorios Permitidos";
 "Allowed Bluetooth" = "Bluetooth Permitido";
 "Allowed Motion" = "Movimiento Permitido";
+"Allowed Speech" = "Habla Permitido";
 //
 "Denied Contacts" = "Contactos Denegados";
 "Denied Events" = "Eventos Denegados";
@@ -42,6 +45,7 @@
 "Denied Reminders" = "Recordatorios Denegados";
 "Denied Bluetooth" = "Bluetooth Denegado";
 "Denied Motion" = "Movimiento Denegado";
+"Denied Speech" = "Habla Denegado";
 //
 // Nótese que se recomienda el uso del verbo "Inhabilitar",
 // pero "Deshabilitar" también se considera correcto y se ocupa más en lenguaje técnico.
@@ -57,6 +61,7 @@
 "Reminders Disabled" = "Recordatorios Deshabilitados";
 "Bluetooth Disabled" = "Bluetooth Deshabilitado";
 "Motion Disabled" = "Movimiento Deshabilitado";
+"Speech Disabled" = "Habla Deshabilitado";
 //
 "Close" = "Cerrar";
 "Hey, listen!" = "¡Oye, tú!";
@@ -71,6 +76,7 @@
 "Permission for Reminders was denied." = "El acceso a los Recordatorios fue denegado.";
 "Permission for Bluetooth was denied." = "El acceso al Bluetooth fue denegado.";
 "Permission for Motion was denied." = "El acceso a los Movimientos fue denegado.";
+"Permission for Speech was denied." = "El acceso al Habla fue denegado.";
 //
 "Please enable access to Contacts in the Settings app" = "Por favor, habilita el acceso a los Contactos en la aplicación de Ajustes";
 "Please enable access to Events in the Settings app" = "Por favor, habilita el acceso a los Eventos en la aplicación de Ajustes";
@@ -82,6 +88,7 @@
 "Please enable access to Reminders in the Settings app" = "Por favor, habilita el acceso a los Recordatorios en la aplicación de Ajustes";
 "Please enable access to Bluetooth in the Settings app" = "Por favor, habilita el acceso al Bluetooth en la aplicación de Ajustes";
 "Please enable access to Motion in the Settings app" = "Por favor, habilita el acceso a los Movimientos en la aplicación de Ajustes";
+"Please enable access to Speech in the Settings app" = "Por favor, habilita el acceso al Habla en la aplicación de Ajustes";
 //
 "OK" = "OK";
 "Show me" = "Muéstrame";
@@ -96,6 +103,7 @@
 "Reminders is currently disabled." = "El acceso los Recordatorios está actualmente deshabilitado.";
 "Bluetooth is currently disabled." = "El acceso al Bluetooth está actualmente deshabilitado.";
 "Motion is currently disabled." = "El acceso los Movimientos está actualmente deshabilitado.";
+"Speech is currently disabled." = "El acceso al Habla está actualmente deshabilitado.";
 //
 "Please enable access to Contacts in Settings" = "Por favor, habilita el acceso a los Contactos en los Ajustes";
 "Please enable access to Events in Settings" = "Por favor, habilita el acceso a los Eventos en los Ajustes";
@@ -107,3 +115,4 @@
 "Please enable access to Reminders in Settings" = "Por favor, habilita el acceso a los Recordatorios en los Ajustes";
 "Please enable access to Bluetooth in Settings" = "Por favor, habilita el acceso al Bluetooth en los Ajustes";
 "Please enable access to Motion in Settings" = "Por favor, habilita el acceso a los Movimientos en los Ajustes";
+"Please enable access to Speech in Settings" = "Por favor, habilita el acceso al Habla en los Ajustes";

@@ -8,6 +8,7 @@
 "Allow Reminders" = "Erinnerungen erlauben";
 "Allow Bluetooth" = "Bluetoothzugriff aktivieren";
 "Allow Motion" = "Bewegungsdaten freigeben";
+"Allow Speech" = "Spracherkennung freigeben";
 //
 "Contacts" = "Kontakte";
 "Events" = "Kalender";
@@ -20,6 +21,7 @@
 "Reminders" = "Erinnerungen";
 "Bluetooth" = "Bluetooth";
 "Motion" = "Bewegungsdaten";
+"Speech" = "Spracherkennung";
 //
 "Allowed Contacts" = "Kontakte freigegeben";
 "Allowed Events" = "Kalender freigegeben";
@@ -31,6 +33,7 @@
 "Allowed Reminders" = "Erinnerungen freigegeben";
 "Allowed Bluetooth" = "Bluetoothzugriff erlaubt";
 "Allowed Motion" = "Bewegungsdaten freigegeben";
+"Allowed Speech" = "Spracherkennung freigegeben";
 //
 "Denied Contacts" = "Kontaktzugriff verweigert";
 "Denied Events" = "Kalenderzugriff verweigert";
@@ -42,6 +45,7 @@
 "Denied Reminders" = "Erinnerungen verweigert";
 "Denied Bluetooth" = "Bluetoothzugriff verweigert";
 "Denied Motion" = "Bewegungsdaten nicht freigegeben";
+"Denied Speech" = "Spracherkennung nicht freigegeben";
 //
 "Contacts Disabled" = "Kontakte deakt.";
 "Events Disabled" = "Kalender deakt.";
@@ -53,6 +57,7 @@
 "Reminders Disabled" = "Erinnerungen deakt.";
 "Bluetooth Disabled" = "Bluetooth deakt.";
 "Motion Disabled" = "Bewegungsdaten deakt.";
+"Speech Disabled" = "Spracherkennung deakt.";
 //
 "Close" = "Schließen";
 "Hey, listen!" = "Hey, du!";
@@ -67,6 +72,7 @@
 "Permission for Reminders was denied." = "Erlaubnis für Erinnerungen wurde abgelehnt.";
 "Permission for Bluetooth was denied." = "Bluetoothnutzung wurde verweigert.";
 "Permission for Motion was denied." = "Zugriff auf Bewegungsdaten wurde verweigert.";
+"Permission for Speech was denied." = "Zugriff auf Spracherkennung wurde verweigert.";
 //
 "Please enable access to Contacts in the Settings app" = "Bitte ermögliche den Zugriff auf Kontakte in den Einstellungen";
 "Please enable access to Events in the Settings app" = "Bitte aktivieren den Zugang zum Kalender in den Einstellungen";
@@ -78,6 +84,7 @@
 "Please enable access to Reminders in the Settings app" = "Bitte aktiviere den Zugang zu Erinnerungen in den Einstellungen";
 "Please enable access to Bluetooth in the Settings app" = "Bitte aktiviere Bluetoothnutzung in Einstellungen";
 "Please enable access to Motion in the Settings app" = "Bitte aktiviere Zugriff auf Bewegungsdaten in den Einstellungen";
+"Please enable access to Speech in the Settings app" = "Bitte aktiviere Zugriff auf Spracherkennung in den Einstellungen";
 //
 "OK" = "OK";
 "Show me" = "Zeig es mir";
@@ -92,6 +99,7 @@
 "Reminders is currently disabled." = "Zugriff auf Erinnerungen ist derzeit deaktiviert.";
 "Bluetooth is currently disabled." = "Bluetooth ist derzeit deaktiviert.";
 "Motion is currently disabled." = "Zugriff auf Bewegungsdaten ist derzeit deaktiviert.";
+"Speech is currently disabled." = "Zugriff auf Spracherkennung ist derzeit deaktiviert.";
 //
 "Please enable access to Contacts in Settings" = "Bitte aktiviere den Zugriff auf Kontakte in den Einstellungen";
 "Please enable access to Events in Settings" = "Bitte aktiviere Kalenderzugriff in den Einstellungen";
@@ -103,3 +111,4 @@
 "Please enable access to Reminders in Settings" = "Bitte aktiviere den Zugriff auf Erinnerungen in den Einstellungen";
 "Please enable access to Bluetooth in Settings" = "Bitte aktiviere Bluetoothnutzung in den Einstellungen";
 "Please enable access to Motion in Settings" = "Bitte aktiviere Zugriff auf Bewegungsdaten in den Einstellungen";
+"Please enable access to Speech in Settings" = "Bitte aktiviere Zugriff auf Spracherkennung in den Einstellungen";

@@ -8,6 +8,7 @@
 "Allow Reminders" = "미리알림 접근 허용";
 "Allow Bluetooth" = "블루투스 접근 허용";
 "Allow Motion" = "동작 및 피트니스 접근 허용";
+"Allow Speech" = "연설 접근 허용";
 //
 "Contacts" = "연락처";
 "Events" = "이벤트";
@@ -20,6 +21,7 @@
 "Reminders" = "미리알림";
 "Bluetooth" = "블루투스";
 "Motion" = "동작 및 피트니스";
+"Speech" = "연설";
 //
 "Allowed Contacts" = "연락처 접근 허용됨";
 "Allowed Events" = "이벤트 접근 허용됨";
@@ -31,6 +33,7 @@
 "Allowed Reminders" = "미리알림 접근 허용됨";
 "Allowed Bluetooth" = "블루투스 접근 허용됨";
 "Allowed Motion" = "동작 및 피트니스 접근 허용됨";
+"Allowed Speech" = "연설 접근 허용됨";
 //
 "Denied Contacts" = "연락처 접근 거부됨";
 "Denied Events" = "이벤트 접근 거부됨";
@@ -42,6 +45,7 @@
 "Denied Reminders" = "미리알림 접근 거부됨";
 "Denied Bluetooth" = "블루투스 접근 거부됨";
 "Denied Motion" = "동작 및 피트니스 접근 거부됨";
+"Denied Speech" = "연설 접근 거부됨";
 //
 "Contacts Disabled" = "연락처 사용 불가";
 "Events Disabled" = "이벤트 사용 불가";
@@ -53,6 +57,7 @@
 "Reminders Disabled" = "미리알림 사용 불가";
 "Bluetooth Disabled" = "블루투스 사용 불가";
 "Motion Disabled" = "동작 및 피트니스 사용 불가";
+"Speech Disabled" = "연설 사용 불가";
 //
 "Close" = "닫기";
 "Hey, listen!" = "잠시만요!";
@@ -68,6 +73,7 @@
 "Permission for Reminders was denied." = "미리알림 접근이 거부되어 있습니다.";
 "Permission for Bluetooth was denied." = "블루투스 접근이 거부되어 있습니다.";
 "Permission for Motion was denied." = "동작 및 피트니스 접근이 거부되어 있습니다.";
+"Permission for Speech was denied." = "연설 접근이 거부되어 있습니다.";
 //
 "Please enable access to Contacts in the Settings app" = "설정앱에서 연락처 접근을 허용해주세요.";
 "Please enable access to Events in the Settings app" = "설정앱에서 이벤트 접근을 허용해주세요.";
@@ -80,6 +86,7 @@
 "Please enable access to Reminders in the Settings app" = "설정앱에서 미리알림 접근을 허용해주세요.";
 "Please enable access to Bluetooth in the Settings app" = "설정앱에서 블루투스 접근을 허용해주세요.";
 "Please enable access to Motion in the Settings app" = "설정앱에서 동작 및 피트니스 접근을 허용해주세요.";
+"Please enable access to Speech in the Settings app" = "설정앱에서 연설 접근을 허용해주세요.";
 //
 "OK" = "확인";
 "Show me" = "설정으로 이동";
@@ -95,6 +102,7 @@
 "Reminders is currently disabled." = "미리알림은 현재 사용 불가능합니다.";
 "Bluetooth is currently disabled." = "블루투스는 현재 사용 불가능합니다.";
 "Motion is currently disabled." = "동작 및 피트니스는 현재 사용 불가능합니다.";
+"Speech is currently disabled." = "연설 현재 사용 불가능합니다.";
 //
 "Please enable access to Contacts in Settings" = "설정앱에서 연락처 접근을 허용해주세요";
 "Please enable access to Events in Settings" = "설정앱에서 이벤트 접근을 허용해주세요";
@@ -107,3 +115,4 @@
 "Please enable access to Reminders in Settings" = "설정앱에서 미리알림 접근을 허용해주세요";
 "Please enable access to Bluetooth in Settings" = "설정앱에서 블루투스 접근을 허용해주세요";
 "Please enable access to Motion in Settings" = "설정앱에서 동작 및 피트니스 접근을 허용해주세요";
+"Please enable access to Speech in Settings" = "설정앱에서 연설 접근을 허용해주세요";
