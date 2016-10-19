@@ -210,6 +210,11 @@ The *NSBluetoothPeripheralUsageDescription* key in the Info.plist specifying a s
 
 However, enabling `background-modes` in the capabilities section and checking the `acts as a bluetooth LE accessory` checkbox is **required**.
 
+### speech 
+**You must set these Info.plist keys for speech to work**
+
+Add the key NSSpeechRecognitionUsageDescription to your Info.plist. Otherwise the app will crash, producing an access permission error message.
+
 ## known bugs
 
 * ITC app rejection with the following reason: "*This app attempts to access privacy-sensitive data without a usage description*". ([#194](https://github.com/nickoneill/PermissionScope/issues/194))
