@@ -102,6 +102,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
 	/// View controller to be used when presenting alerts. Defaults to self. You'll want to set this if you are calling the `request*` methods directly.
 	public var viewControllerForAlerts : UIViewController?
 
+    
+    public var notificationRequestCallback:((Void) -> Void)?
     /**
     Checks whether all the configured permission are authorized or not.
     
@@ -640,10 +642,14 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             
             notificationTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(finishedShowingNotificationPermission), userInfo: nil, repeats: false)
             
-            UIApplication.shared.registerUserNotificationSettings(
-                UIUserNotificationSettings(types: [.alert, .sound, .badge],
-                categories: notificationsPermissionSet)
-            )
+            if let callback = notificationRequestCallback {
+                callback()
+            } else {
+                UIApplication.shared.registerUserNotificationSettings(
+                    UIUserNotificationSettings(types: [.alert, .sound, .badge],
+                    categories: notificationsPermissionSet)
+                )
+            }
         case .unauthorized:
             showDeniedAlert(.notifications)
         case .disabled:
