@@ -419,6 +419,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /**
     Requests access to LocationAlways, if necessary.
     */
+	#if PS_LocationAlways
     public func requestLocationAlways() {
     	let hasAlwaysKey:Bool = !Bundle.main
     		.object(forInfoDictionaryKey: Constants.InfoPlistKeys.locationAlways).isNil
@@ -440,6 +441,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
+	#endif
 
     /**
     Returns the current permission status for accessing LocationWhileInUse.
@@ -465,6 +467,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /**
     Requests access to LocationWhileInUse, if necessary.
     */
+	#if PS_LocationInUse
     public func requestLocationInUse() {
     	let hasWhenInUseKey :Bool = !Bundle.main
     		.object(forInfoDictionaryKey: Constants.InfoPlistKeys.locationWhenInUse).isNil
@@ -482,6 +485,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
+	#endif
 
     // MARK: Contacts
     
@@ -518,6 +522,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /**
     Requests access to Contacts, if necessary.
     */
+	#if PS_Contacts
     public func requestContacts() {
         let status = statusContacts()
         switch status {
@@ -538,6 +543,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
+	#endif
 
     // MARK: Notifications
     
@@ -624,11 +630,13 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             }
         })
     }
-    
+
     /**
     Requests access to User Notifications, if necessary.
     */
+	#if PS_Notifications
     public func requestNotifications() {
+
         let status = statusNotifications()
         switch status {
         case .unknown:
@@ -652,7 +660,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             detectAndCallback()
         }
     }
-    
+	#endif
+
     // MARK: Microphone
     
     /**
@@ -671,10 +680,11 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             return .unknown
         }
     }
-    
+
     /**
     Requests access to the Microphone, if necessary.
     */
+	#if PS_Microphone
     public func requestMicrophone() {
         let status = statusMicrophone()
         switch status {
@@ -690,7 +700,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
-    
+	#endif
     // MARK: Camera
     
     /**
@@ -713,6 +723,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /**
     Requests access to the Camera, if necessary.
     */
+	#if PS_Camera
     public func requestCamera() {
         let status = statusCamera()
         switch status {
@@ -729,6 +740,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
+	#endif
 
     // MARK: Photos
     
@@ -752,6 +764,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /**
     Requests access to Photos, if necessary.
     */
+	#if PS_Photos
     public func requestPhotos() {
         let status = statusPhotos()
         switch status {
@@ -767,7 +780,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
-    
+	#endif
     // MARK: Reminders
     
     /**
@@ -790,6 +803,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /**
     Requests access to Reminders, if necessary.
     */
+	#if PS_Reminders
     public func requestReminders() {
         let status = statusReminders()
         switch status {
@@ -804,6 +818,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
+	#endif
     
     // MARK: Events
     
@@ -827,6 +842,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /**
     Requests access to Events, if necessary.
     */
+	#if PS_Events
     public func requestEvents() {
         let status = statusEvents()
         switch status {
@@ -841,6 +857,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
+	#endif
     
     // MARK: Bluetooth
     
@@ -888,6 +905,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /**
     Requests access to Bluetooth, if necessary.
     */
+	#if PS_Bluetooth
     public func requestBluetooth() {
         let status = statusBluetooth()
         switch status {
@@ -902,6 +920,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         }
         
     }
+	#endif
     
     /**
     Start and immediately stop bluetooth advertising to trigger
@@ -933,6 +952,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /**
     Requests access to Core Motion Activity, if necessary.
     */
+	#if PS_Motion
     public func requestMotion() {
         let status = statusMotion()
         switch status {
@@ -944,7 +964,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
-    
+	#endif
     /**
     Prompts motionManager to request a status update. If permission is not already granted the user will be prompted with the system's permission dialog.
     */
