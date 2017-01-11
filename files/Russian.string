@@ -21,16 +21,16 @@
 "Bluetooth" = "Bluetooth";
 "Motion" = "Motion";
 //
-"Allowed Contacts" = "Контакты рарешены";
-"Allowed Events" = "События рарешены";
-"Allowed Location" = "Геолокация рарешена";
-"Allowed Notifications" = "Уведомления рарешены";
-"Allowed Microphone" = "Микрофон рарешен";
-"Allowed Camera" = "Камера рарешена";
-"Allowed Photos" = "Фото рарешены";
-"Allowed Reminders" = "Напоминания рарешены";
-"Allowed Bluetooth" = "Bluetooth рарешены";
-"Allowed Motion" = "Motion рарешены";
+"Allowed Contacts" = "Контакты разрешены";
+"Allowed Events" = "События разрешены";
+"Allowed Location" = "Геолокация разрешена";
+"Allowed Notifications" = "Уведомления разрешены";
+"Allowed Microphone" = "Микрофон разрешен";
+"Allowed Camera" = "Камера разрешена";
+"Allowed Photos" = "Фото разрешены";
+"Allowed Reminders" = "Напоминания разрешены";
+"Allowed Bluetooth" = "Bluetooth разрешен";
+"Allowed Motion" = "Motion рарешен";
 //
 "Denied Contacts" = "Доступ к Контактам отклонен";
 "Denied Events" = "Доступ к Событиям отклонен";
@@ -45,7 +45,7 @@
 //
 "Contacts Disabled" = "Контакты отключены";
 "Events Disabled" = "События отключены";
-"Location Disabled" = "Геолокация отключены";
+"Location Disabled" = "Геолокация отключена";
 "Notifications Disabled" = "Уведомления отключены";
 "Microphone Disabled" = "Микрофон отключен";
 "Camera Disabled" = "Камера отключена";
