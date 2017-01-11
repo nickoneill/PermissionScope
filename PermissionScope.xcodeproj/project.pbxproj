@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0CB286531E26037B00116E09 /* PermissionScope+Bluetooth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB286481E26037B00116E09 /* PermissionScope+Bluetooth.swift */; };
+		0CB286541E26037B00116E09 /* PermissionScope+Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB286491E26037B00116E09 /* PermissionScope+Camera.swift */; };
+		0CB286551E26037B00116E09 /* PermissionScope+Contacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB2864A1E26037B00116E09 /* PermissionScope+Contacts.swift */; };
+		0CB286561E26037B00116E09 /* PermissionScope+Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB2864B1E26037B00116E09 /* PermissionScope+Events.swift */; };
+		0CB286591E26037B00116E09 /* PermissionScope+Microphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB2864E1E26037B00116E09 /* PermissionScope+Microphone.swift */; };
+		0CB2865A1E26037B00116E09 /* PermissionScope+Motion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB2864F1E26037B00116E09 /* PermissionScope+Motion.swift */; };
+		0CB2865B1E26037B00116E09 /* PermissionScope+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB286501E26037B00116E09 /* PermissionScope+Notifications.swift */; };
+		0CB2865C1E26037B00116E09 /* PermissionScope+Photos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB286511E26037B00116E09 /* PermissionScope+Photos.swift */; };
+		0CB2865D1E26037B00116E09 /* PermissionScope+Reminders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB286521E26037B00116E09 /* PermissionScope+Reminders.swift */; };
+		0CB2865F1E260F9F00116E09 /* PermissionScope+Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB2865E1E260F9F00116E09 /* PermissionScope+Location.swift */; };
 		244B5BA81B8D5E7900FFA019 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244B5BA71B8D5E7900FFA019 /* Permissions.swift */; };
 		2487CEE11B87B01E00766A1A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2487CEE01B87B01E00766A1A /* Extensions.swift */; };
 		2487CEE31B87B05200766A1A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2487CEE21B87B05200766A1A /* Constants.swift */; };
@@ -74,6 +84,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0CB286481E26037B00116E09 /* PermissionScope+Bluetooth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PermissionScope+Bluetooth.swift"; path = "Extensions/PermissionScope+Bluetooth.swift"; sourceTree = "<group>"; };
+		0CB286491E26037B00116E09 /* PermissionScope+Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PermissionScope+Camera.swift"; path = "Extensions/PermissionScope+Camera.swift"; sourceTree = "<group>"; };
+		0CB2864A1E26037B00116E09 /* PermissionScope+Contacts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PermissionScope+Contacts.swift"; path = "Extensions/PermissionScope+Contacts.swift"; sourceTree = "<group>"; };
+		0CB2864B1E26037B00116E09 /* PermissionScope+Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PermissionScope+Events.swift"; path = "Extensions/PermissionScope+Events.swift"; sourceTree = "<group>"; };
+		0CB2864E1E26037B00116E09 /* PermissionScope+Microphone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PermissionScope+Microphone.swift"; path = "Extensions/PermissionScope+Microphone.swift"; sourceTree = "<group>"; };
+		0CB2864F1E26037B00116E09 /* PermissionScope+Motion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PermissionScope+Motion.swift"; path = "Extensions/PermissionScope+Motion.swift"; sourceTree = "<group>"; };
+		0CB286501E26037B00116E09 /* PermissionScope+Notifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PermissionScope+Notifications.swift"; path = "Extensions/PermissionScope+Notifications.swift"; sourceTree = "<group>"; };
+		0CB286511E26037B00116E09 /* PermissionScope+Photos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PermissionScope+Photos.swift"; path = "Extensions/PermissionScope+Photos.swift"; sourceTree = "<group>"; };
+		0CB286521E26037B00116E09 /* PermissionScope+Reminders.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PermissionScope+Reminders.swift"; path = "Extensions/PermissionScope+Reminders.swift"; sourceTree = "<group>"; };
+		0CB2865E1E260F9F00116E09 /* PermissionScope+Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PermissionScope+Location.swift"; path = "Extensions/PermissionScope+Location.swift"; sourceTree = "<group>"; };
 		244B5BA71B8D5E7900FFA019 /* Permissions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
 		2487CEE01B87B01E00766A1A /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		2487CEE21B87B05200766A1A /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -130,6 +150,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0CB286441E26033D00116E09 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				0CB286481E26037B00116E09 /* PermissionScope+Bluetooth.swift */,
+				0CB286491E26037B00116E09 /* PermissionScope+Camera.swift */,
+				0CB2864A1E26037B00116E09 /* PermissionScope+Contacts.swift */,
+				0CB2864B1E26037B00116E09 /* PermissionScope+Events.swift */,
+				0CB2864E1E26037B00116E09 /* PermissionScope+Microphone.swift */,
+				0CB2864F1E26037B00116E09 /* PermissionScope+Motion.swift */,
+				0CB286501E26037B00116E09 /* PermissionScope+Notifications.swift */,
+				0CB286511E26037B00116E09 /* PermissionScope+Photos.swift */,
+				0CB286521E26037B00116E09 /* PermissionScope+Reminders.swift */,
+				0CB2865E1E260F9F00116E09 /* PermissionScope+Location.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 		D05F103F1AD1EBF6000F8267 /* PermissionScope-example */ = {
 			isa = PBXGroup;
 			children = (
@@ -176,6 +213,7 @@
 		D092BA351AD1E5A300BFC163 /* PermissionScope */ = {
 			isa = PBXGroup;
 			children = (
+				0CB286441E26033D00116E09 /* Extensions */,
 				D092BA381AD1E5A300BFC163 /* PermissionScope.h */,
 				D092BA4F1AD1E67300BFC163 /* PermissionScope.swift */,
 				2487CEE41B87B61E00766A1A /* Structs.swift */,
@@ -384,11 +422,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0CB286541E26037B00116E09 /* PermissionScope+Camera.swift in Sources */,
+				0CB2865D1E26037B00116E09 /* PermissionScope+Reminders.swift in Sources */,
+				0CB2865A1E26037B00116E09 /* PermissionScope+Motion.swift in Sources */,
 				2487CEE51B87B61E00766A1A /* Structs.swift in Sources */,
 				D092BA501AD1E67300BFC163 /* PermissionScope.swift in Sources */,
+				0CB2865B1E26037B00116E09 /* PermissionScope+Notifications.swift in Sources */,
+				0CB2865F1E260F9F00116E09 /* PermissionScope+Location.swift in Sources */,
 				2487CEE11B87B01E00766A1A /* Extensions.swift in Sources */,
 				244B5BA81B8D5E7900FFA019 /* Permissions.swift in Sources */,
+				0CB286561E26037B00116E09 /* PermissionScope+Events.swift in Sources */,
+				0CB286531E26037B00116E09 /* PermissionScope+Bluetooth.swift in Sources */,
+				0CB286551E26037B00116E09 /* PermissionScope+Contacts.swift in Sources */,
+				0CB286591E26037B00116E09 /* PermissionScope+Microphone.swift in Sources */,
 				2487CEE31B87B05200766A1A /* Constants.swift in Sources */,
+				0CB2865C1E26037B00116E09 /* PermissionScope+Photos.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
