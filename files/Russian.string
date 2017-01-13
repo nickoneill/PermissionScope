@@ -1,0 +1,105 @@
+"Allow Contacts" = "Разрешить доступ к Контактам";
+"Allow Events" = "Разрешить доступ к Событиям";
+"Enable Location" = "Включить Геолокацию";
+"Allow Notifications" = "Разрешить доступ к Уведомлениям";
+"Allow Microphone" = "Разрешить доступ к Микрофону";
+"Allow Camera" = "Разрешить доступ к Камере";
+"Allow Photos" = "Разрешить доступ к Фото";
+"Allow Reminders" = "Разрешить доступ к Напоминаниям";
+"Allow Bluetooth" = "Разрешить доступ к Bluetooth";
+"Allow Motion" = "Разрешить доступ к Motion";
+//
+"Contacts" = "Контакты";
+"Events" = "События";
+"LocationAlways" = "Геолокация всегда";
+"LocationInUse" = "Геолокация во время использования приложения";
+"Notifications" = "Уведомления";
+"Microphone" = "Микрофон";
+"Camera" = "Камера";
+"Photos" = "Фото";
+"Reminders" = "Напоминания";
+"Bluetooth" = "Bluetooth";
+"Motion" = "Motion";
+//
+"Allowed Contacts" = "Контакты разрешены";
+"Allowed Events" = "События разрешены";
+"Allowed Location" = "Геолокация разрешена";
+"Allowed Notifications" = "Уведомления разрешены";
+"Allowed Microphone" = "Микрофон разрешен";
+"Allowed Camera" = "Камера разрешена";
+"Allowed Photos" = "Фото разрешены";
+"Allowed Reminders" = "Напоминания разрешены";
+"Allowed Bluetooth" = "Bluetooth разрешен";
+"Allowed Motion" = "Motion рарешен";
+//
+"Denied Contacts" = "Доступ к Контактам отклонен";
+"Denied Events" = "Доступ к Событиям отклонен";
+"Denied Location" = "Доступ к Геолокации отклонен";
+"Denied Notifications" = "Доступ к Уведомлениям отклонен";
+"Denied Microphone" = "Доступ к Микрофону отклонен";
+"Denied Camera" = "Доступ к Камере отклонен";
+"Denied Photos" = "Доступ к Фото отклонен";
+"Denied Reminders" = "Доступ к Напоминаниям отклонен";
+"Denied Bluetooth" = "Доступ к Bluetooth отклонен";
+"Denied Motion" = "Доступ к Motion отклонен";
+//
+"Contacts Disabled" = "Контакты отключены";
+"Events Disabled" = "События отключены";
+"Location Disabled" = "Геолокация отключена";
+"Notifications Disabled" = "Уведомления отключены";
+"Microphone Disabled" = "Микрофон отключен";
+"Camera Disabled" = "Камера отключена";
+"Photos Disabled" = "Фото отключены";
+"Reminders Disabled" = "Напоминания отключены";
+"Bluetooth Disabled" = "Bluetooth отключен";
+"Motion Disabled" = "Motion отключен";
+//
+"Close" = "Закрыть";
+"Hey, listen!" = "Эй, послушай!";
+"We need a couple things\r\nbefore you get started." = "Нам нужно пару вещей\r\nпрежде чем начать.";
+"Permission for Contacts was denied." = "Доступ к контактам был запрещен";
+"Permission for Events was denied." = "Доступ к событиям был запрещен";
+"Permission for Location was denied." = "Доступ к геолокации был запрещен";
+"Permission for Notifications was denied." = "Доступ к уведомлениям был запрещен";
+"Permission for Microphone was denied." = "Доступ к микрофону был запрещен";
+"Permission for Camera was denied." = "Доступ к камере был запрещен";
+"Permission for Photos was denied." = "Доступ к фото был запрещен";
+"Permission for Reminders was denied." = "Доступ к напоминаниям был запрещен";
+"Permission for Bluetooth was denied." = "Доступ к Bluetooth был запрещен";
+"Permission for Motion was denied." = "Доступ к Motion был запрещен";
+//
+"Please enable access to Contacts in the Settings app" = "Пожалуйста, откройте доступ к Контактам в меню приложения в Настройках";
+"Please enable access to Events in the Settings app" = "Пожалуйста, откройте доступ к Событиям в меню приложения в Настройках";
+"Please enable access to Location in the Settings app" = "Пожалуйста, откройте доступ к Геолокации в меню приложения в Настройках";
+"Please enable access to Notifications in the Settings app" = "Пожалуйста, откройте доступ к Уведомлениям в меню приложения в Настройках";
+"Please enable access to Microphone in the Settings app" = "Пожалуйста, откройте доступ к Микрофону в меню приложения в Настройках";
+"Please enable access to Camera in the Settings app" = "Пожалуйста, откройте доступ к Камере в меню приложения в Настройках";
+"Please enable access to Photos in the Settings app" = "Пожалуйста, откройте доступ к Фото в меню приложения в Настройках";
+"Please enable access to Reminders in the Settings app" = "Пожалуйста, откройте доступ к Напоминаниям в меню приложения в Настройках";
+"Please enable access to Bluetooth in the Settings app" = "Пожалуйста, откройте доступ к Bluetooth в меню приложения в Настройках";
+"Please enable access to Motion in the Settings app" = "Пожалуйста, откройте доступ к Motion в меню приложения в Настройках";
+//
+"OK" = "Ок";
+"Show me" = "Посмотреть";
+//
+"Contacts is currently disabled." = "На данный момент доступ к Контактам отключен";
+"Events is currently disabled." = "На данный момент доступ к Событиям отключен";
+"Location is currently disabled." = "На данный момент доступ к Геолокации отключен";
+"Notifications is currently disabled." = "На данный момент доступ к Уведомлениям отключен";
+"Microphone is currently disabled." = "На данный момент доступ к Микрофону отключен";
+"Camera is currently disabled." = "На данный момент доступ к Камере отключена";
+"Photos is currently disabled." = "На данный момент доступ к Фото отключен";
+"Reminders is currently disabled." = "На данный момент доступ к Напоминаниям отключен";
+"Bluetooth is currently disabled." = "На данный момент доступ к Bluetooth отключен";
+"Motion is currently disabled." = "На данный момент доступ к Motion отключен";
+//
+"Please enable access to Contacts in Settings" = "Пожалуйста, откройте доступ к Контактам в Настройках";
+"Please enable access to Events in Settings" = "Пожалуйста, откройте доступ к Событиям в Настройках";
+"Please enable access to Location in Settings" = "Пожалуйста, откройте доступ к Геолокации в Настройках";
+"Please enable access to Notifications in Settings" = "Пожалуйста, откройте доступ к Уведомлениям в Настройках";
+"Please enable access to Microphone in Settings" = "Пожалуйста, откройте доступ к Микрофону в Настройках";
+"Please enable access to Camera in Settings" = "Пожалуйста, откройте доступ к Камере в Настройках";
+"Please enable access to Photos in Settings" = "Пожалуйста, откройте доступ к Фото в Настройках";
+"Please enable access to Reminders in Settings" = "Пожалуйста, откройте доступ к Напоминаниям в Настройках";
+"Please enable access to Bluetooth in Settings" = "Пожалуйста, откройте доступ к Bluetooth в Настройках";
+"Please enable access to Motion in Settings" = "Пожалуйста, откройте доступ к Motion в Настройках";
