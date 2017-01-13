@@ -6,22 +6,52 @@
 //  Copyright (c) 2015 That Thing in Swift. All rights reserved.
 //
 
+import Foundation
 import UIKit
-import CoreLocation
-import AddressBook
-import AVFoundation
-import Photos
-import EventKit
-import CoreBluetooth
+
+#if PermissionScopeRequestMotionEnabled
 import CoreMotion
+#endif
+
+#if PermissionScopeRequestBluetoothEnabled
+import CoreBluetooth
+#endif
+
+#if PermissionScopeRequestLocationEnabled
+import CoreLocation
+#endif
+
+#if PermissionScopeRequestMicrophoneEnabled || PermissionScopeRequestCameraEnabled
+import AVFoundation
+#endif
+
+#if PermissionScopeRequestPhotoLibraryEnabled
+import Photos
+#endif
+
+#if PermissionScopeRequestContactsEnabled
+import AddressBook
 import Contacts
+#endif
+
+#if PermissionScopeRequestEventsEnabled || PermissionScopeRequestRemindersEnabled
+import EventKit
+#endif
 
 public typealias statusRequestClosure = (_ status: PermissionStatus) -> Void
 public typealias authClosureType      = (_ finished: Bool, _ results: [PermissionResult]) -> Void
 public typealias cancelClosureType    = (_ results: [PermissionResult]) -> Void
 typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
 
-@objc public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
+#if PermissionScopeRequestLocationEnabled
+extension PermissionScope: CLLocationManagerDelegate {}
+#endif
+
+#if PermissionScopeRequestBluetoothEnabled
+extension PermissionScope: CBPeripheralManagerDelegate {}
+#endif
+
+@objc public class PermissionScope: UIViewController, UIGestureRecognizerDelegate {
 
     // MARK: UI Parameters
     
@@ -61,19 +91,26 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     public let contentView = UIView()
 
     // MARK: - Various lazy managers
+
+    #if PermissionScopeRequestLocationEnabled
     lazy var locationManager:CLLocationManager = {
         let lm = CLLocationManager()
         lm.delegate = self
         return lm
     }()
+    #endif
 
+    #if PermissionScopeRequestBluetoothEnabled
     lazy var bluetoothManager:CBPeripheralManager = {
         return CBPeripheralManager(delegate: self, queue: nil, options:[CBPeripheralManagerOptionShowPowerAlertKey: false])
     }()
-    
+    #endif
+
+    #if PermissionScopeRequestMotionEnabled
     lazy var motionManager:CMMotionActivityManager = {
         return CMMotionActivityManager()
     }()
+    #endif
     
     /// NSUserDefaults standardDefaults lazy var
     lazy var defaults:UserDefaults = {
@@ -394,6 +431,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
+    #if PermissionScopeRequestLocationEnabled
     public func statusLocationAlways() -> PermissionStatus {
         guard CLLocationManager.locationServicesEnabled() else { return .disabled }
 
@@ -482,6 +520,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
+    #endif
 
     // MARK: Contacts
     
@@ -490,6 +529,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
+    #if PermissionScopeRequestContactsEnabled
     public func statusContacts() -> PermissionStatus {
         if #available(iOS 9.0, *) {
             let status = CNContactStore.authorizationStatus(for: .contacts)
@@ -538,6 +578,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
+    #endif
 
     // MARK: Notifications
     
@@ -546,6 +587,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
+    #if PermissionScopeRequestNotificationsEnabled
     public func statusNotifications() -> PermissionStatus {
         let settings = UIApplication.shared.currentUserNotificationSettings
         if let settingTypes = settings?.types , settingTypes != UIUserNotificationType() {
@@ -652,7 +694,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             detectAndCallback()
         }
     }
-    
+    #endif
+
     // MARK: Microphone
     
     /**
@@ -660,6 +703,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
+    #if PermissionScopeRequestMicrophoneEnabled
     public func statusMicrophone() -> PermissionStatus {
         let recordPermission = AVAudioSession.sharedInstance().recordPermission()
         switch recordPermission {
@@ -690,6 +734,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
+    #endif
     
     // MARK: Camera
     
@@ -698,6 +743,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
+    #if PermissionScopeRequestCameraEnabled
     public func statusCamera() -> PermissionStatus {
         let status = AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo)
         switch status {
@@ -729,6 +775,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
+    #endif
 
     // MARK: Photos
     
@@ -737,6 +784,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
+    #if PermissionScopeRequestPhotoLibraryEnabled
     public func statusPhotos() -> PermissionStatus {
         let status = PHPhotoLibrary.authorizationStatus()
         switch status {
@@ -767,6 +815,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
+    #endif
     
     // MARK: Reminders
     
@@ -775,6 +824,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
+    #if PermissionScopeRequestRemindersEnabled
     public func statusReminders() -> PermissionStatus {
         let status = EKEventStore.authorizationStatus(for: .reminder)
         switch status {
@@ -804,6 +854,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
+    #endif
     
     // MARK: Events
     
@@ -812,6 +863,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     - returns: Permission status for the requested type.
     */
+    #if PermissionScopeRequestEventsEnabled
     public func statusEvents() -> PermissionStatus {
         let status = EKEventStore.authorizationStatus(for: .event)
         switch status {
@@ -841,9 +893,11 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             break
         }
     }
+    #endif
     
     // MARK: Bluetooth
-    
+
+    #if PermissionScopeRequestBluetoothEnabled
     /// Returns whether Bluetooth access was asked before or not.
     fileprivate var askedBluetooth:Bool {
         get {
@@ -854,9 +908,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             defaults.synchronize()
         }
     }
-    
-    /// Returns whether PermissionScope is waiting for the user to enable/disable bluetooth access or not.
-    fileprivate var waitingForBluetooth = false
     
     /**
     Returns the current permission status for accessing Bluetooth.
@@ -902,7 +953,10 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         }
         
     }
-    
+
+    /// Returns whether PermissionScope is waiting for the user to enable/disable bluetooth access or not.
+    fileprivate var waitingForBluetooth = false
+
     /**
     Start and immediately stop bluetooth advertising to trigger
     its permission dialog.
@@ -915,9 +969,11 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             waitingForBluetooth = true
         }
     }
-    
+    #endif
+
     // MARK: Core Motion Activity
-    
+
+    #if PermissionScopeRequestMotionEnabled
     /**
     Returns the current permission status for accessing Core Motion Activity.
     
@@ -984,9 +1040,11 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             defaults.synchronize()
         }
     }
-    
+
     /// Returns whether PermissionScope is waiting for the user to enable/disable motion access or not.
     fileprivate var waitingForMotion = false
+
+    #endif
     
     // MARK: - UI
     
@@ -1003,7 +1061,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         onCancel = cancelled
         
         DispatchQueue.main.async {
-            while self.waitingForBluetooth || self.waitingForMotion { }
+            while
+                self.waitingForBluetoothIfEnabled || self.waitingForMotionIfEnabled { }
             // call other methods that need to wait before show
             // no missing required perms? callback and do nothing
             self.requiredAuthorized({ areAuthorized in
@@ -1018,7 +1077,24 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             })
         }
     }
-    
+
+    /// Only read Bluetooth and Motion properties if their permissions are being used in the project.
+    fileprivate var waitingForBluetoothIfEnabled: Bool {
+        #if PermissionScopeRequestBluetoothEnabled
+            return self.waitingForBluetooth
+        #else
+            return false
+        #endif
+    }
+
+    fileprivate var waitingForMotionIfEnabled: Bool {
+        #if PermissionScopeRequestMotionEnabled
+            return self.waitingForMotion
+        #else
+            return false
+        #endif
+    }
+
     /**
     Creates the modal viewcontroller and shows it.
     */
@@ -1102,17 +1178,21 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     }
 
     // MARK: Location delegate
-    
+
+    #if PermissionScopeRequestLocationEnabled
     public func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         detectAndCallback()
     }
+    #endif
     
     // MARK: Bluetooth delegate
-    
+
+    #if PermissionScopeRequestBluetoothEnabled
     public func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
         waitingForBluetooth = false
         detectAndCallback()
     }
+    #endif
 
     // MARK: - UI Helpers
     
