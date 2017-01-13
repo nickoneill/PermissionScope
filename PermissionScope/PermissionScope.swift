@@ -449,7 +449,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
 	/// Returns whether PermissionScope is waiting for the user to enable/disable bluetooth access or not.
 	var waitingForBluetooth = false
 
-
 	/**
 	Start and immediately stop bluetooth advertising to trigger
 	its permission dialog.

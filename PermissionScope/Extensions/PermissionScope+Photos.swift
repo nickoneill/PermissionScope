@@ -11,19 +11,6 @@ import Photos
 
 @objc public class PhotosPermission: NSObject, Permission {
 	public let type: PermissionType = .photos
-	public var status: PermissionStatus {
-		get {
-			let status = PHPhotoLibrary.authorizationStatus()
-			switch status {
-			case .authorized:
-				return .authorized
-			case .denied, .restricted:
-				return .unauthorized
-			case .notDetermined:
-				return .unknown
-			}
-		}
-	}
 }
 
 extension PermissionScope {
@@ -52,8 +39,15 @@ extension PermissionScope {
 	- returns: Permission status for the requested type.
 	*/
 	public func statusPhotos() -> PermissionStatus {
-		let perm = PhotosPermission()
-		return perm.status
+		let status = PHPhotoLibrary.authorizationStatus()
+		switch status {
+		case .authorized:
+			return .authorized
+		case .denied, .restricted:
+			return .unauthorized
+		case .notDetermined:
+			return .unknown
+		}
 	}
 
 

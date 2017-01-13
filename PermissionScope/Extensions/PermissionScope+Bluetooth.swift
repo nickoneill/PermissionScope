@@ -73,7 +73,7 @@ extension PermissionScope: CBPeripheralManagerDelegate {
 	}
 
 	func triggerBluetoothStatusUpdate() {
-			if !waitingForBluetooth && bluetoothManager.state == .unknown {
+		if !waitingForBluetooth && bluetoothManager.state == .unknown {
 			bluetoothManager.startAdvertising(nil)
 			bluetoothManager.stopAdvertising()
 			askedBluetooth = true
