@@ -1,0 +1,105 @@
+"Allow Contacts" = "連絡先へのアクセスを許可する。";
+"Allow Events" = "イベントへのアクセスを許可する。";
+"Enable Location" = "位置情報の取得を有効にする。";
+"Allow Notifications" = "通知を許可する。";
+"Allow Microphone" = "マイクへのアクセスを許可する。";
+"Allow Camera" = "カメラへのアクセスを許可する。";
+"Allow Photos" = "写真へのアクセスを許可する。";
+"Allow Reminders" = "リマインダーへのアクセスを許可する。";
+"Allow Bluetooth" = "Bluetoothへのアクセスを許可する。";
+"Allow Motion" = "モーションへのアクセスを許可する。";
+//
+"Contacts" = "連絡先";
+"Events" = "イベント";
+"LocationAlways" = "常に位置情報を取得する";
+"LocationInUse" = "アプリ利用時のみ位置情報を取得する";
+"Notifications" = "通知";
+"Microphone" = "マイク";
+"Camera" = "カメラ";
+"Photos" = "写真";
+"Reminders" = "リマインダー";
+"Bluetooth" = "Bluetooth";
+"Motion" = "モーション";
+//
+"Allowed Contacts" = "連絡先へのアクセスは許可済みです。";
+"Allowed Events" = "イベントへのアクセスは許可済みです。";
+"Allowed Location" = "位置情報の取得は可能です。";
+"Allowed Notifications" = "通知は許可されています。";
+"Allowed Microphone" = "マイクへのアクセスは許可済みです。";
+"Allowed Camera" = "カメラへのアクセスは許可済みです。";
+"Allowed Photos" = "写真へのアクセスは許可済みです。";
+"Allowed Reminders" = "リマインダーへのアクセスは許可済みです。";
+"Allowed Bluetooth" = "Bluetoothへのアクセスは許可済みです。";
+"Allowed Motion" = "モーションへのアクセスは許可済みです。";
+//
+"Denied Contacts" = "連絡先へのアクセスは拒否されました。";
+"Denied Events" = "イベントへのアクセスは拒否されました。";
+"Denied Location" = "位置情報の取得は拒否されました。";
+"Denied Notifications" = "通知は拒否されました。";
+"Denied Microphone" = "マイクへのアクセスは拒否されました。";
+"Denied Camera" = "カメラへのアクセスは拒否されました。";
+"Denied Photos" = "写真へのアクセスは拒否されました。";
+"Denied Reminders" = "リマインダーへのアクセスは拒否されました。";
+"Denied Bluetooth" = "Bluetoothへのアクセスは拒否されました。";
+"Denied Motion" = "モーションへのアクセスは拒否されました。";
+//
+"Contacts Disabled" = "連絡先へのアクセスは無効です。";
+"Events Disabled" = "イベントへのアクセスは無効です。";
+"Location Disabled" = "位置情報の取得は無効です。";
+"Notifications Disabled" = "通知は無効です。";
+"Microphone Disabled" = "マイクは無効です。";
+"Camera Disabled" = "カメラは無効です。";
+"Photos Disabled" = "写真は無効です。";
+"Reminders Disabled" = "リマインダーは無効です。";
+"Bluetooth Disabled" = "Bluetoothは無効です。";
+"Motion Disabled" = "モーションは無効です。";
+//
+"Close" = "閉じる";
+"Hey, listen!" = "";
+"We need a couple things\r\nbefore you get started." = "";
+"Permission for Contacts was denied." = "連絡先へのアクセスが拒否されました。";
+"Permission for Events was denied." = "イベントへのアクセスが拒否されました。";
+"Permission for Location was denied." = "位置情報へのアクセスが拒否されました。";
+"Permission for Notifications was denied." = "通知へのアクセスが拒否されました。";
+"Permission for Microphone was denied." = "マイクへのアクセスが拒否されました。";
+"Permission for Camera was denied." = "カメラへのアクセスが拒否されました。";
+"Permission for Photos was denied." = "写真へのアクセスが拒否されました。";
+"Permission for Reminders was denied." = "リマインダーへのアクセスが拒否されました。";
+"Permission for Bluetooth was denied." = "Bluetoothへのアクセスが拒否されました。";
+"Permission for Motion was denied." = "モーションへのアクセスが拒否されました。";
+//
+"Please enable access to Contacts in the Settings app" = "連絡先へのアクセスを設定アプリから許可してください。";
+"Please enable access to Events in the Settings app" = "イベントへのアクセスを設定アプリから許可してください。";
+"Please enable access to Location in the Settings app" = "位置情報へのアクセスを設定アプリから許可してください。";
+"Please enable access to Notifications in the Settings app" = "通知へのアクセスを設定アプリから許可してください。";
+"Please enable access to Microphone in the Settings app" = "マイクへのアクセスを設定アプリから許可してください。";
+"Please enable access to Camera in the Settings app" = "カメラへのアクセスを設定アプリから許可してください。";
+"Please enable access to Photos in the Settings app" = "写真へのアクセスを設定アプリから許可してください。";
+"Please enable access to Reminders in the Settings app" = "リマインダーへのアクセスを設定アプリから許可してください。";
+"Please enable access to Bluetooth in the Settings app" = "Bluetoothの使用を設定アプリから許可してください。";
+"Please enable access to Motion in the Settings app" = "モーションへのアクセスを設定アプリから許可してください。";
+//
+"OK" = "了解";
+"Show me" = "注目！";
+//
+"Contacts is currently disabled." = "連絡先へのアクセスは現在無効です。;
+"Events is currently disabled." = "イベントへのアクセスは現在無効です。";
+"Location is currently disabled." = "位置情報へのアクセスは現在無効です。";
+"Notifications is currently disabled." = "通知へのアクセスは現在無効です。";
+"Microphone is currently disabled." = "マイクへのアクセスは現在無効です。";
+"Camera is currently disabled." = "カメラへのアクセスは現在無効です。";
+"Photos is currently disabled." = "写真へのアクセスは現在無効です。";
+"Reminders is currently disabled." = "リマインダーへのアクセスは現在無効です。";
+"Bluetooth is currently disabled." = "Bluetoothへのアクセスは現在無効です。";
+"Motion is currently disabled." = "モーションへのアクセスは現在無効です。";
+//
+"Please enable access to Contacts in Settings" = "連絡先へのアクセスを有効にしてください。";
+"Please enable access to Events in Settings" = "イベントへのアクセスを有効にしてください。";
+"Please enable access to Location in Settings" = "位置情報へのアクセスを有効にしてください。";
+"Please enable access to Notifications in Settings" = "通知を有効にしてください。";
+"Please enable access to Microphone in Settings" = "マイクへのアクセスを有効にしてください。";
+"Please enable access to Camera in Settings" = "カメラへのアクセスを有効にしてください。";
+"Please enable access to Photos in Settings" = "写真へのアクセスを有効にしてください。";
+"Please enable access to Reminders in Settings" = "リマインダーへのアクセスを有効にしてください。";
+"Please enable access to Bluetooth in Settings" = "Bluetoothへのアクセスを有効にしてください。";
+"Please enable access to Motion in Settings" = "モーションへのアクセスを有効にしてください。";
