@@ -4,7 +4,7 @@
 
 <p align="center">
     <img src="https://img.shields.io/badge/platform-iOS%208%2B-blue.svg?style=flat" alt="Platform: iOS 8+" />
-    <a href="https://developer.apple.com/swift"><img src="https://img.shields.io/badge/language-swift2-f48041.svg?style=flat" alt="Language: Swift 2" /></a>
+    <a href="https://developer.apple.com/swift"><img src="https://img.shields.io/badge/language-swift3-f48041.svg?style=flat" alt="Language: Swift 3" /></a>
     <a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage compatible" /></a>
     <a href="https://cocoapods.org/pods/PermissionScope"><img src="https://cocoapod-badges.herokuapp.com/v/PermissionScope/badge.png" alt="Cocoapods compatible" /></a>
     <img src="https://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat" alt="License: MIT" />
@@ -31,11 +31,23 @@ PermissionScope **gives you space to explain your reasons for requesting permiss
 
 Best of all, PermissionScope detects when your app's permissions have been denied by a user and gives them an easy prompt to go into the system settings page to modify these permissions.
 
+Supported permissions:
+* Notifications
+* Location (WhileInUse, Always)
+* Contacts
+* Events
+* Microphone
+* Camera
+* Photos
+* Reminders
+* Bluetooth
+* Motion
+
 ## compatibility
 
-PermissionScope requires iOS 8+, compatible with both **Swift 2** and **Objective-C** based projects
+PermissionScope requires iOS 8+, compatible with both **Swift 3** and **Objective-C** based projects.
 
-For Swift 1.2 support, please use the swift12 branch. This branch has the basics but is not being maintained.
+For Swift 2.x support, please use the swift2 branch or the 1.0.2 release version. This branch was up-to-date on 9/6/16 but is not being maintained. All future efforts will go towards Swift 3 development.
 
 ## installation
 
@@ -198,13 +210,17 @@ The *NSBluetoothPeripheralUsageDescription* key in the Info.plist specifying a s
 
 However, enabling `background-modes` in the capabilities section and checking the `acts as a bluetooth LE accessory` checkbox is **required**.
 
-### healthkit
-
-Enable `HealthKit` in your target's capabilities, **required**.
-
 ## known bugs
 
-* Link "**Show me**" does not work on denied a permission ([#61](https://github.com/nickoneill/PermissionScope/issues/#61))
+* ITC app rejection with the following reason: "*This app attempts to access privacy-sensitive data without a usage description*". ([#194](https://github.com/nickoneill/PermissionScope/issues/194))
+
+Solution: TBD
+
+* When the user is taken to the Settings.app, if any of the app's permissions are changed (whilst the app was in the background), the app will crash. ([#160](https://github.com/nickoneill/PermissionScope/issues/160))
+
+Solution: None. Works as intended by the OS.
+
+* Link "**Show me**" does not work on denied a permission ([#61](https://github.com/nickoneill/PermissionScope/issues/61))
 
 Solution: Run your app without the debugger.
 
