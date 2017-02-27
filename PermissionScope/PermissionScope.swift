@@ -19,6 +19,7 @@ import Contacts
 public typealias statusRequestClosure = (_ status: PermissionStatus) -> Void
 public typealias authClosureType      = (_ finished: Bool, _ results: [PermissionResult]) -> Void
 public typealias cancelClosureType    = (_ results: [PermissionResult]) -> Void
+public typealias dismissedClosureType = (_ canceled: Bool) -> Void
 typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
 
 @objc public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
@@ -93,9 +94,11 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
 	// Useful for direct use of the request* methods
     
     /// Callback called when permissions status change.
-    public var onAuthChange: authClosureType? = nil
+    public var onAuthChange: authClosureType?   = nil
     /// Callback called when the user taps on the close button.
-    public var onCancel: cancelClosureType?   = nil
+    public var onCancel: cancelClosureType?     = nil
+    /// Callback called when the controller is dismissed
+    public var onDismiss: dismissedClosureType? = nil
     
     /// Called when the user has disabled or denied access to notifications, and we're presenting them with a help dialog.
     public var onDisabledOrDenied: cancelClosureType? = nil
@@ -103,7 +106,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
 	public var viewControllerForAlerts : UIViewController?
 
     /**
-    Checks whether all the configured permission are authorized or not.
+    Checks whether all the configured permissions are authorized or not.
     
     - parameter completion: Closure used to send the result of the check.
     */
@@ -117,7 +120,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     }
     
     /**
-    Checks whether all the required configured permission are authorized or not.
+    Checks whether all the required configured permissions are authorized or not.
     **Deprecated** See issues #50 and #51.
     
     - parameter completion: Closure used to send the result of the check.
@@ -996,11 +999,12 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     - parameter authChange: Called when a status is detected on any of the permissions.
     - parameter cancelled:  Called when the user taps the Close button.
     */
-    @objc public func show(_ authChange: authClosureType? = nil, cancelled: cancelClosureType? = nil) {
+    @objc public func show(_ authChange: authClosureType? = nil, cancelled: cancelClosureType? = nil, dismissed: dismissedClosureType? = nil) {
         assert(!configuredPermissions.isEmpty, "Please add at least one permission")
 
         onAuthChange = authChange
         onCancel = cancelled
+        onDismiss = dismissed
         
         DispatchQueue.main.async {
             while self.waitingForBluetooth || self.waitingForMotion { }
@@ -1073,7 +1077,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /**
     Hides the modal viewcontroller with an animation.
     */
-    public func hide() {
+    public func hide(canceled: Bool = false) {
         let window = UIApplication.shared.keyWindow!
 
         DispatchQueue.main.async(execute: {
@@ -1081,6 +1085,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
                 self.baseView.frame.origin.y = window.center.y + 400
                 self.view.alpha = 0
             }, completion: { finished in
+                if let onDismiss = self.onDismiss {
+                    onDismiss(canceled)
+                }
                 self.view.removeFromSuperview()
             })
         })
@@ -1120,7 +1127,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     Called when the users taps on the close button.
     */
     func cancel() {
-        self.hide()
+        self.hide(canceled: true)
         
         if let onCancel = onCancel {
             getResultsForConfig({ results in
