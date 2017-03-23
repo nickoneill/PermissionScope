@@ -59,8 +59,7 @@
 "We need a couple things\r\nbefore you get started." = "접근권한 확인이 필요합니다.";
 "Permission for Contacts was denied." = "연락처 접근이 거부되어 있습니다.";
 "Permission for Events was denied." = "이벤트 접근이 거부되어 있습니다.";
-"Permission for LocationAlways was denied." = "위치정보 접근이 거부되어 있습니다.";
-"Permission for LocationInUse was denied." = "위치정보 접근이 거부되어 있습니다.";
+"Permission for Location was denied." = "위치정보 접근이 거부되어 있습니다.";
 "Permission for Notifications was denied." = "알림 접근이 거부되어 있습니다.";
 "Permission for Microphone was denied." = "마이크 접근이 거부되어 있습니다.";
 "Permission for Camera was denied." = "카메라 접근이 거부되어 있습니다.";
@@ -71,8 +70,7 @@
 //
 "Please enable access to Contacts in the Settings app" = "설정앱에서 연락처 접근을 허용해주세요.";
 "Please enable access to Events in the Settings app" = "설정앱에서 이벤트 접근을 허용해주세요.";
-"Please enable access to LocationAlways in the Settings app" = "설정앱에서 위치정보 접근을 허용해주세요.";
-"Please enable access to LocationInUse in the Settings app" = "설정앱에서 위치정보 접근을 허용해주세요.";
+"Please enable access to Location in the Settings app" = "설정앱에서 위치정보 접근을 허용해주세요.";
 "Please enable access to Notifications in the Settings app" = "설정앱에서 알림 접근을 허용해주세요.";
 "Please enable access to Microphone in the Settings app" = "설정앱에서 마이크 접근을 허용해주세요.";
 "Please enable access to Camera in the Settings app" = "설정앱에서 카메라 접근을 허용해주세요.";
@@ -86,8 +84,7 @@
 //
 "Contacts is currently disabled." = "연락처는 현재 사용 불가능합니다.";
 "Events is currently disabled." = "이벤트는 현재 사용 불가능합니다.";
-"LocationAlways is currently disabled." = "위치정보는 현재 사용 불가능합니다.";
-"LocationInUse is currently disabled." = "위치정보는 현재 사용 불가능합니다.";
+"Location is currently disabled." = "위치정보는 현재 사용 불가능합니다.";
 "Notifications is currently disabled." = "알림은 현재 사용 불가능합니다.";
 "Microphone is currently disabled." = "마이크는 현재 사용 불가능합니다.";
 "Camera is currently disabled." = "카메라는 현재 사용 불가능합니다.";
@@ -98,8 +95,7 @@
 //
 "Please enable access to Contacts in Settings" = "설정앱에서 연락처 접근을 허용해주세요";
 "Please enable access to Events in Settings" = "설정앱에서 이벤트 접근을 허용해주세요";
-"Please enable access to LocationAlways in Settings" = "설정앱에서 위치정보 접근을 허용해주세요";
-"Please enable access to LocationInUse in Settings" = "설정앱에서 위치정보 접근을 허용해주세요";
+"Please enable access to Location in Settings" = "설정앱에서 위치정보 접근을 허용해주세요";
 "Please enable access to Notifications in Settings" = "설정앱에서 알림 접근을 허용해주세요";
 "Please enable access to Microphone in Settings" = "설정앱에서 마이크 접근을 허용해주세요";
 "Please enable access to Camera in Settings" = "설정앱에서 카메라 접근을 허용해주세요";
