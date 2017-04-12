@@ -101,6 +101,12 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     public var onDisabledOrDenied: cancelClosureType? = nil
 	/// View controller to be used when presenting alerts. Defaults to self. You'll want to set this if you are calling the `request*` methods directly.
 	public var viewControllerForAlerts : UIViewController?
+    /// View controller to be used when presenting alerts from from UIApplication -> window -> rootViewController
+    var applicationRootViewController: UIViewController? {
+        get {
+            return UIApplication.shared.windows.first?.rootViewController
+        }
+    }
 
     /**
     Checks whether all the configured permission are authorized or not.
@@ -1158,7 +1164,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         }))
         
         DispatchQueue.main.async {
-            self.viewControllerForAlerts?.present(alert,
+            (self.viewControllerForAlerts ?? self.applicationRootViewController)?.present(alert,
                 animated: true, completion: nil)
         }
     }
@@ -1192,7 +1198,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         }))
         
         DispatchQueue.main.async {
-            self.viewControllerForAlerts?.present(alert,
+            (self.viewControllerForAlerts ?? self.applicationRootViewController)?.present(alert,
                 animated: true, completion: nil)
         }
     }
