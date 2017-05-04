@@ -1022,7 +1022,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /**
     Creates the modal viewcontroller and shows it.
     */
-    fileprivate func showAlert() {
+    public func showAlert() {
         // add the backing views
         let window = UIApplication.shared.keyWindow!
         
