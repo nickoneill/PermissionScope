@@ -232,7 +232,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         // Set frames
         let x = (screenSize.width - Constants.UI.contentWidth) / 2
 
-        let dialogHeight: CGFloat
+        var dialogHeight: CGFloat
         switch self.configuredPermissions.count {
         case 2:
             dialogHeight = Constants.UI.dialogHeightTwoPermissions
@@ -240,6 +240,12 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             dialogHeight = Constants.UI.dialogHeightThreePermissions
         default:
             dialogHeight = Constants.UI.dialogHeightSinglePermission
+        }
+        
+        for p in configuredPermissions {
+            if permissionMessages[p.type] == nil {
+                dialogHeight = dialogHeight - 50
+            }
         }
         
         let y = (screenSize.height - dialogHeight) / 2
@@ -305,13 +311,15 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     - parameter config: Configuration for a specific permission.
     - parameter message: Body label's text on the presented dialog when requesting access.
     */
-    @objc public func addPermission(_ permission: Permission, message: String) {
-        assert(!message.isEmpty, "Including a message about your permission usage is helpful")
+    @objc public func addPermission(_ permission: Permission, message: String? = nil) {
         assert(configuredPermissions.count < 3, "Ask for three or fewer permissions at a time")
         assert(configuredPermissions.first { $0.type == permission.type }.isNil, "Permission for \(permission.type) already set")
         
         configuredPermissions.append(permission)
-        permissionMessages[permission.type] = message
+        
+        if let m = message {
+            permissionMessages[permission.type] = m
+        }
         
         if permission.type == .bluetooth && askedBluetooth {
             triggerBluetoothStatusUpdate()
