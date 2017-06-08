@@ -1,0 +1,105 @@
+"Allow Contacts" = "授权访问通讯录";
+"Allow Events" = "授权访问日历";
+"Enable Location" = "授权访问位置信息";
+"Allow Notifications" = "授权通知推送";
+"Allow Microphone" = "授权使用麦克风";
+"Allow Camera" = "授权使用相机";
+"Allow Photos" = "授权使用相册";
+"Allow Reminders" = "授权访问备忘录";
+"Allow Bluetooth" = "授权使用蓝牙";
+"Allow Motion" = "授权访问健康数据";
+//
+"Contacts" = "通讯录";
+"Events" = "日历";
+"LocationAlways" = "在使用期间访问位置信息";
+"LocationInUse" = "随时访问位置信息";
+"Notifications" = "通知";
+"Microphone" = "麦克风";
+"Camera" = "相机";
+"Photos" = "相册";
+"Reminders" = "备忘录";
+"Bluetooth" = "蓝牙";
+"Motion" = "健康数据";
+//
+"Allowed Contacts" = "已授权访问通讯录";
+"Allowed Events" = "已授权访问日历";
+"Allowed Location" = "已授权访问位置信息";
+"Allowed Notifications" = "已授权通知推送";
+"Allowed Microphone" = "已授权使用麦克风";
+"Allowed Camera" = "已授权使用相机";
+"Allowed Photos" = "已授权使用相册";
+"Allowed Reminders" = "已授权访问备忘录";
+"Allowed Bluetooth" = "已授权使用蓝牙";
+"Allowed Motion" = "已授权访问健康数据";
+//
+"Denied Contacts" = "访问通讯录被拒绝";
+"Denied Events" = "访问日历被拒绝";
+"Denied Location" = "获取位置信息被拒绝";
+"Denied Notifications" = "推送通知被拒绝";
+"Denied Microphone" = "访问麦克风被拒绝";
+"Denied Camera" = "访问相机被拒绝";
+"Denied Photos" = "访问相册被拒绝";
+"Denied Reminders" = "访问备忘录被拒绝";
+"Denied Bluetooth" = "访问蓝牙被拒绝";
+"Denied Motion" = "访问健康数据被拒绝";
+//
+"Contacts Disabled" = "通讯录不可用";
+"Events Disabled" = "日历不可用";
+"Location Disabled" = "定位功能不可用";
+"Notifications Disabled" = "通知推送不可用";
+"Microphone Disabled" = "麦克风不可用";
+"Camera Disabled" = "相机不可用";
+"Photos Disabled" = "相册不可用";
+"Reminders Disabled" = "备忘录不可用";
+"Bluetooth Disabled" = "蓝牙不可用";
+"Motion Disabled" = "健康数据不可用";
+//
+"Close" = "关闭";
+"Hey, listen!" = "嗨，亲！";
+"We need a couple things\r\nbefore you get started." = "在继续之前\r\n我们还需要征询您的授权";
+"Permission for Contacts was denied." = "访问通讯录被拒绝";
+"Permission for Events was denied." = "访问日历被拒绝";
+"Permission for Location was denied." = "获取位置信息被拒绝";
+"Permission for Notifications was denied." = "通知推送被拒绝";
+"Permission for Microphone was denied." = "使用麦克风被拒绝";
+"Permission for Camera was denied." = "访问相机被拒绝";
+"Permission for Photos was denied." = "访问相册被拒绝";
+"Permission for Reminders was denied." = "访问提醒被拒绝";
+"Permission for Bluetooth was denied." = "访问蓝牙被拒绝";
+"Permission for Motion was denied." = "访问健康数据被拒绝";
+//
+"Please enable access to Contacts in the Settings app" = "请在iPhone的“设置-隐私”选项中，允许应用访问通讯录";
+"Please enable access to Events in the Settings app" = "请在iPhone的“设置-隐私”选项中，允许应用访问日历";
+"Please enable access to Location in the Settings app" = "请在iPhone的“设置-隐私”选项中，允许应用获取位置信息";
+"Please enable access to Notifications in the Settings app" = "请在iPhone的“设置-隐私”选项中，允许应用进行通知栏推送";
+"Please enable access to Microphone in the Settings app" = "请在iPhone的“设置-隐私”选项中，允许应用访问麦克风";
+"Please enable access to Camera in the Settings app" = "请在iPhone的“设置-隐私”选项中，允许应用访问相机";
+"Please enable access to Photos in the Settings app" = "请在iPhone的“设置-隐私”选项中，允许应用访问相册";
+"Please enable access to Reminders in the Settings app" = "请在iPhone的“设置-隐私”选项中，允许应用访问备忘录";
+"Please enable access to Bluetooth in the Settings app" = "请在iPhone的“设置-隐私”选项中，允许应用访问蓝牙";
+"Please enable access to Motion in the Settings app" = "请在iPhone的“设置-隐私”选项中，允许应用访问健康数据";
+//
+"OK" = "好的";
+"Show me" = "前往设置";
+//
+"Contacts is currently disabled." = "通讯录不可用";
+"Events is currently disabled." = "日历不可用";
+"Location is currently disabled." = "定位功能不可用";
+"Notifications is currently disabled." = "通知推送不可用";
+"Microphone is currently disabled." = "麦克风不可用";
+"Camera is currently disabled." = "相机不可用";
+"Photos is currently disabled." = "相册不可用";
+"Reminders is currently disabled." = "备忘录不可用";
+"Bluetooth is currently disabled." = "蓝牙不可用";
+"Motion is currently disabled." = "健康数据不可用";
+//
+"Please enable access to Contacts in Settings" = "请在iPhone的“设置-隐私”选项中，允许应用访问通讯录";
+"Please enable access to Events in Settings" = "请在iPhone的“设置-隐私”选项中，允许应用访问日历";
+"Please enable access to Location in Settings" = "请在iPhone的“设置“中开启定位服务，并在”隐私”选项中，允许应用访问位置信息";
+"Please enable access to Notifications in Settings" = "请在iPhone的“设置-隐私”选项中，允许应用进行通知栏推送";
+"Please enable access to Microphone in Settings" = "请在iPhone的“设置-隐私”选项中，允许应用访问麦克风";
+"Please enable access to Camera in Settings" = "请在iPhone的“设置-隐私”选项中，允许应用访问相机";
+"Please enable access to Photos in Settings" = "请在iPhone的“设置-隐私”选项中，允许应用访问相册";
+"Please enable access to Reminders in Settings" = "请在iPhone的“设置-隐私”选项中，允许应用访问备忘录";
+"Please enable access to Bluetooth in Settings" = "请在iPhone的“设置“中开启蓝牙，并在”隐私”选项中，允许应用访问蓝牙";
+"Please enable access to Motion in Settings" = "请在iPhone的“设置-隐私”选项中，允许应用访问健康数据";
