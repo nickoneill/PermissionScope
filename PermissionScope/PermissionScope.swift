@@ -53,6 +53,12 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     public var authorizedButtonColor        = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
     /// Color used for permission buttons with unauthorized status. By default, inverse of `authorizedButtonColor`.
     public var unauthorizedButtonColor:UIColor?
+    /// Alpha of the black overlay
+    public var overlayAlpha                 = CGFloat(0.7) {
+        didSet {
+            view.backgroundColor = UIColor(red:0, green:0, blue:0, alpha:overlayAlpha)
+        }
+    }
     /// Messages for the body label of the dialog presented when requesting access.
     lazy var permissionMessages: [PermissionType : String] = [PermissionType : String]()
     
@@ -158,7 +164,7 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         // Set up main view
         view.frame = UIScreen.main.bounds
         view.autoresizingMask = [UIViewAutoresizing.flexibleHeight, UIViewAutoresizing.flexibleWidth]
-        view.backgroundColor = UIColor(red:0, green:0, blue:0, alpha:0.7)
+        view.backgroundColor = UIColor(red:0, green:0, blue:0, alpha:overlayAlpha)
         view.addSubview(baseView)
         // Base View
         baseView.frame = view.frame
