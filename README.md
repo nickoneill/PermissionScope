@@ -1,3 +1,5 @@
+## PermissionScope is no longer supported. Please use an alternative if you need updates for newer iOS 10 and 11 APIs!
+
 <p align="center">
     <img src="http://raquo.net/images/banner.png" alt="PermissionScope" />
 </p>
