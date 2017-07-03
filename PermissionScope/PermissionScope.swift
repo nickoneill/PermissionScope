@@ -1002,20 +1002,23 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         onAuthChange = authChange
         onCancel = cancelled
         
-        DispatchQueue.main.async {
+        DispatchQueue.global().async {
+            // waiting For Bluetooth and Motion State in Background in case choking the main thread which lead to peripheralManagerDidUpdateState cannot callback
             while self.waitingForBluetooth || self.waitingForMotion { }
-            // call other methods that need to wait before show
-            // no missing required perms? callback and do nothing
-            self.requiredAuthorized({ areAuthorized in
-                if areAuthorized {
-                    self.getResultsForConfig({ results in
-
-                        self.onAuthChange?(true, results)
-                    })
-                } else {
-                    self.showAlert()
-                }
-            })
+            DispatchQueue.main.async {
+                // call other methods that need to wait before show
+                // no missing required perms? callback and do nothing
+                self.requiredAuthorized({ areAuthorized in
+                    if areAuthorized {
+                        self.getResultsForConfig({ results in
+                            
+                            self.onAuthChange?(true, results)
+                        })
+                    } else {
+                        self.showAlert()
+                    }
+                })
+            }
         }
     }
     
