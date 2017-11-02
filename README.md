@@ -132,13 +132,13 @@ PermissionScope also has an abstracted API for getting the state for a given per
 
 ```swift
 switch PermissionScope().statusContacts() {
-case .Unknown:
+case .unknown:
     // ask
     PermissionScope().requestContacts()
-case .Unauthorized, .Disabled:
+case .unauthorized, .disabled:
     // bummer
     return
-case .Authorized:
+case .authorized:
     // thanks!
     return
 }
@@ -160,7 +160,7 @@ You will probably also want to set the `onAuthChange`, `onCancel`, and `onDisabl
 ```swift
 pscope.onAuthChange = { (finished, results) in
 	println("Request was finished with results \(results)")
-	if results[0].status == .Authorized {
+	if results[0].status == .authorized {
 		println("They've authorized the use of notifications")
 		UIApplication.sharedApplication().registerForRemoteNotifications()
 	}
@@ -179,7 +179,7 @@ And then you might call it when the user toggles a switch:
 @IBAction func notificationsChanged(sender: UISwitch) {
 	if sender.on {
 		// turn on notifications
-		if PermissionScope().statusNotifications() == .Authorized {
+		if PermissionScope().statusNotifications() == .authorized {
 			UIApplication.sharedApplication().registerForRemoteNotifications()
 		} else {
 			pscope.requestNotifications()
@@ -204,7 +204,7 @@ Users will get the prompt to enable notifications when using PermissionScope but
 
 Trickiest part of implementing location permissions? You must implement the proper key in your Info.plist file with a short description of how your app uses location info (shown in the system permissions dialog). Without this, trying to get location  permissions will just silently fail. *Software*!
 
-Use `NSLocationAlwaysUsageDescription` or `NSLocationWhenInUseUsageDescription` where appropriate for your app usage. You can specify which of these location permissions you wish to request with `.LocationAlways` or `.LocationInUse` while configuring PermissionScope.
+Use `NSLocationAlwaysUsageDescription` or `NSLocationWhenInUseUsageDescription` where appropriate for your app usage. You can specify which of these location permissions you wish to request with `.locationAlways` or `.locationInUse` while configuring PermissionScope.
 
 ### bluetooth
 
