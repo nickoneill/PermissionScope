@@ -24,6 +24,8 @@
 	<true/>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Explanation why you need bluetooth in the background</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Explanation why you need to access contacts</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>always</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
