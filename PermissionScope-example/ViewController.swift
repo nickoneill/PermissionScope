@@ -42,7 +42,7 @@ class ViewController: UIViewController {
     
     // an example of how to use the unified permissions API
     func checkContacts() {
-        switch PermissionScope().statusContacts() {
+/*        switch PermissionScope().statusContacts() {
         case .unknown:
             // ask
             PermissionScope().requestContacts()
@@ -52,7 +52,7 @@ class ViewController: UIViewController {
         case .authorized:
             // thanks!
             return
-        }
+        }*/
     }
     
     @IBAction func singlePerm() {
@@ -78,7 +78,7 @@ class ViewController: UIViewController {
     }
 
     @IBAction func noUIPerm() {
-        noUIPscope.requestNotifications()
+        //noUIPscope.requestNotifications()
     }
 }
 
