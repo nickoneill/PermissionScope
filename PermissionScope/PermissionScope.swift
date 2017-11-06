@@ -19,6 +19,7 @@ import Contacts
 public typealias statusRequestClosure = (_ status: PermissionStatus) -> Void
 public typealias authClosureType      = (_ finished: Bool, _ results: [PermissionResult]) -> Void
 public typealias cancelClosureType    = (_ results: [PermissionResult]) -> Void
+public typealias permissionStatusClosure = (Dictionary<PermissionType, PermissionStatus>) -> Void
 typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
 
 @objc public class PermissionScope: UIViewController, CLLocationManagerDelegate, UIGestureRecognizerDelegate, CBPeripheralManagerDelegate {
@@ -97,6 +98,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /// Callback called when the user taps on the close button.
     public var onCancel: cancelClosureType?   = nil
     
+    public var onShow: (()-> Void)?
+
     /// Called when the user has disabled or denied access to notifications, and we're presenting them with a help dialog.
     public var onDisabledOrDenied: cancelClosureType? = nil
 	/// View controller to be used when presenting alerts. Defaults to self. You'll want to set this if you are calling the `request*` methods directly.
@@ -132,17 +135,23 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     }
     
     // use the code we have to see permission status
-    public func permissionStatuses(_ permissionTypes: [PermissionType]?) -> Dictionary<PermissionType, PermissionStatus> {
+    public func permissionStatuses(permissionTypes: [PermissionType]?, completion:@escaping permissionStatusClosure) {
         var statuses: Dictionary<PermissionType, PermissionStatus> = [:]
         let types: [PermissionType] = permissionTypes ?? PermissionType.allValues
         
+        let permissionGroup = DispatchGroup()
+
         for type in types {
-            statusForPermission(type, completion: { status in
+            permissionGroup.enter()
+            statusForPermission(type) { status in
                 statuses[type] = status
-            })
+                permissionGroup.leave()
+            }
         }
         
-        return statuses
+        permissionGroup.notify(queue: .main) {
+            completion(statuses)
+        }
     }
     
     /**
@@ -259,34 +268,30 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         closeButton.setTitleColor(closeButtonTextColor, for: .normal)
 
         let baseOffset = 95
-        var index = 0
-        for button in permissionButtons {
+        for (index,button) in permissionButtons.enumerated() {
             button.center = contentView.center
             button.frame.offsetInPlace(dx: -contentView.frame.origin.x, dy: -contentView.frame.origin.y)
             button.frame.offsetInPlace(dx: 0, dy: -((dialogHeight/2)-160) + CGFloat(index * baseOffset))
             
             let type = configuredPermissions[index].type
             
-            statusForPermission(type,
-                completion: { currentStatus in
-                    let prettyDescription = type.prettyDescription
-                    if currentStatus == .authorized {
-                        self.setButtonAuthorizedStyle(button)
-                        button.setTitle("Allowed \(prettyDescription)".localized.uppercased(), for: .normal)
-                    } else if currentStatus == .unauthorized {
-                        self.setButtonUnauthorizedStyle(button)
-                        button.setTitle("Denied \(prettyDescription)".localized.uppercased(), for: .normal)
-                    } else if currentStatus == .disabled {
-                        //                setButtonDisabledStyle(button)
-                        button.setTitle("\(prettyDescription) Disabled".localized.uppercased(), for: .normal)
-                    }
-                    
-                    let label = self.permissionLabels[index]
-                    label.center = self.contentView.center
-                    label.frame.offsetInPlace(dx: -self.contentView.frame.origin.x, dy: -self.contentView.frame.origin.y)
-                    label.frame.offsetInPlace(dx: 0, dy: -((dialogHeight/2)-205) + CGFloat(index * baseOffset))
-                    
-                    index = index + 1
+            statusForPermission(type, completion: { currentStatus in
+                let prettyDescription = type.prettyDescription
+                if currentStatus == .authorized {
+                    self.setButtonAuthorizedStyle(button)
+                    button.setTitle("Allowed \(prettyDescription)".localized.uppercased(), for: .normal)
+                } else if currentStatus == .unauthorized {
+                    self.setButtonUnauthorizedStyle(button)
+                    button.setTitle("Denied \(prettyDescription)".localized.uppercased(), for: .normal)
+                } else if currentStatus == .disabled {
+                    //                setButtonDisabledStyle(button)
+                    button.setTitle("\(prettyDescription) Disabled".localized.uppercased(), for: .normal)
+                }
+
+                let label = self.permissionLabels[index]
+                label.center = self.contentView.center
+                label.frame.offsetInPlace(dx: -self.contentView.frame.origin.x, dy: -self.contentView.frame.origin.y)
+                label.frame.offsetInPlace(dx: 0, dy: -((dialogHeight/2)-205) + CGFloat(index * baseOffset))
             })
         }
     }
@@ -845,14 +850,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     // MARK: Bluetooth
     
     /// Returns whether Bluetooth access was asked before or not.
-    fileprivate var askedBluetooth:Bool {
-        get {
-            return defaults.bool(forKey: Constants.NSUserDefaultsKeys.requestedBluetooth)
-        }
-        set {
-            defaults.set(newValue, forKey: Constants.NSUserDefaultsKeys.requestedBluetooth)
-            defaults.synchronize()
-        }
+    private var askedBluetooth:Bool {
+        return CBPeripheralManager.authorizationStatus() != .notDetermined
     }
     
     /// Returns whether PermissionScope is waiting for the user to enable/disable bluetooth access or not.
@@ -864,25 +863,23 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     - returns: Permission status for the requested type.
     */
     public func statusBluetooth() -> PermissionStatus {
-        // if already asked for bluetooth before, do a request to get status, else wait for user to request
-        if askedBluetooth{
+        if askedBluetooth {
             triggerBluetoothStatusUpdate()
         } else {
             return .unknown
         }
-        
+
         let state = (bluetoothManager.state, CBPeripheralManager.authorizationStatus())
         switch state {
-        case (.unsupported, _), (.poweredOff, _), (_, .restricted):
-            return .disabled
         case (.unauthorized, _), (_, .denied):
             return .unauthorized
+        case (.unsupported, _), (.poweredOff, _), (_, .restricted):
+            return .disabled
         case (.poweredOn, .authorized):
             return .authorized
         default:
             return .unknown
-        }
-        
+        } 
     }
     
     /**
@@ -911,7 +908,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         if !waitingForBluetooth && bluetoothManager.state == .unknown {
             bluetoothManager.startAdvertising(nil)
             bluetoothManager.stopAdvertising()
-            askedBluetooth = true
             waitingForBluetooth = true
         }
     }
@@ -1003,7 +999,6 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         onCancel = cancelled
         
         DispatchQueue.main.async {
-            while self.waitingForBluetooth || self.waitingForMotion { }
             // call other methods that need to wait before show
             // no missing required perms? callback and do nothing
             self.requiredAuthorized({ areAuthorized in
@@ -1068,6 +1063,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
                 self.baseView.center = window.center
             })
         })
+        
+        self.onShow?()
     }
 
     /**
@@ -1075,9 +1072,9 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     */
     public func hide() {
         let window = UIApplication.shared.keyWindow!
-
+      
         DispatchQueue.main.async(execute: {
-            UIView.animate(withDuration: 0.2, animations: {
+            UIView.animate(withDuration: 0.2, delay: 0.0, options: .beginFromCurrentState, animations: {
                 self.baseView.frame.origin.y = window.center.y + 400
                 self.view.alpha = 0
             }, completion: { finished in
@@ -1113,7 +1110,12 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         waitingForBluetooth = false
         detectAndCallback()
     }
-
+    
+    public func peripheralManagerDidStartAdvertising(_ peripheral: CBPeripheralManager, error: Error?) {
+        if let _ = error {
+            triggerBluetoothStatusUpdate()
+        }
+    }
     // MARK: - UI Helpers
     
     /**
@@ -1217,36 +1219,42 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     - parameter type:       Permission type to be requested
     - parameter completion: Closure called when the request is done.
     */
-    func statusForPermission(_ type: PermissionType, completion: statusRequestClosure) {
+    func statusForPermission(_ type: PermissionType, completion: @escaping statusRequestClosure) {
         // Get permission status
-        let permissionStatus: PermissionStatus
-        switch type {
-        case .locationAlways:
-            permissionStatus = statusLocationAlways()
-        case .locationInUse:
-            permissionStatus = statusLocationInUse()
-        case .contacts:
-            permissionStatus = statusContacts()
-        case .notifications:
-            permissionStatus = statusNotifications()
-        case .microphone:
-            permissionStatus = statusMicrophone()
-        case .camera:
-            permissionStatus = statusCamera()
-        case .photos:
-            permissionStatus = statusPhotos()
-        case .reminders:
-            permissionStatus = statusReminders()
-        case .events:
-            permissionStatus = statusEvents()
-        case .bluetooth:
-            permissionStatus = statusBluetooth()
-        case .motion:
-            permissionStatus = statusMotion()
+        DispatchQueue.global(qos: .background).async {
+            let permissionStatus: PermissionStatus
+            switch type {
+            case .locationAlways:
+                permissionStatus = self.statusLocationAlways()
+            case .locationInUse:
+                permissionStatus = self.statusLocationInUse()
+            case .contacts:
+                permissionStatus = self.statusContacts()
+            case .notifications:
+                permissionStatus = self.statusNotifications()
+            case .microphone:
+                permissionStatus = self.statusMicrophone()
+            case .camera:
+                permissionStatus = self.statusCamera()
+            case .photos:
+                permissionStatus = self.statusPhotos()
+            case .reminders:
+                permissionStatus = self.statusReminders()
+            case .events:
+                permissionStatus = self.statusEvents()
+            case .bluetooth:
+                while self.waitingForBluetooth {}
+                permissionStatus = self.statusBluetooth()
+            case .motion:
+                while self.waitingForMotion {}
+                permissionStatus = self.statusMotion()
+            }
+            
+            // Perform completion
+            DispatchQueue.main.async {
+                completion(permissionStatus)
+            }
         }
-        
-        // Perform completion
-        completion(permissionStatus)
     }
     
     /**
@@ -1279,17 +1287,23 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     /**
     Calculates the status for each configured permissions for the caller
     */
-    func getResultsForConfig(_ completionBlock: resultsForConfigClosure) {
+    func getResultsForConfig(_ completionBlock: @escaping resultsForConfigClosure) {
         var results: [PermissionResult] = []
-        
-        for config in configuredPermissions {
+
+        let permissionGroup = DispatchGroup()
+
+        for config in self.configuredPermissions {
+            permissionGroup.enter()
             self.statusForPermission(config.type, completion: { status in
                 let result = PermissionResult(type: config.type,
                     status: status)
                 results.append(result)
+                permissionGroup.leave()
             })
         }
-        
-        completionBlock(results)
+
+        permissionGroup.notify(queue: .main) {
+            completionBlock(results)
+        }
     }
 }

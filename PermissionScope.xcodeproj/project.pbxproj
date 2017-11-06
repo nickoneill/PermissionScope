@@ -315,6 +315,11 @@
 					};
 					D0A47C031B3DE694000D39E2 = {
 						CreatedOnToolsVersion = 6.3.2;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
