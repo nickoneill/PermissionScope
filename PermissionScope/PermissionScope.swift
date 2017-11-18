@@ -1147,7 +1147,14 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK".localized,
             style: .cancel,
-            handler: nil))
+            handler: { action in
+                
+                if let onCancel = self.onCancel {
+                    self.getResultsForConfig({ results in
+                        onCancel(results)
+                    })
+                }
+        }))
         alert.addAction(UIAlertAction(title: "Show me".localized,
             style: .default,
             handler: { action in
