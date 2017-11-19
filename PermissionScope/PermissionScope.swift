@@ -41,6 +41,16 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     public var permissionButtonCornerRadius : CGFloat = 6
     /// Color for the permission labels' text color.
     public var permissionLabelColor:UIColor = .black
+    /// The text format used to populate the text content for button which could be used to enable a feature.
+    public var enableButtonTextFormat = "Enable %@"
+    /// The text format used to populate the text content for button which could be used to enable a feature but worded slightly differently for gramatical purposes.
+    public var allowButtonTextFormat = "Allow %@"
+    /// The text format used to populate the text content for a button presenting a disabled feature.
+    public var disableButtonTextFormat = "%@ Disabled"
+    /// The text format used to populate the text content for a button presenting a denied feature.
+    public var deniedButtonTextFormat = "Denied %@"
+    /// The text format used to populate the text content for a button presenting an authorized feature.
+    public var authorizedButtonTextFormat = "Allowed %@"
     /// Font used for all the UIButtons
     public var buttonFont:UIFont            = .boldSystemFont(ofSize: 14)
     /// Font used for all the UILabels
@@ -272,13 +282,16 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
                     let prettyDescription = type.prettyDescription
                     if currentStatus == .authorized {
                         self.setButtonAuthorizedStyle(button)
-                        button.setTitle("Allowed \(prettyDescription)".localized.uppercased(), for: .normal)
+                        let text = String(format: authorizedButtonTextFormat, prettyDescription)
+                        button.setTitle(text.localized.uppercased(), for: .normal)
                     } else if currentStatus == .unauthorized {
                         self.setButtonUnauthorizedStyle(button)
-                        button.setTitle("Denied \(prettyDescription)".localized.uppercased(), for: .normal)
+                        let text = String(format: deniedButtonTextFormat, prettyDescription)
+                        button.setTitle(text.localized.uppercased(), for: .normal)
                     } else if currentStatus == .disabled {
                         //                setButtonDisabledStyle(button)
-                        button.setTitle("\(prettyDescription) Disabled".localized.uppercased(), for: .normal)
+                        let text = String(format: disableButtonTextFormat, prettyDescription)
+                        button.setTitle(text.localized.uppercased(), for: .normal)
                     }
                     
                     let label = self.permissionLabels[index]
@@ -333,9 +346,11 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
         // this is a bit of a mess, eh?
         switch type {
         case .locationAlways, .locationInUse:
-            button.setTitle("Enable \(type.prettyDescription)".localized.uppercased(), for: .normal)
+            let text = String(format: enableButtonTextFormat, type.prettyDescription)
+            button.setTitle(text.localized.uppercased(), for: .normal)
         default:
-            button.setTitle("Allow \(type)".localized.uppercased(), for: .normal)
+            let text = String(format: allowButtonTextFormat, type.prettyDescription)
+            button.setTitle(text.localized.uppercased(), for: .normal)
         }
         
         button.addTarget(self, action: Selector("request\(type)"), for: .touchUpInside)
