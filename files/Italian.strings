@@ -1,4 +1,4 @@
-// 
+//
 "Allow Contacts" = "Consenti Contatti";
 "Allow Events" = "Consenti Eventi";
 "Enable Location" = "Abilita Localizzazione";
@@ -9,6 +9,7 @@
 "Allow Reminders" = "Consenti Promemoria";
 "Allow Bluetooth" = "Consenti Bluetooth";
 "Allow Motion" = "Consenti Monitoraggio Attività Fisica";
+"Allow Speech" = "Consenti Discorso";
 //
 "Contacts" = "Contatti";
 "Events" = "Eventi";
@@ -21,6 +22,7 @@
 "Reminders" = "Promemoria";
 "Bluetooth" = "Bluetooth";
 "Motion" = "Monitoraggio Attività Fisica";
+"Speech" = "Discorso";
 //
 "Allowed Contacts" = "Contatti Abilitati";
 "Allowed Events" = "Eventi Abilitati";
@@ -32,6 +34,7 @@
 "Allowed Reminders" = "Promemoria Abilitati";
 "Allowed Bluetooth" = "Bluetooth Abilitato";
 "Allowed Motion" = "Monitoraggio Attività Fisica Abilitato";
+"Allowed Speech" = "Discorso Abilitato";
 //
 "Denied Contacts" = "Contatti Negati";
 "Denied Events" = "Eventi Negati";
@@ -43,6 +46,7 @@
 "Denied Reminders" = "Promemoria Negati";
 "Denied Bluetooth" = "Bluetooth Negato";
 "Denied Motion" = "Monitoraggio Attività Fisica Negata";
+"Denied Speech" = "Discorso Negato";
 //
 "Contacts Disabled" = "Contatti Disabilitati";
 "Events Disabled" = "Eventi Disabilitati";
@@ -54,6 +58,7 @@
 "Reminders Disabled" = "Promemoria Disabilitati";
 "Bluetooth Disabled" = "Bluetooth Spento";
 "Motion Disabled" = "Monitoraggio Attività Fisica Disabilitata";
+"Speech Disabled" = "Discorso Spento";
 //
 "Close" = "Chiudi";
 "Hey, listen!" = "Ciao, ascolta!";
@@ -68,6 +73,7 @@
 "Permission for Reminders was denied." = "Permessi Negati per i Promemoria.";
 "Permission for Bluetooth was denied." = "Permessi Negati per il Bluetooth.";
 "Permission for Motion was denied." = "Permessi Negati per il Monitoraggio Attività Fisica.";
+"Permission for Speech was denied." = "Permessi Negati per il Discorso.";
 //
 "Please enable access to Contacts in the Settings app" = "Abilita i permessi per i Contatti nelle Impostazioni dell'App";
 "Please enable access to Events in the Settings app" = "Abilita i permessi per gli Eventi nelle Impostazioni dell'App";
@@ -79,6 +85,7 @@
 "Please enable access to Reminders in the Settings app" = "Abilita i permessi per i Promomoria nelle Impostazioni dell'App";
 "Please enable access to Bluetooth in the Settings app" = "Abilita i permessi per il Bluetooth nelle Impostazioni dell'App";
 "Please enable access to Motion in the Settings app" = "Abilita i permessi per il Monitoraggio attività fisica nelle Impostazioni dell'App";
+"Please enable access to Speech in the Settings app" = "Abilita i permessi per il Discorso nelle Impostazioni dell'App";
 //
 "OK" = "Ok";
 "Show me" = "Visualizza";
@@ -93,6 +100,7 @@
 "Reminders is currently disabled." = "Promemoria Disabilitati";
 "Bluetooth is currently disabled." = "Bluetooth Spento";
 "Motion is currently disabled." = "Monitoraggio Attività Fisica Disabilitata";
+"Speech is currently disabled." = "Discorso Spento";
 //
 "Please enable access to Contacts in Settings" = "Abilita i permessi per i Contatti nelle Impostazioni del telefono";
 "Please enable access to Events in Settings" = "Abilita i permessi per gli Eventi nelle Impostazioni del telefono";
@@ -104,4 +112,4 @@
 "Please enable access to Reminders in Settings" = "Abilita i permessi per i Promemoria nelle Impostazioni del telefono";
 "Please enable access to Bluetooth in Settings" = "Accendi il Bluetooth nelle Impostazioni del telefono";
 "Please enable access to Motion in Settings" = "Abilita i permessi per il Monitoraggio attività fisica nelle Impostazioni";
-
+"Please enable access to Speech in Settings" = "Accendi il Discorso nelle Impostazioni del telefono";

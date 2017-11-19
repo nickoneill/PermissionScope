@@ -8,6 +8,7 @@
 "Allow Reminders" = "";
 "Allow Bluetooth" = "";
 "Allow Motion" = "";
+"Allow Speech" = "";
 //
 "Contacts" = "";
 "Events" = "";
@@ -20,6 +21,7 @@
 "Reminders" = "";
 "Bluetooth" = "";
 "Motion" = "";
+"Speech" = "";
 //
 "Allowed Contacts" = "";
 "Allowed Events" = "";
@@ -31,6 +33,7 @@
 "Allowed Reminders" = "";
 "Allowed Bluetooth" = "";
 "Allowed Motion" = "";
+"Allowed Speech" = "";
 //
 "Denied Contacts" = "";
 "Denied Events" = "";
@@ -42,6 +45,7 @@
 "Denied Reminders" = "";
 "Denied Bluetooth" = "";
 "Denied Motion" = "";
+"Denied Speech" = "";
 //
 "Contacts Disabled" = "";
 "Events Disabled" = "";
@@ -53,6 +57,7 @@
 "Reminders Disabled" = "";
 "Bluetooth Disabled" = "";
 "Motion Disabled" = "";
+"Speech Disabled" = "";
 //
 "Close" = "";
 "Hey, listen!" = "";
@@ -67,6 +72,7 @@
 "Permission for Reminders was denied." = "";
 "Permission for Bluetooth was denied." = "";
 "Permission for Motion was denied." = "";
+"Permission for Speech was denied." = "";
 //
 "Please enable access to Contacts in the Settings app" = "";
 "Please enable access to Events in the Settings app" = "";
@@ -78,6 +84,7 @@
 "Please enable access to Reminders in the Settings app" = "";
 "Please enable access to Bluetooth in the Settings app" = "";
 "Please enable access to Motion in the Settings app" = "";
+"Please enable access to Speech in the Settings app" = "";
 //
 "OK" = "";
 "Show me" = "";
@@ -92,6 +99,7 @@
 "Reminders is currently disabled." = "";
 "Bluetooth is currently disabled." = "";
 "Motion is currently disabled." = "";
+"Speech is currently disabled." = "";
 //
 "Please enable access to Contacts in Settings" = "";
 "Please enable access to Events in Settings" = "";
@@ -103,3 +111,4 @@
 "Please enable access to Reminders in Settings" = "";
 "Please enable access to Bluetooth in Settings" = "";
 "Please enable access to Motion in Settings" = "";
+"Please enable access to Speech in Settings" = "";
