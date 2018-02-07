@@ -91,6 +91,8 @@ class ViewController: UIViewController {
             print("got results \(results)")
         }, cancelled: { (results) -> Void in
             print("thing was cancelled")
+        }, dismissed: { canceled in
+            print("the controller was dismissed")
         })   
     }
 }
@@ -159,17 +161,20 @@ You will probably also want to set the `onAuthChange`, `onCancel`, and `onDisabl
 
 ```swift
 pscope.onAuthChange = { (finished, results) in
-	println("Request was finished with results \(results)")
+	print("Request was finished with results \(results)")
 	if results[0].status == .Authorized {
-		println("They've authorized the use of notifications")
+		print("They've authorized the use of notifications")
 		UIApplication.sharedApplication().registerForRemoteNotifications()
 	}
 }
 pscope.onCancel = { results in
-	println("Request was cancelled with results \(results)")
+	print("Request was cancelled with results \(results)")
 }
 pscope.onDisabledOrDenied = { results in
-	println("Request was denied or disabled with results \(results)")
+	print("Request was denied or disabled with results \(results)")
+}
+pscope.onDismissed = { canceled in
+    print("The controller was dismissed by cancel action = \(canceled)")
 }
 ```
 
