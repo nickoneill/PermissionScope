@@ -15,6 +15,7 @@ import EventKit
 import CoreBluetooth
 import CoreMotion
 import Contacts
+import MediaPlayer
 
 public typealias statusRequestClosure = (_ status: PermissionStatus) -> Void
 public typealias authClosureType      = (_ finished: Bool, _ results: [PermissionResult]) -> Void
@@ -987,6 +988,47 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     
     /// Returns whether PermissionScope is waiting for the user to enable/disable motion access or not.
     fileprivate var waitingForMotion = false
+	
+    // MARK: MediaLibrary
+    
+    /**
+     Returns the current permission status for accessing the MediaLibrary.
+     
+     - returns: Permission status for the requested type.
+     */
+    public func statusMediaLibrary() -> PermissionStatus {
+        guard #available(iOS 9.3, *) else { fatalError() }
+        let status = MPMediaLibrary.authorizationStatus()
+        switch status {
+        case .authorized:
+            return .authorized
+        case .restricted, .denied:
+            return .unauthorized
+        case .notDetermined:
+            return .unknown
+        }
+    }
+    
+    /**
+     Requests access to the MediaLibrary, if necessary.
+     */
+    public func requestMediaLibrary() {
+        guard #available(iOS 9.3, *) else { fatalError() }
+        let status = statusMediaLibrary()
+        switch status {
+        case .unknown:
+            let hasWhenInUseKey :Bool = !Bundle.main
+                .object(forInfoDictionaryKey: Constants.InfoPlistKeys.mediaLibrary).isNil
+            assert(hasWhenInUseKey, Constants.InfoPlistKeys.mediaLibrary + " not found in Info.plist.")
+            MPMediaLibrary.requestAuthorization { _ in
+                self.detectAndCallback()
+            }
+        case .unauthorized:
+            self.showDeniedAlert(.mediaLibrary)
+        default:
+            break
+        }
+    }
     
     // MARK: - UI
     
@@ -1243,6 +1285,8 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             permissionStatus = statusBluetooth()
         case .motion:
             permissionStatus = statusMotion()
+        case .mediaLibrary:
+          permissionStatus = statusMediaLibrary()
         }
         
         // Perform completion

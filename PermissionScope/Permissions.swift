@@ -16,6 +16,7 @@ import CoreBluetooth
 import CoreMotion
 import CloudKit
 import Accounts
+import MediaPlayer
 
 /**
 *  Protocol for permission configurations.
@@ -75,4 +76,8 @@ public typealias requestPermissionShowAlert     = (PermissionType) -> Void
 
 @objc public class MotionPermission: NSObject, Permission {
     public let type: PermissionType = .motion
+}
+
+@objc public class MediaLibraryPermission: NSObject, Permission {
+    public let type: PermissionType = .mediaLibrary
 }

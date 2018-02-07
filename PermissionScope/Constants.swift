@@ -27,5 +27,6 @@ enum Constants {
     struct InfoPlistKeys {
         static let locationWhenInUse             = "NSLocationWhenInUseUsageDescription"
         static let locationAlways                = "NSLocationAlwaysUsageDescription"
+        static let mediaLibrary                  = "NSAppleMusicUsageDescription"
     } 
 }
