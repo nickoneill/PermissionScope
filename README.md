@@ -121,6 +121,7 @@ permissionButtonΒorderWidth | CGFloat | Border width for the permission buttons
 permissionButtonCornerRadius | CGFloat | Corner radius for the permission buttons.
 permissionLabelColor | UIColor | Color for the permission labels' text color.
 contentView | UIView | Dialog's content view
+overlayAlpha | CGFloat | Alpha of the black overlay
 
 In addition, the default behavior for tapping the background behind the dialog is to cancel the dialog (which calls the cancel closure you can provide on `show`). You can change this behavior with `backgroundTapCancels` during init.
 
