@@ -53,6 +53,16 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
     public var authorizedButtonColor        = UIColor(red: 0, green: 0.47, blue: 1, alpha: 1)
     /// Color used for permission buttons with unauthorized status. By default, inverse of `authorizedButtonColor`.
     public var unauthorizedButtonColor:UIColor?
+    /// Denied alert config
+    public var deniedAlertTitle:String?
+    public var deniedAlertMessage:String?
+    public var deniedCancelActionTitle:String?
+    public var deniedDefaultActionTitle:String?
+    /// Disabled alert config
+    public var disabledAlertTitle:String?
+    public var disabledAlertMessage:String?
+    public var disabledCancelActionTitle:String?
+    public var disabledDefaultActionTitle:String?
     /// Messages for the body label of the dialog presented when requesting access.
     lazy var permissionMessages: [PermissionType : String] = [PermissionType : String]()
     
@@ -1142,13 +1152,18 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             })
         }
         
-        let alert = UIAlertController(title: "Permission for \(permission.prettyDescription) was denied.".localized,
-            message: "Please enable access to \(permission.prettyDescription) in the Settings app".localized,
+        deniedAlertTitle = String(format: (deniedAlertTitle ?? "Permission for %@ was dennied.".localized), permission.prettyDescription)
+        deniedAlertMessage = String(format: (deniedAlertMessage ?? "Please enable accesss to %@ in the Settings app".localized), permission.prettyDescription)
+        deniedCancelActionTitle = deniedCancelActionTitle ?? "OK".localized
+        deniedDefaultActionTitle = deniedDefaultActionTitle ?? "Show me".localized
+        
+        let alert = UIAlertController(title: deniedAlertTitle!,
+            message: deniedAlertMessage!,
             preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK".localized,
+        alert.addAction(UIAlertAction(title: deniedCancelActionTitle,
             style: .cancel,
             handler: nil))
-        alert.addAction(UIAlertAction(title: "Show me".localized,
+        alert.addAction(UIAlertAction(title: deniedDefaultActionTitle,
             style: .default,
             handler: { action in
                 NotificationCenter.default.addObserver(self, selector: #selector(self.appForegroundedAfterSettings), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
@@ -1176,13 +1191,18 @@ typealias resultsForConfigClosure     = ([PermissionResult]) -> Void
             })
         }
         
-        let alert = UIAlertController(title: "\(permission.prettyDescription) is currently disabled.".localized,
-            message: "Please enable access to \(permission.prettyDescription) in Settings".localized,
+        disabledAlertTitle = String(format: (disabledAlertTitle ?? "%@ is currently disabled.".localized), permission.prettyDescription)
+        disabledAlertMessage = String(format: (disabledAlertMessage ?? "Please enable accesss to %@ in Settings".localized), permission.prettyDescription)
+        disabledCancelActionTitle = disabledCancelActionTitle ?? "OK".localized
+        disabledDefaultActionTitle = disabledDefaultActionTitle ?? "Show me".localized
+        
+        let alert = UIAlertController(title: disabledAlertTitle,
+            message: disabledAlertMessage,
             preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK".localized,
+        alert.addAction(UIAlertAction(title: disabledCancelActionTitle,
             style: .cancel,
             handler: nil))
-        alert.addAction(UIAlertAction(title: "Show me".localized,
+        alert.addAction(UIAlertAction(title: disabledDefaultActionTitle,
             style: .default,
             handler: { action in
                 NotificationCenter.default.addObserver(self, selector: #selector(self.appForegroundedAfterSettings), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
